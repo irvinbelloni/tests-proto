@@ -3,34 +3,35 @@ package com.ossia.test.repository.impl;
 import java.util.Collection;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.TestSheet;
 import com.ossia.test.repository.TestSheetRepository;
 
 @Repository
-public class TestSheetRepositoryImpl implements TestSheetRepository {
+public class TestSheetRepositoryImpl extends AbstractRepositoryImpl  implements TestSheetRepository {
 
-	@Override
+	@Transactional
 	public Integer createTestSheet(TestSheet testSheetACreer) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
-	@Override
+	@Transactional
 	public TestSheet getTestSheetById(Integer idTestSheet) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
-	@Override
+	@Transactional
 	public Collection<TestSheet> getTestSheetsByType(String type) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
-	@Override
+	@Transactional
 	public void deleteTestSheet(TestSheet testSheetToDelete) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

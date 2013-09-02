@@ -1,30 +1,37 @@
 package com.ossia.test.repository.impl;
 
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Response;
 import com.ossia.test.repository.ResponseRepository;
 
 @Repository
-public class ResponseRepositoryImpl implements ResponseRepository {
-
-	@Override
+public class ResponseRepositoryImpl extends AbstractRepositoryImpl implements ResponseRepository {
+	
+	@Transactional
 	public Integer createResponse(Response reponse) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Response reponseCree = (Response) getHibernateCurrentSession().save(reponse) ; 
+		return reponseCree.getId();
 	}
 
-	@Override
+	@Transactional
 	public Response getResponseById(Integer idResponse) {
-		// TODO Auto-generated method stub
-		return null;
+		Query query = getHibernateCurrentSession()
+				.createQuery("from Response response where response.id=:id")
+				.setInteger("id", idResponse) ; 
+		
+		return (Response) query.uniqueResult() ;
 	}
 
-	@Override
+	@Transactional
 	public void deleteResponse(Evaluation evaluationAModifier, Response response) {
-		// TODO Auto-generated method stub
-
+		getHibernateCurrentSession().delete(response) ; 
+		
+		// FIXME - check propagation !!
 	}
 
 }
