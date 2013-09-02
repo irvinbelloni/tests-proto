@@ -1,0 +1,32 @@
+Ecrans :
+-------------------------
+1) Un écran d'accueil avec formulaire d'authentification.
+
+Ecrans d'administration:
+------------------------
+
+1) Un écran de gestion des candidats et administrateurs:
+  - création,
+  - mise à jour,
+  - (dés)activation,
+  - (ré)initialisation de mot de passe.
+
+2) Un écran de gestion des tests :
+  - création,
+  - mise à jour.
+  - assigner les questions
+
+3) Un écran de visualisation de résultats suite à complétion du test par le candidat
+  -
+
+
+  Fonctionnalités
+
+     * profil candidat temporaire
+     *
+
+
+Menus
+
+Cinematique 
+

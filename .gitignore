@@ -1,4 +1,12 @@
 *.class
+.idea
+.project
+.classpath
+.settings
+.springBeans
+target
+bin
+*.iml
 
 # Package Files #
 *.jar
