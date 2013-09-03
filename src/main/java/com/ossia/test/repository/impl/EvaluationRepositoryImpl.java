@@ -17,8 +17,8 @@ public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements 
 
 	@Transactional
 	public Integer createEvaluation(Evaluation toCreate) {
-		Evaluation created = (Evaluation) getHibernateCurrentSession().save(toCreate) ; 
-		return created.getId() ;
+		Integer id = (Integer) getHibernateCurrentSession().save(toCreate) ; 
+		return id ;
 	}
 
 	@Transactional

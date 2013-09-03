@@ -48,10 +48,6 @@ public class TestSheet implements Serializable {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getIntitule() {
 		return intitule;
 	}
@@ -82,5 +78,17 @@ public class TestSheet implements Serializable {
 
 	public void setQuestions(Set<Question> questions) {
 		this.questions = questions;
+	}
+
+	public Set<Evaluation> getEvaluations() {
+		return evaluations;
+	}
+
+	public void setEvaluations(Set<Evaluation> evaluations) {
+		this.evaluations = evaluations;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

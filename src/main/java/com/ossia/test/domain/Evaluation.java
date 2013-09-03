@@ -35,6 +35,8 @@ public class Evaluation implements Serializable {
     @OneToMany
     @Sort(type = SortType.NATURAL)
     private Set<Response> responses;
+    
+    private Boolean resultatOK ; 
 
     public Evaluation() {
     }
@@ -70,4 +72,12 @@ public class Evaluation implements Serializable {
     public void setResponses(Set<Response> responses) {
         this.responses = responses;
     }
+
+	public Boolean getResultatOK() {
+		return resultatOK;
+	}
+
+	public void setResultatOK(Boolean resultatOK) {
+		this.resultatOK = resultatOK;
+	}
 }

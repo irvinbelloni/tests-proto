@@ -35,7 +35,7 @@ public class Profil implements UserDetails {
     @NotEmpty
     private String nom;
 
-    @NotEmpty
+    @NotNull
     private String prenom;
 
     @Pattern(regexp = "[-.a-zA-Z0-9]+@[-a-zA-Z0-9]+\\.[a-zA-Z0-9]+")

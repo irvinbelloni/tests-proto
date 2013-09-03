@@ -17,12 +17,15 @@ public class Response implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     @NotNull
     private Question question;
-
-    private String contenu;
+    
+    @ManyToOne
+    @JoinColumn(name = "evaluation_id", referencedColumnName = "id", nullable = false)
+    @NotNull
+    private Evaluation evaluation;
 
     public Integer getId() {
         return id;
@@ -40,11 +43,11 @@ public class Response implements Serializable {
         this.question = question;
     }
 
-    public String getContenu() {
-        return contenu;
-    }
+	public Evaluation getEvaluation() {
+		return evaluation;
+	}
 
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
-    }
+	public void setEvaluation(Evaluation evaluation) {
+		this.evaluation = evaluation;
+	}
 }

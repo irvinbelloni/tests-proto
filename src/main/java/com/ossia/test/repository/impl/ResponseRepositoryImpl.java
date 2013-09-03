@@ -13,9 +13,8 @@ public class ResponseRepositoryImpl extends AbstractRepositoryImpl implements Re
 	
 	@Transactional
 	public Integer createResponse(Response reponse) {
-		
-		Response reponseCree = (Response) getHibernateCurrentSession().save(reponse) ; 
-		return reponseCree.getId();
+		Integer id = (Integer)  getHibernateCurrentSession().save(reponse) ; 
+		return id;
 	}
 
 	@Transactional

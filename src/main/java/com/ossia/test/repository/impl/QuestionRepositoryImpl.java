@@ -13,8 +13,8 @@ public class QuestionRepositoryImpl extends AbstractRepositoryImpl implements Qu
 	
 	@Transactional
 	public Integer createQuestion(Question questionACreer) {
-		Question newQuestion = (Question) getHibernateCurrentSession().save(questionACreer) ;  
-		return newQuestion.getId() ;
+		Integer id = (Integer) getHibernateCurrentSession().save(questionACreer) ;  
+		return id ;
 	}
 	
 	@Transactional

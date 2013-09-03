@@ -15,8 +15,8 @@ public class ProfilRepositoryImpl extends AbstractRepositoryImpl implements Prof
 	
 	@Transactional
 	public Integer createProfil(Profil profilACreer) {
-		Profil created = (Profil) getHibernateCurrentSession().save(profilACreer) ; 
-		return created.getId() ;
+		Integer id = (Integer) getHibernateCurrentSession().save(profilACreer) ; 
+		return id ;
 	}
 
 	@Transactional
