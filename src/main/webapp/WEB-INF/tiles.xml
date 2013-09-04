@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+    <definition name="logged-in-layout" template="/WEB-INF/pages/logged-in/common/layout.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp" />
+        <put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/menu.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/pages/logged-in/common/footer.jsp" />
+    </definition>
+    
+    <definition name="question" extends="logged-in-layout">
+        <put-attribute name="title" value="Test en cours" />
+        <put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/no-menu.jsp" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/test/question.jsp" />
+    </definition>
+</tiles-definitions>
