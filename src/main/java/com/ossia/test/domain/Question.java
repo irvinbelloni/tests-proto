@@ -3,7 +3,9 @@ package com.ossia.test.domain;//
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,12 +31,12 @@ public class Question implements Serializable {
 	private String niveau;
 	private String contenu;
     
-    @ManyToOne
+    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
     @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
     @NotNull
     private TestSheet test;
     
-    @OneToMany(mappedBy = "question")
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "question")
     private Set<PropositionReponse> propositionsReponses ; 
     
     public Question() {

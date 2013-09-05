@@ -2,6 +2,7 @@ package com.ossia.test.domain;//
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,17 +25,12 @@ public class Response implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     @NotNull
     private Question question;
     
-    @ManyToOne
-    @JoinColumn(name = "evaluation_id", referencedColumnName = "id", nullable = false)
-    @NotNull
-    private Evaluation evaluation;
-    
-    @OneToOne 
+    @OneToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
     @JoinColumn(name = "repChoisie", referencedColumnName = "id", nullable = false)
     private PropositionReponse reponseChoisie ; 
 
@@ -63,12 +59,4 @@ public class Response implements Serializable {
     public void setQuestion(Question question) {
         this.question = question;
     }
-
-	public Evaluation getEvaluation() {
-		return evaluation;
-	}
-
-	public void setEvaluation(Evaluation evaluation) {
-		this.evaluation = evaluation;
-	}
 }

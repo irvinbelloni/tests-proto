@@ -1,15 +1,20 @@
 package com.ossia.test.domain;
 
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "T_SHEETS")
@@ -33,12 +38,10 @@ public class TestSheet implements Serializable {
 	@NotEmpty
 	private String type;
 
-	@OneToMany(mappedBy = "test")
-	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "test")
 	private Set<Evaluation> evaluations;
 
-	@OneToMany
-	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<Question> questions;
 
 	public TestSheet() {

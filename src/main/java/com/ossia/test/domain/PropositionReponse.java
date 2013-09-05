@@ -2,6 +2,7 @@ package com.ossia.test.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +27,7 @@ public class PropositionReponse implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id ; 
 	
-	@ManyToOne
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     @NotNull
 	private Question question ; 
