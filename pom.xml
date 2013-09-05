@@ -313,12 +313,15 @@
     </dependencies>
 
     <build>
+    	<finalName>Tests-Proto</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1.1</version>
-                <!-- <configuration> <webXml>target/web.xml</webXml> </configuration> -->
+                <configuration>
+                	<webXml>src/main/webapp/WEB-INF/web.xml</webXml> 
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -368,7 +371,6 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -379,11 +381,13 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
+                	<skipTests>true</skipTests>
                     <printSummary>false</printSummary>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
@@ -395,6 +399,7 @@
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
+                        <descriptorRef>project</descriptorRef>
                     </descriptorRefs>
                 </configuration>
             </plugin>
