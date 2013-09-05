@@ -29,6 +29,7 @@ public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements 
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public Collection<Evaluation> getEvaluationByProfil(Profil profilCandidat) {
 		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.profil_id=:id")
 				.setInteger("id", profilCandidat.getId());
@@ -38,6 +39,7 @@ public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements 
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public Collection<Evaluation> getEvaluationByTestSheet(
 			TestSheet testSheetPasse) {
 		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.test_id=:id")

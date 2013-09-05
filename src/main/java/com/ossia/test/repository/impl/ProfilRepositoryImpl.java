@@ -36,11 +36,20 @@ public class ProfilRepositoryImpl extends AbstractRepositoryImpl implements Prof
 		return retrieved ;
 	}
 
-	@SuppressWarnings("unchecked")
-	
+	@SuppressWarnings("unchecked")	
 	public Collection<Profil> getProfilByNom(String nom) {
 		Query query = getHibernateCurrentSession().createQuery("from Profil user where user.nom=:nom")
 				.setString("nom", nom);
+		
+		List<Profil> retrieved = (List<Profil>) query.list()  ;  
+		return retrieved ;
+	}
+	
+	
+	@Override @SuppressWarnings("unchecked")
+	public Collection<Profil> getProfilByRole(boolean admin) {
+		Query query = getHibernateCurrentSession().createQuery("from Profil user where user.admin=:admin")
+				.setBoolean("admin", admin);
 		
 		List<Profil> retrieved = (List<Profil>) query.list()  ;  
 		return retrieved ;
@@ -50,5 +59,8 @@ public class ProfilRepositoryImpl extends AbstractRepositoryImpl implements Prof
 	public void deleteProfil(Profil profilASupprimer) {
 		getHibernateCurrentSession().delete(profilASupprimer) ; 
 	}
+
+
+	
 
 }

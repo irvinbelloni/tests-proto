@@ -19,6 +19,7 @@
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/syntax-highlighter/shCore.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/syntax-highlighter/shCoreEclipse.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.css" />
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.forms.css" />
 	</head>
 	<body>
 		<tiles:insertAttribute name="header" />

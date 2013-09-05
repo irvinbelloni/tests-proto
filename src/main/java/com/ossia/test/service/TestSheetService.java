@@ -26,5 +26,9 @@ public interface TestSheetService {
 	Question getQuestionById (Integer idQuestion) ; 
 	
 	void deleteQuestionFromTestSheet (TestSheet test , Question aSupprimer) ;
-
+	
+	/*
+	 * MISC
+	 */
+	Collection<TestSheet> getAllTestSheets();
 }
