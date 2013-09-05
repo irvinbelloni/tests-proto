@@ -7,7 +7,10 @@
 			Qu'affiche le code java suivant?
 			
 			<script type="syntaxhighlighter" class="brush:java">
-				<![CDATA[void foo(String input) {System.out.println ("AA");}]]>
+				<![CDATA[
+void foo(String input) {
+	System.out.println ("AA");
+}]]>
 			</script>
 		</p>
 	</div>

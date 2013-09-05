@@ -13,6 +13,11 @@
 	<context:component-scan base-package="com.ossia.test.web" />
 
 	<mvc:annotation-driven />
+	
+	<!-- Mapping of static resources so that Spring doesn't try to match a static url with one in the controllers -->
+	<mvc:resources mapping="/static/images/**" location="/static/images/" />
+	<mvc:resources mapping="/static/css/**" location="/static/css/" />
+	<mvc:resources mapping="/static/js/**" location="/static/js/" />
 
 	<!-- View resolver -->
 	<bean id="viewResolver"  class="org.springframework.web.servlet.view.UrlBasedViewResolver">

@@ -3,14 +3,18 @@ package com.ossia.test.service.impl;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Profil;
 import com.ossia.test.repository.ProfilRepository;
 import com.ossia.test.service.ProfilService;
 
-@Service
-public class ProfilServiceImpl implements ProfilService {
+@Service("profilService")
+public class ProfilServiceImpl implements ProfilService, UserDetailsService {
 	
 	@Autowired
 	private ProfilRepository profilRepository ;
@@ -40,6 +44,17 @@ public class ProfilServiceImpl implements ProfilService {
 	@Override
 	public void deleteProfil(Profil profilASupprimer) {
 		profilRepository.deleteProfil(profilASupprimer) ; 
-	} 
-
+	}
+	
+	/**
+	 * Method used by spring-security to check if the user exists
+	 */
+	@Override @Transactional
+	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+		Profil profil = getProfilByLogin(login);
+		if (profil == null) {
+			throw new UsernameNotFoundException("Login (" + login + ") is not found");			
+		}		
+		return profil;
+	}
 }

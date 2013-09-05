@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
 <tiles-definitions>
+	<!-- Logged-in views -->
     <definition name="logged-in-layout" template="/WEB-INF/pages/logged-in/common/layout.jsp">
         <put-attribute name="title" value="" />
         <put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp" />
@@ -14,4 +15,23 @@
         <put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/no-menu.jsp" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/test/question.jsp" />
     </definition>
+    
+    <!-- Administrator views -->
+    <definition name="admin-home" extends="logged-in-layout">
+        <put-attribute name="title" value="Administration" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/home.jsp" />
+    </definition>
+    
+    <!--  Unlogged views -->    
+    <definition name="unlogged-layout" template="/WEB-INF/pages/unlogged/common/layout.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/pages/unlogged/common/footer.jsp" />
+    </definition>
+    
+    <definition name="login" extends="unlogged-layout">
+        <put-attribute name="title" value="OSSIA Conseil - Plateforme de tests techniques" />
+        <put-attribute name="body" value="/WEB-INF/pages/unlogged/login/login.jsp" />
+    </definition>    
 </tiles-definitions>

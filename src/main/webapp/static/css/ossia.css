@@ -1,9 +1,14 @@
 /* Resetting styles */
-body, div, form, h1, h2, h3, header, html, img, menu, p {
+body, div, form, h1, h2, h3, header, html, img, input, menu, p, tr, td, table {
 	border: 0;
+	color: #333;
 	font-family: georgia;
 	margin: 0;
 	padding: 0;
+}
+
+a:hover {
+	text-decoration: none;
 }
 
 body {
@@ -25,7 +30,7 @@ header {
 	-webkit-border-radius: 0 0 4px 4px;	
 }
 
-menu, .user-header{
+menu {
 	background: rgba(0, 0, 0, 0.7);
 	height: 40px;
 	margin: 0 auto;
@@ -34,13 +39,19 @@ menu, .user-header{
 	width: 80%;
 }
 
+menu * {
+	color: #fff;
+}
+
 .user {
-	background: url(../images/icon-user.png) no-repeat;
+	background: url(../images/icon-user.png) no-repeat right;
 	color: #fff;
 	font-size: 12px;
+	float: right;
 	line-height: 20px;
-	padding: 0 0 0 22px;
-}	
+	padding: 8px 22px 0 0;
+	vertical-align: middle;
+}
 
 article {
 	margin: 0 0 10px 0;
@@ -74,8 +85,7 @@ h1 {
 
 #question {
 	background: #fff;
-	width: inherit;
-	
+	width: inherit;	
 	box-shadow: 0 0 20px #fff;
 }
 
@@ -106,7 +116,7 @@ input {
 	padding: 15px 15px 0 0;
 }
 
-.submit input {
+.submit input, input.submit-button {
 	-moz-box-shadow:inset 0px 1px 6px -3px #de7abd;
 	-webkit-box-shadow:inset 0px 1px 6px -3px #de7abd;
 	box-shadow:inset 0px 1px 6px -3px #de7abd;
@@ -142,14 +152,14 @@ input {
 	text-shadow:1px 1px 0px #996499;
 	float: right;
 }
-.submit input:hover {
+.submit input:hover, input.submit-button:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #751d58), color-stop(1, #9f698d) );
 	background:-moz-linear-gradient( center top, #751d58 5%, #9f698d 100% );
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#751d58', endColorstr='#9f698d');
 	background-color:#751d58;
 	cursor: pointer;
 }
-.submit input:active {
+.submit input:active, input.submit-button:active {
 	position:relative;
 	top:1px;
 }
@@ -206,4 +216,74 @@ input {
 }
 
 .syntaxhighlighter { overflow-y: hidden !important; }
+
+/*** MENUS ***/
+ul {
+	padding:0;
+	margin:0;
+	list-style-type:none;
+}
+
+li {
+	margin-left:2px;
+	float:left; /*pour IE*/
+}
+
+ul li a {
+	display:block;
+	float:left;   
+	height: 30px;
+	line-height: 30px;
+	text-decoration:none;
+	text-align:center;
+	padding:5px 20px;
+}
+
+ul li a:hover {
+	background-color: #fff;
+	color: #9f698d
+}
+
+/*** FORMS ***/
+form.login {
+	background: #fff;
+	width: 500px;	
+	box-shadow: 0 0 20px #fff;
+	margin: 100px auto 0 auto;
+	padding: 50px;
 	
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+}
+
+form.login table {
+	width: 500px;
+}
+
+form.login table tr {
+	height: 10px;
+}
+
+form.login table td {
+	height: 50px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+form.login input.text {
+	border: 1px solid #ccc;
+	padding: 10px 5px;
+	font-size: 20px;
+	width: 350px;
+	margin: 0;
+}
+
+p.errorblock {
+	background: #9f698d;
+	color: #fff;
+	width: 455px;
+	text-align: left;
+	padding: 15px;
+	margin-bottom: 10px;
+}

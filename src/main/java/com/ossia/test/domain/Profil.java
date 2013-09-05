@@ -19,10 +19,7 @@ import java.util.Set;
 @Table(name = "T_PROFILS")
 public class Profil implements UserDetails {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	
 	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
     private static final Collection<GrantedAuthority> ADMIN = wrapAuthority(ROLE_ADMIN);
@@ -134,7 +131,7 @@ public class Profil implements UserDetails {
 
 
     public String getPassword() {
-        return "";
+        return pass;
     }
 
     @Override
