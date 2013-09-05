@@ -2,7 +2,15 @@ package com.ossia.test.domain;//
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -17,14 +25,26 @@ public class Response implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @OneToMany
+    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     @NotNull
     private Question question;
+    
+    @OneToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+    @JoinColumn(name = "repChoisie", referencedColumnName = "id", nullable = false)
+    private PropositionReponse reponseChoisie ; 
 
-    private String contenu;
+    public Response() {
+		super();
+	}
 
-    public Integer getId() {
+	public Response(Question question, PropositionReponse reponseChoisie) {
+		super();
+		this.question = question;
+		this.reponseChoisie = reponseChoisie;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -38,13 +58,5 @@ public class Response implements Serializable {
 
     public void setQuestion(Question question) {
         this.question = question;
-    }
-
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
     }
 }

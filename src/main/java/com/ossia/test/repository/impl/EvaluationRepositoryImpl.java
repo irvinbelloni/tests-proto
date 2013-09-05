@@ -1,7 +1,9 @@
 package com.ossia.test.repository.impl;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ossia.test.domain.Evaluation;
@@ -10,37 +12,44 @@ import com.ossia.test.domain.TestSheet;
 import com.ossia.test.repository.EvaluationRepository;
 
 @Repository
-public class EvaluationRepositoryImpl implements EvaluationRepository {
+public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements EvaluationRepository {
 
-	@Override
+	
 	public Integer createEvaluation(Evaluation toCreate) {
-		// TODO Auto-generated method stub
-		return null;
+		Integer id = (Integer) getHibernateCurrentSession().save(toCreate) ; 
+		return id ;
 	}
 
-	@Override
+	
 	public Evaluation getEvaluationById(Integer idEvaluation) {
-		// TODO Auto-generated method stub
-		return null;
+		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.id=:id").setInteger("id", idEvaluation);
+		
+		Evaluation retrieved = (Evaluation) query.uniqueResult() ; 
+		return retrieved ;
 	}
 
-	@Override
+	
 	public Collection<Evaluation> getEvaluationByProfil(Profil profilCandidat) {
-		// TODO Auto-generated method stub
-		return null;
+		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.profil_id=:id")
+				.setInteger("id", profilCandidat.getId());
+		
+		List<Evaluation> retrieved = (List<Evaluation>) query.list() ; 
+		return retrieved ;
 	}
 
-	@Override
+	
 	public Collection<Evaluation> getEvaluationByTestSheet(
 			TestSheet testSheetPasse) {
-		// TODO Auto-generated method stub
-		return null;
+		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.test_id=:id")
+				.setInteger("id", testSheetPasse.getId());
+		
+		List<Evaluation> retrieved = (List<Evaluation>) query.list() ; 
+		return retrieved ;
 	}
 
-	@Override
+	
 	public void deleteEvaluation(Evaluation toDelete) {
-		// TODO Auto-generated method stub
-		
+		getHibernateCurrentSession().delete(toDelete) ; 
 	}
 
 }
