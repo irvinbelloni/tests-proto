@@ -34,11 +34,11 @@ public class TestSheet implements Serializable {
 	private String type;
 
 	@OneToMany(mappedBy = "test")
-	@Sort(type = SortType.NATURAL)
+	
 	private Set<Evaluation> evaluations;
 
 	@OneToMany
-	@Sort(type = SortType.NATURAL)
+	
 	private Set<Question> questions;
 
 	public TestSheet() {

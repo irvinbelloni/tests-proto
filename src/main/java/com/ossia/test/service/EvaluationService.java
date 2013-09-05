@@ -12,7 +12,7 @@ public interface EvaluationService {
 	/*
 	 * EVALUATION
 	 */
-	Integer createEvaluation (Evaluation toCreate) ; 
+	Evaluation createEvaluation (Evaluation toCreate) ; 
 	
 	Evaluation getEvaluationById (Integer idEvaluation) ; 
 	
@@ -25,7 +25,7 @@ public interface EvaluationService {
 	/*
 	 * RESPONSES
 	 */
-	Integer createResponse (Response reponse) ; 
+	Response createResponse (Response reponse) ; 
 	
 	Response getResponseById (Integer idResponse) ; 
 	

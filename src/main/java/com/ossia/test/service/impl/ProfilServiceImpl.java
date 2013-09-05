@@ -22,8 +22,7 @@ public class ProfilServiceImpl implements ProfilService, UserDetailsService {
 	@Override
 	public Profil createProfil(Profil profilACreer) {
 		Integer value = profilRepository.createProfil(profilACreer) ; 
-		Profil toReturn = getProfilById(value) ; 
-		return toReturn ;
+		return getProfilById(value) ;
 	}
 
 	@Override

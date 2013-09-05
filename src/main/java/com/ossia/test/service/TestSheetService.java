@@ -10,7 +10,7 @@ public interface TestSheetService {
 	/*
 	 * TESTSHEET
 	 */	
-	Integer createTestSheet(TestSheet testSheetACreer);
+	TestSheet createTestSheet(TestSheet testSheetACreer);
 
 	TestSheet getTestSheetById(Integer idTestSheet);
 
@@ -21,7 +21,7 @@ public interface TestSheetService {
 	/*
 	 * QUESTION
 	 */	
-	Integer createQuestion (Question questionACreer) ; 
+	Question createQuestion (Question questionACreer) ; 
 	
 	Question getQuestionById (Integer idQuestion) ; 
 	

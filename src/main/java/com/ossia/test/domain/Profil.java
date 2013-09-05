@@ -1,172 +1,201 @@
 package com.ossia.test.domain;//
 
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "T_PROFILS")
 public class Profil implements UserDetails {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+
+	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority(
+			"ROLE_ADMIN");
+	private static final Collection<GrantedAuthority> ADMIN = wrapAuthority(ROLE_ADMIN);
+	private static final Collection<GrantedAuthority> USER = wrapAuthority(new SimpleGrantedAuthority(
+			"ROLE_USER"));
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
+
+	@NotEmpty
+	private String nom;
+
+	@NotNull
+	private String prenom;
+
+	@Pattern(regexp = "[-.a-zA-Z0-9]+@[-a-zA-Z0-9]+\\.[a-zA-Z0-9]+")
+	private String email;
+
+	@OneToMany(mappedBy = "profil")
+	private Set<Evaluation> evaluations;
+
+	@NotEmpty
+	@Column(name = "login", unique = true)
+	private String login;
+
+	@NotEmpty
+	private String pass;
+
+	@NotNull
+	private boolean admin;
+
+	@NotNull
+	private Date dateDebut;
+
+	private Date dateFin;
+
+	public Profil() {
+		super();
+	}
+
+	public Profil(String nom, String prenom) {
+		super();
+		this.nom = nom;
+		this.prenom = prenom;
+		
+		dateDebut = new Date() ; 
+		this.login = generateLoginFromNom() ; 
+		this.pass = generatePassFromNom() ; 
+	}
 	
-	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
-    private static final Collection<GrantedAuthority> ADMIN = wrapAuthority(ROLE_ADMIN);
-    private static final Collection<GrantedAuthority> USER = wrapAuthority(new SimpleGrantedAuthority("ROLE_USER"));
+	private String generateLoginFromNom () {
+		return getPrenom().substring(0, 1).toLowerCase().concat(getNom().toLowerCase().trim())  ; 
+	}
+	
+	private String generatePassFromNom () {
+		return getNom().toLowerCase().trim() ; 
+	}
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+	/* Authorization fields */
+	public String getPass() {
+		return pass;
+	}
 
-    @NotEmpty
-    private String nom;
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
 
-    @NotNull
-    private String prenom;
+	public Set<Evaluation> getEvaluations() {
+		return evaluations;
+	}
 
-    @Pattern(regexp = "[-.a-zA-Z0-9]+@[-a-zA-Z0-9]+\\.[a-zA-Z0-9]+")
-    private String email;
+	public void setEvaluations(Set<Evaluation> evaluations) {
+		this.evaluations = evaluations;
+	}
 
-    @OneToMany(mappedBy = "profil")
-    @Sort(type = SortType.NATURAL)
-    private Set<Evaluation> evaluations ;
+	public String getLogin() {
+		return login;
+	}
 
-    @NotEmpty
-    @Column(name = "login", unique = true)
-    private String login;
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
-    private String pass ;
+	public Date getDateDebut() {
+		return dateDebut;
+	}
 
-    @NotNull
-    private boolean admin;
+	public void setDateDebut(Date dateDebut) {
+		this.dateDebut = dateDebut;
+	}
 
-    @NotNull
-    private Date dateDebut;
+	public Date getDateFin() {
+		return dateFin;
+	}
 
-    private Date dateFin;
+	public void setDateFin(Date dateFin) {
+		this.dateFin = dateFin;
+	}
 
-    /* Authorization fields */
-    public String getPass() {
-        return pass;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public Set<Evaluation> getEvaluations() {
-        return evaluations;
-    }
+	public String getNom() {
+		return nom;
+	}
 
-    public void setEvaluations(Set<Evaluation> evaluations) {
-        this.evaluations = evaluations;
-    }
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-    public String getLogin() {
-        return login;
-    }
+	public String getPrenom() {
+		return prenom;
+	}
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
 
-    public Date getDateDebut() {
-        return dateDebut;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setDateDebut(Date dateDebut) {
-        this.dateDebut = dateDebut;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public Date getDateFin() {
-        return dateFin;
-    }
+	public String getPassword() {
+		return pass;
+	}
 
-    public void setDateFin(Date dateFin) {
-        this.dateFin = dateFin;
-    }
+	@Override
+	public String getUsername() {
+		return getLogin();
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public boolean isEnabled() {
+		return getDateFin().after(getDateDebut());
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	@Override
+	public Collection<? extends org.springframework.security.core.GrantedAuthority> getAuthorities() {
+		if (admin) {
+			return ADMIN;
+		}
+		return USER;
+	}
 
-    public String getNom() {
-        return nom;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    public String getPrenom() {
-        return prenom;
-    }
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    public String getPassword() {
-        return pass;
-    }
-
-    @Override
-    public String getUsername() {
-        return getLogin() ;
-    }
-
-    public boolean isEnabled() {
-        return getDateFin().after(getDateDebut()) ;
-    }
-
-    @Override
-    public Collection<? extends org.springframework.security.core.GrantedAuthority> getAuthorities() {
-        if (admin) {
-            return ADMIN;
-        }
-        return USER;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    private static Set<GrantedAuthority> wrapAuthority(GrantedAuthority authority) {
-        return Collections.<GrantedAuthority>singleton(authority);
-    }
+	private static Set<GrantedAuthority> wrapAuthority(
+			GrantedAuthority authority) {
+		return Collections.<GrantedAuthority> singleton(authority);
+	}
 }

@@ -21,8 +21,9 @@ public class TestSheetServiceImpl implements TestSheetService {
 	private QuestionRepository questionRepository;
 
 	@Override
-	public Integer createTestSheet(TestSheet testSheetACreer) {
-		return testSheetRepository.createTestSheet(testSheetACreer);
+	public TestSheet createTestSheet(TestSheet testSheetACreer) {
+		Integer id = testSheetRepository.createTestSheet(testSheetACreer); 
+		return getTestSheetById(id) ; 
 	}
 
 	@Override
@@ -41,8 +42,9 @@ public class TestSheetServiceImpl implements TestSheetService {
 	}
 
 	@Override
-	public Integer createQuestion(Question questionACreer) {
-		return questionRepository.createQuestion(questionACreer);
+	public Question createQuestion(Question questionACreer) {
+		Integer id = questionRepository.createQuestion(questionACreer);
+		return getQuestionById(id) ; 
 	}
 
 	@Override

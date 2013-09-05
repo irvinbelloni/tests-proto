@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Profil;
@@ -14,6 +15,7 @@ import com.ossia.test.repository.ResponseRepository;
 import com.ossia.test.service.EvaluationService;
 
 @Service
+@Transactional
 public class EvaluationServiceImpl implements EvaluationService {
 
 	@Autowired
@@ -22,8 +24,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 	@Autowired
 	private ResponseRepository responseRepository ;
 
-	public Integer createEvaluation(Evaluation toCreate) {
-		return evaluationRepository.createEvaluation(toCreate);
+	public Evaluation createEvaluation(Evaluation toCreate) {
+		Integer id = evaluationRepository.createEvaluation(toCreate); 
+		return getEvaluationById(id) ; 
 	}
 
 	public Evaluation getEvaluationById(Integer idEvaluation) {
@@ -43,8 +46,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 		evaluationRepository.deleteEvaluation(toDelete) ; 
 	}
 
-	public Integer createResponse(Response reponse) {
-		return responseRepository.createResponse(reponse);
+	public Response createResponse(Response reponse) {
+		Integer id = responseRepository.createResponse(reponse); 
+		return getResponseById(id) ; 
 	}
 
 	public Response getResponseById(Integer idResponse) {

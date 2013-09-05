@@ -2,7 +2,14 @@ package com.ossia.test.domain;//
 
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -26,8 +33,22 @@ public class Response implements Serializable {
     @JoinColumn(name = "evaluation_id", referencedColumnName = "id", nullable = false)
     @NotNull
     private Evaluation evaluation;
+    
+    @OneToOne 
+    @JoinColumn(name = "repChoisie", referencedColumnName = "id", nullable = false)
+    private PropositionReponse reponseChoisie ; 
 
-    public Integer getId() {
+    public Response() {
+		super();
+	}
+
+	public Response(Question question, PropositionReponse reponseChoisie) {
+		super();
+		this.question = question;
+		this.reponseChoisie = reponseChoisie;
+	}
+
+	public Integer getId() {
         return id;
     }
 

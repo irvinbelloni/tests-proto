@@ -13,9 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
-
 @Entity
 @Table(name = "T_QUESTIONS")
 public class Question implements Serializable {
@@ -38,10 +35,20 @@ public class Question implements Serializable {
     private TestSheet test;
     
     @OneToMany(mappedBy = "question")
-	@Sort(type = SortType.NATURAL)
     private Set<PropositionReponse> propositionsReponses ; 
+    
+    public Question() {
+		super();
+	}
 
-    public Integer getId() {
+	public Question(String intitule, String niveau, String contenu) {
+		super();
+		this.intitule = intitule;
+		this.niveau = niveau;
+		this.contenu = contenu;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -79,5 +86,13 @@ public class Question implements Serializable {
 
 	public void setTest(TestSheet test) {
 		this.test = test;
+	}
+
+	public Set<PropositionReponse> getPropositionsReponses() {
+		return propositionsReponses;
+	}
+
+	public void setPropositionsReponses(Set<PropositionReponse> propositionsReponses) {
+		this.propositionsReponses = propositionsReponses;
 	}
 }
