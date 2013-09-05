@@ -23,7 +23,10 @@
 	</head>
 	<body>
 		<tiles:insertAttribute name="header" />
-        <tiles:insertAttribute name="body" />
+		<tiles:insertAttribute name="menu" />
+		<div class="body-content">
+        	<tiles:insertAttribute name="body" />
+        </div>
        	<tiles:insertAttribute name="footer" />
 	</body>
 </html>

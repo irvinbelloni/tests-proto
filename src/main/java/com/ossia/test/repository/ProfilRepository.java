@@ -14,5 +14,7 @@ public interface ProfilRepository {
 	
 	Collection<Profil> getProfilByNom (String nom) ; 
 	
+	Collection<Profil> getProfilByRole (boolean admin) ;
+	
 	void deleteProfil (Profil profilASupprimer) ; 
 }

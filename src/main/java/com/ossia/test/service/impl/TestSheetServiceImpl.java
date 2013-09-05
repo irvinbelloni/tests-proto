@@ -1,5 +1,6 @@
 package com.ossia.test.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,21 @@ public class TestSheetServiceImpl implements TestSheetService {
 	@Override
 	public void deleteQuestionFromTestSheet(TestSheet test, Question aSupprimer) {
 		questionRepository.deleteQuestionFromTestSheet(test, aSupprimer);
+	}
+	
+	@Override
+	public Collection<TestSheet> getAllTestSheets() {
+		Collection<TestSheet> tests = new ArrayList<TestSheet>();
+		
+		TestSheet test1 = new TestSheet();
+		test1.setIntitule("Java/J2EE - niveau intermédiaire");
+		
+		TestSheet test2 = new TestSheet();
+		test2.setIntitule("Java/J2EE - niveau confirmé");
+		
+		tests.add(test1);
+		tests.add(test2);
+		return tests;
 	}
 
 }

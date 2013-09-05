@@ -28,6 +28,7 @@ public class TestSheetRepositoryImpl extends AbstractRepositoryImpl  implements 
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public Collection<TestSheet> getTestSheetsByType(String type) {
 		Query query = getHibernateCurrentSession().createQuery("from TestSheet ts where ts.type=:type")
 				.setString("type", type);

@@ -39,6 +39,11 @@ public class ProfilServiceImpl implements ProfilService, UserDetailsService {
 	public Collection<Profil> getProfilByNom(String nom) {
 		return profilRepository.getProfilByNom(nom);
 	}
+	
+	@Override
+	public Collection<Profil> getProfilByRole(boolean admin) {
+		return profilRepository.getProfilByRole(admin);
+	}
 
 	@Override
 	public void deleteProfil(Profil profilASupprimer) {

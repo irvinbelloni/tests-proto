@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.ossia.test.service.TestSheetService;
 
 @Controller
+@RequestMapping("/tests")
 public class TestSheetControler {
 	
 	@Autowired
-	public TestSheetService testSheetService ; 
+	public TestSheetService testSheetService;
 	
 	@RequestMapping(value = "/question", method = RequestMethod.GET)
 	public String displayQuestion(ModelMap model) {
