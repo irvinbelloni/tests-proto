@@ -13,7 +13,7 @@ import com.ossia.test.domain.Profil;
 import com.ossia.test.repository.ProfilRepository;
 import com.ossia.test.service.ProfilService;
 
-@Service("profilService")
+@Service("profilService") @Transactional
 public class ProfilServiceImpl implements ProfilService, UserDetailsService {
 	
 	@Autowired
@@ -21,39 +21,39 @@ public class ProfilServiceImpl implements ProfilService, UserDetailsService {
 
 	@Override
 	public Profil createProfil(Profil profilACreer) {
-		Integer value = profilRepository.createProfil(profilACreer) ; 
+		Integer value = profilRepository.create(profilACreer) ; 
 		return getProfilById(value) ;
 	}
 
-	@Override
+	@Override @Transactional(readOnly = true)
 	public Profil getProfilById(Integer idProfil) {
-		return profilRepository.getProfilById(idProfil);
+		return profilRepository.getById(idProfil);
 	}
 
-	@Override
+	@Override @Transactional(readOnly = true)
 	public Profil getProfilByLogin(String login) {
 		return profilRepository.getProfilByLogin(login);
 	}
 
-	@Override
+	@Override @Transactional(readOnly = true)
 	public Collection<Profil> getProfilByNom(String nom) {
 		return profilRepository.getProfilByNom(nom);
 	}
 	
-	@Override
+	@Override @Transactional(readOnly = true)
 	public Collection<Profil> getProfilByRole(boolean admin) {
 		return profilRepository.getProfilByRole(admin);
 	}
 
 	@Override
 	public void deleteProfil(Profil profilASupprimer) {
-		profilRepository.deleteProfil(profilASupprimer) ; 
+		profilRepository.delete(profilASupprimer) ; 
 	}
 	
 	/**
 	 * Method used by spring-security to check if the user exists
 	 */
-	@Override @Transactional
+	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		Profil profil = getProfilByLogin(login);
 		if (profil == null) {

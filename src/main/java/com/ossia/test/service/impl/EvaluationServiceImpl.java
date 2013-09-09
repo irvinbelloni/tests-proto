@@ -25,38 +25,42 @@ public class EvaluationServiceImpl implements EvaluationService {
 	private ResponseRepository responseRepository ;
 
 	public Evaluation createEvaluation(Evaluation toCreate) {
-		Integer id = evaluationRepository.createEvaluation(toCreate); 
+		Integer id = evaluationRepository.create(toCreate); 
 		return getEvaluationById(id) ; 
 	}
 
+	@Transactional(readOnly = true)
 	public Evaluation getEvaluationById(Integer idEvaluation) {
-		return evaluationRepository.getEvaluationById(idEvaluation);
+		return evaluationRepository.getById(idEvaluation);
 	}
 	
+	@Transactional(readOnly = true)
 	public Collection<Evaluation> getEvaluationByProfil(Profil profilCandidat) {
 		return evaluationRepository.getEvaluationByProfil(profilCandidat);
 	}
-
+	
+	@Transactional(readOnly = true)
 	public Collection<Evaluation> getEvaluationByTestSheet(
 			TestSheet testSheetPasse) {
 		return evaluationRepository.getEvaluationByTestSheet(testSheetPasse);
 	}
 
 	public void deleteEvaluation(Evaluation toDelete) {
-		evaluationRepository.deleteEvaluation(toDelete) ; 
+		evaluationRepository.delete(toDelete) ; 
 	}
 
 	public Response createResponse(Response reponse) {
-		Integer id = responseRepository.createResponse(reponse); 
+		Integer id = responseRepository.create(reponse); 
 		return getResponseById(id) ; 
 	}
 
+	@Transactional(readOnly = true)
 	public Response getResponseById(Integer idResponse) {
-		return responseRepository.getResponseById(idResponse);
+		return responseRepository.getById(idResponse);
 	}
 
 	public void deleteResponse(Evaluation evaluationAModifier, Response response) {
-		responseRepository.deleteResponse(evaluationAModifier, response) ; 
+		responseRepository.delete(response) ; 
 	} 
 	
 }

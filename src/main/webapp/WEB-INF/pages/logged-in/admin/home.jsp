@@ -31,37 +31,38 @@
 <div class="home-block">
 	<c:set var="plural" value=" " />
 	<c:set var="list" value="true" />
-	<c:if test="${fn:length(users) gt 1}">
+	<c:if test="${fn:length(candidates) gt 1}">
 		<c:set var="plural" value="s" />
 	</c:if>
-	<c:if test="${fn:length(users) eq 0}">
+	<c:if test="${fn:length(candidates) eq 0}">
 		<c:set var="list" value="false" />
 	</c:if>
 	<h2>
-		<c:if test="${list eq true}">${fn:length(users)} <spring:message code="text.admin.home.users.count" arguments="${plural}"/></c:if>
+		<c:if test="${list eq true}">${fn:length(candidates)} <spring:message code="text.admin.home.users.count" arguments="${plural}"/></c:if>
 		<c:if test="${list eq false}"><spring:message code="text.admin.home.users.count.none" /></c:if>
 	</h2>
 	<div>
-		<a href="/" class="<c:if test="${list eq false}">grey-link</c:if>"><spring:message code="link.label.admin.home.users.see" /></a>
-		<a href="/"><spring:message code="link.label.admin.home.users.create" /></a>	
+		<a href="${pageContext.request.contextPath}/admin/candidates" class="<c:if test="${list eq false}">grey-link</c:if>"><spring:message code="link.label.admin.home.users.see" /></a>
+		<a href="${pageContext.request.contextPath}/admin/candidates"><spring:message code="link.label.admin.home.users.create" /></a>	
 	
 		<c:if test="${list eq true}">
 			<h3><spring:message code="text.admin.home.latest.users" /></h3>
-			<a href="/">Fabien Mabigue</a>
-			<a href="/">Stéphane Lacoste</a>
+			<c:forEach items="${candidates}" var="candidate" begin="0" end="4">
+				<a href="/">${candidate.prenom} ${candidate.nom}</a>
+			</c:forEach>
 		</c:if>
 	</div>
 </div>
 
 <div class="home-block">
 	<c:set var="plural" value=" " />
-	<c:if test="${countAdmin gt 1}">
+	<c:if test="${fn:length(administrators) gt 1}">
 		<c:set var="plural" value="s" />
 	</c:if>
-	<h2>${countAdmin} <spring:message code="text.admin.home.admins.count" arguments="${plural}"/></h2>
+	<h2>${fn:length(administrators)} <spring:message code="text.admin.home.admins.count" arguments="${plural}"/></h2>
 	<div>
-		<a href="/"><spring:message code="link.label.admin.home.administrators.see" /></a>
-		<a href="/"><spring:message code="link.label.admin.home.administrators.create" /></a>	
+		<a href="${pageContext.request.contextPath}/admin/administrators"><spring:message code="link.label.admin.home.administrators.see" /></a>
+		<a href="${pageContext.request.contextPath}/admin/administrators"><spring:message code="link.label.admin.home.administrators.create" /></a>	
 	</div>
 </div>
 

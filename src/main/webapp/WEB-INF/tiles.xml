@@ -35,6 +35,16 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/test-form.jsp" />
     </definition>
     
+    <definition name="administrators" extends="admin-logged-in-layout">
+        <put-attribute name="title" value="Liste des administrateurs" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/administrators/list.jsp" />
+    </definition>
+    
+    <definition name="candidates" extends="admin-logged-in-layout">
+        <put-attribute name="title" value="Liste des candidats" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/list.jsp" />
+    </definition>
+    
     <!--  Unlogged views -->    
     <definition name="unlogged-layout" template="/WEB-INF/pages/unlogged/common/layout.jsp">
         <put-attribute name="title" value="" />

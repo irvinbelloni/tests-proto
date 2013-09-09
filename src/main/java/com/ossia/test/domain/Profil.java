@@ -14,10 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +35,9 @@ public class Profil implements UserDetails {
 	private static final Collection<GrantedAuthority> ADMIN = wrapAuthority(ROLE_ADMIN);
 	private static final Collection<GrantedAuthority> USER = wrapAuthority(new SimpleGrantedAuthority(
 			"ROLE_USER"));
+	
+	public static final String MODE_ADD = "add";
+	public static final String MODE_EDIT = "edit";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,10 +46,10 @@ public class Profil implements UserDetails {
 	@NotEmpty
 	private String nom;
 
-	@NotNull
+	@NotEmpty
 	private String prenom;
 
-	@Pattern(regexp = "[-.a-zA-Z0-9]+@[-a-zA-Z0-9]+\\.[a-zA-Z0-9]+")
+	@NotEmpty @Pattern(regexp = "^\\s*$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:[a-zA-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$", message = "{form.error.email.invalid}")
 	private String email;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "profil")
@@ -60,13 +65,19 @@ public class Profil implements UserDetails {
 	@NotNull
 	private boolean admin;
 
-	@NotNull
+	@NotNull @DateTimeFormat(pattern="dd/MM/YYYY")
 	private Date dateDebut;
 
+	@DateTimeFormat(pattern="dd/MM/YYYY")
 	private Date dateFin;
+	
+	@Transient
+	private String mode;
 
 	public Profil() {
 		super();
+		this.id = 0;
+		this.mode = MODE_ADD;
 	}
 
 	public Profil(String nom, String prenom) {
@@ -170,7 +181,8 @@ public class Profil implements UserDetails {
 	}
 
 	public boolean isEnabled() {
-		return getDateFin().after(getDateDebut());
+		// User is enabled only if dateFin is null or dateFin is an upcoming date
+		return getDateFin() == null || getDateFin().after(new Date());
 	}
 
 	@Override
@@ -199,5 +211,21 @@ public class Profil implements UserDetails {
 	private static Set<GrantedAuthority> wrapAuthority(
 			GrantedAuthority authority) {
 		return Collections.<GrantedAuthority> singleton(authority);
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 }

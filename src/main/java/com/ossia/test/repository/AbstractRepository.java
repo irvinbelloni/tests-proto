@@ -15,13 +15,13 @@ public interface AbstractRepository<T, PK> {
 	 * @param id Id of the object we are looking for
 	 * @return The fetched object, null if none have been found
 	 */
-    T read(PK instanceId);
+    T getById(PK instanceId);
  
     /**
      * Fetches all the objects in the given table
      * @return List of fetched objects
      */
-    List<T> readAll();
+    List<T> getAll();
  
     /**
      * Updates an object in the database

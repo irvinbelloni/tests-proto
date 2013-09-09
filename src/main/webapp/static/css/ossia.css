@@ -115,6 +115,10 @@ h1 {
 	clear: both;
 }
 
+.clear-left {
+	clear: left;
+}
+
 .syntaxhighlighter { overflow-y: hidden !important; }
 
 /*** MENUS ***/
@@ -147,7 +151,7 @@ ul li a:hover {
 .body-content {
 	background: rgba(0, 0, 0, 0.9);
 	margin: 0 auto;
-	padding: 0 10px 10px 10px;
+	padding: 20px 10px 10px 10px;
 	text-align: left;
 	width: 80%;
 	
@@ -198,4 +202,73 @@ ul li a:hover {
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;	
+}
+
+/*** LISTS ***/
+div.list {
+	margin: 0 310px 10px 0;
+	padding: 0 10px 0 10px;
+	width: auto;
+}
+
+.list h2 {
+	border-bottom: 1px solid #fff;
+	color:#fff;
+	font-size: 20px;
+	
+}
+
+div.list-item {
+	border-bottom: 1px solid #bbb;
+	padding: 10px;
+}
+
+div.list-item p {
+	color: #fff;
+	font-size: 12px;
+}
+
+p.actions {
+	float: right;
+	width: 25%;
+}
+
+p.main {
+	float: left;
+	font-size: 18px;
+	font-weight: bold;	
+	width: 25%;
+}
+
+p.detail {
+	float: left;
+	width: 50%;
+}
+
+p.detail span.label {
+	color: #bbb;
+	font-style: italic;
+	font-weight: normal;	
+}
+
+a.action {
+	display: block;
+	float: right;
+	height: 30px;
+	margin: 0 0 0 5px;
+	width: 30px;
+}
+
+a.action:hover {
+	background-position: 0 0;
+}
+
+a.delete {
+	background: url(../images/delete-icon.png) no-repeat;
+	background-position: 0 -30px;
+}
+
+a.edit {
+	background: url(../images/edit-icon.png) no-repeat;
+	background-position: 0 -30px;
 }

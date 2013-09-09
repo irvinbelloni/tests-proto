@@ -8,6 +8,7 @@
 		<title><tiles:insertAttribute name="title" ignore="true" /></title>
 				
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.2.0.3.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery-ui.1.10.3.js"></script>
 		
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shCore.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushJava.js"></script>
@@ -16,6 +17,7 @@
 		
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/ossia.control.js"></script>		
 		
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/jquery-ui/jquery-ui.1.10.3.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/syntax-highlighter/shCore.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/syntax-highlighter/shCoreEclipse.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.css" />

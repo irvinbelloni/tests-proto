@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Profil;
@@ -12,22 +13,7 @@ import com.ossia.test.domain.TestSheet;
 import com.ossia.test.repository.EvaluationRepository;
 
 @Repository
-public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements EvaluationRepository {
-
-	
-	public Integer createEvaluation(Evaluation toCreate) {
-		Integer id = (Integer) getHibernateCurrentSession().save(toCreate) ; 
-		return id ;
-	}
-
-	
-	public Evaluation getEvaluationById(Integer idEvaluation) {
-		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.id=:id").setInteger("id", idEvaluation);
-		
-		Evaluation retrieved = (Evaluation) query.uniqueResult() ; 
-		return retrieved ;
-	}
-
+public class EvaluationRepositoryImpl extends AbstractRepositoryImpl<Evaluation, Integer> implements EvaluationRepository {
 	
 	@SuppressWarnings("unchecked")
 	public Collection<Evaluation> getEvaluationByProfil(Profil profilCandidat) {
@@ -37,7 +23,6 @@ public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements 
 		List<Evaluation> retrieved = (List<Evaluation>) query.list() ; 
 		return retrieved ;
 	}
-
 	
 	@SuppressWarnings("unchecked")
 	public Collection<Evaluation> getEvaluationByTestSheet(
@@ -48,10 +33,4 @@ public class EvaluationRepositoryImpl extends AbstractRepositoryImpl implements 
 		List<Evaluation> retrieved = (List<Evaluation>) query.list() ; 
 		return retrieved ;
 	}
-
-	
-	public void deleteEvaluation(Evaluation toDelete) {
-		getHibernateCurrentSession().delete(toDelete) ; 
-	}
-
 }

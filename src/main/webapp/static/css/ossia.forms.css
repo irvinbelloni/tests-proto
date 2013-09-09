@@ -33,6 +33,54 @@ form.login input.text {
 	margin: 0;
 }
 
+form.login input {
+	margin: 0 0 25px 50px;
+}
+
+.side-form {
+	background: #fff;
+	width: 500px;	
+	box-shadow: 0 0 20px #fff;
+	float: right;
+	padding: 10px;
+	width: 280px;
+	
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.side-form h2 {
+	border-bottom: 1px solid #9f698d;
+	color: #9f698d;
+	font-size: 16px;
+}
+
+.side-form label {
+	color: #333;
+	display: block;
+	float: left;
+	font-size: 12px;
+	line-height: 30px;
+	text-align: left;
+	margin: 12px 0 0 0;
+	width: 90px;
+}
+
+.side-form input[type=text] {
+	border: 1px solid #9f698d;
+	height: 30px;
+	margin: 10px 0 0 0;
+	padding: 0 0 0 2px;
+	width: 183px;
+}
+
+.side-form span.error {
+	color: #b00;
+	font-size: 12px;
+	font-weight: bold;
+}
+
 p.errorblock {
 	background: #9f698d;
 	color: #fff;
@@ -40,10 +88,6 @@ p.errorblock {
 	text-align: left;
 	padding: 15px;
 	margin-bottom: 10px;
-}
-
-input {
-	margin: 0 0 25px 50px;
 }
 
 .submit {
@@ -86,6 +130,15 @@ input {
 	text-align:center;
 	text-shadow:1px 1px 0px #996499;
 	float: right;
+}
+input.small {
+	height: 25px;
+	line-height: 25px;
+	font-size:11px;
+	margin-top: 10px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 .submit input:hover, input.submit-button:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #751d58), color-stop(1, #9f698d) );

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
@@ -12,7 +13,7 @@ import com.ossia.test.repository.QuestionRepository;
 import com.ossia.test.repository.TestSheetRepository;
 import com.ossia.test.service.TestSheetService;
 
-@Service
+@Service @Transactional(readOnly = true)
 public class TestSheetServiceImpl implements TestSheetService {
 
 	@Autowired
@@ -23,13 +24,13 @@ public class TestSheetServiceImpl implements TestSheetService {
 
 	@Override
 	public TestSheet createTestSheet(TestSheet testSheetACreer) {
-		Integer id = testSheetRepository.createTestSheet(testSheetACreer); 
+		Integer id = testSheetRepository.create(testSheetACreer); 
 		return getTestSheetById(id) ; 
 	}
 
 	@Override
 	public TestSheet getTestSheetById(Integer idTestSheet) {
-		return testSheetRepository.getTestSheetById(idTestSheet);
+		return testSheetRepository.getById(idTestSheet);
 	}
 
 	@Override
@@ -39,23 +40,23 @@ public class TestSheetServiceImpl implements TestSheetService {
 
 	@Override
 	public void deleteTestSheet(TestSheet testSheetToDelete) {
-		testSheetRepository.deleteTestSheet(testSheetToDelete);
+		testSheetRepository.delete(testSheetToDelete);
 	}
 
 	@Override
 	public Question createQuestion(Question questionACreer) {
-		Integer id = questionRepository.createQuestion(questionACreer);
+		Integer id = questionRepository.create(questionACreer);
 		return getQuestionById(id) ; 
 	}
 
 	@Override
 	public Question getQuestionById(Integer idQuestion) {
-		return questionRepository.getQuestionById(idQuestion);
+		return questionRepository.getById(idQuestion);
 	}
 
 	@Override
 	public void deleteQuestionFromTestSheet(TestSheet test, Question aSupprimer) {
-		questionRepository.deleteQuestionFromTestSheet(test, aSupprimer);
+		questionRepository.delete(aSupprimer);
 	}
 	
 	@Override
