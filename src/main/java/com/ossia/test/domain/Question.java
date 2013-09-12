@@ -40,7 +40,7 @@ public class Question implements Serializable {
     private Set<PropositionReponse> propositionsReponses ; 
     
     public Question() {
-		super();
+    	this.id = 0 ; 
 	}
 
 	public Question(String intitule, String niveau, String contenu) {
@@ -48,6 +48,11 @@ public class Question implements Serializable {
 		this.intitule = intitule;
 		this.niveau = niveau;
 		this.contenu = contenu;
+	}
+
+	public Question(TestSheet testSheet) {
+		this.id = 0 ; 
+		this.test = testSheet ;
 	}
 
 	public Integer getId() {

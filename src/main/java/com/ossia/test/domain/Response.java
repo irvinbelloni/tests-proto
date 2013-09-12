@@ -35,7 +35,7 @@ public class Response implements Serializable {
     private PropositionReponse reponseChoisie ; 
 
     public Response() {
-		super();
+    	this.id = 0 ; 
 	}
 
 	public Response(Question question, PropositionReponse reponseChoisie) {

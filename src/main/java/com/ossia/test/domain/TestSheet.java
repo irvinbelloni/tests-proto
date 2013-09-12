@@ -45,9 +45,19 @@ public class TestSheet implements Serializable {
 	private Set<Question> questions;
 
 	public TestSheet() {
+		this.id = 0 ; 
+	}
+	
+	public int getQuestionSize () {
+		if (questions != null) {
+			return questions.size() ; 
+		}
+		else {
+			return 0 ; 
+		}
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 

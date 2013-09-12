@@ -16,13 +16,13 @@
 		<c:if test="${list eq false}"><spring:message code="text.admin.home.tests.count.none" /></c:if>
 	</h2>
 	<div>
-		<a href="/" class="<c:if test="${list eq false}">grey-link</c:if>"><spring:message code="link.label.admin.home.tests.see" /></a>
-		<a href="${pageContext.request.contextPath}/admin/test/new"><spring:message code="link.label.admin.home.tests.create" /></a>	
+		<a href="${pageContext.request.contextPath}/admin/test/home" class="<c:if test="${list eq false}">grey-link</c:if>"><spring:message code="link.label.admin.home.tests.see" /></a>
+<%-- 		<a href="${pageContext.request.contextPath}/admin/test/new"><spring:message code="link.label.admin.home.tests.create" /></a>	 --%>
 	
 		<c:if test="${list eq true}">
 			<h3><spring:message code="text.admin.home.latest.tests" /></h3>
 			<c:forEach items="${tests}" var="test" begin="0" end="4">
-				<a href="/">${test.intitule}</a>
+				<a href="${pageContext.request.contextPath}/admin/test/detail?id=${test.id}">${test.intitule}</a>
 			</c:forEach>
 		</c:if>
 	</div>

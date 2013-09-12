@@ -39,7 +39,7 @@ public class PropositionReponse implements Serializable {
     private Boolean propositionCorrecte ;
 
 	public PropositionReponse() {
-		super();
+		this.id = 0 ; 
 	}
 
 	public PropositionReponse(Question question, String valeur,

@@ -30,9 +30,18 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/home.jsp" />
     </definition>
     
-    <definition name="test-form" extends="admin-logged-in-layout">
-        <put-attribute name="title" value="Administration" />
-        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/test-form.jsp" />
+    <definition name="test-home" extends="admin-logged-in-layout">
+        <put-attribute name="title" value="Administration des tests" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/test-home.jsp" />
+    </definition>
+    
+    <definition name="test-detail" extends="test-home">
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/test-detail.jsp" />
+    </definition>
+    
+    <definition name="question-detail" extends="admin-logged-in-layout">
+        <put-attribute name="title" value="Administration des questions" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/question-detail.jsp" />
     </definition>
     
     <definition name="administrators" extends="admin-logged-in-layout">

@@ -44,6 +44,7 @@ public class Evaluation implements Serializable {
 	private Boolean resultatOK;
 
 	public Evaluation() {
+		this.id = 0 ; 
 	}
 
 	public Evaluation(TestSheet test, Profil profil, Set<Response> responses) {

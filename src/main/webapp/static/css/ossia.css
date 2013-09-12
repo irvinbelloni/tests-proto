@@ -272,3 +272,17 @@ a.edit {
 	background: url(../images/edit-icon.png) no-repeat;
 	background-position: 0 -30px;
 }
+
+a.detail {
+	background: url(../images/document.png) no-repeat;
+	background-position: 0 -30px;
+}
+
+a.print {
+	background: url(../images/print.png) no-repeat;
+	background-position: 0 -30px;
+}
+
+.error {
+    color: red;
+}
