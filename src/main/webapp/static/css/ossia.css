@@ -14,7 +14,7 @@ a, body, div, form, h1, h2, h3, header, html, img, input, nav, p, tr, td, table,
 a:hover { text-decoration: none; }
 .clear-both { clear: both; }
 .clear-left { clear: left; }
-
+.syntaxhighlighter { overflow-y: hidden !important; }
 
 /*** MAIN STRUCTURE ***/
 body {
@@ -38,21 +38,85 @@ header h1 {
 	line-height: 40px;
 }
 
+footer {
+	background: #f8f8f8;
+	border-radius: 5px 5px 0 0;
+	display: block;
+	font-size: 11px;
+	margin: 20px 0 0 0;
+	padding: 20px 0;
+	width: auto;	
+	
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
+}
 
-/**********************************************/
-/**********************************************/
-/**********************************************/
-/**********************************************/
+footer a {
+	font-size: 11px;
+}
 
 .user {
-	background: url(../images/icon-user.png) no-repeat right;
-	color: #fff;
 	font-size: 12px;
 	float: right;
 	line-height: 20px;
-	padding: 8px 22px 0 0;
+	padding: 14px 10px 0 0;
 	vertical-align: middle;
 }
+
+.user span {
+	font-weight: bold;
+}
+
+.home-block {
+	width: 32%;	
+	float: left;
+	margin: 20px 12px 0 0;
+}
+
+.home-block h2 {
+	border-bottom: 1px solid #003;
+	padding: 0 0 0 5px;
+	text-align: left;
+}
+
+.home-block h3 {
+	font-size: 16px;
+	margin-top: 20px;
+	text-align: left;
+}
+
+.home-block a {
+	background: url(../images/rectangle.png) no-repeat;
+	color: #003;
+	display: block;
+	height: 20px;
+	line-height: 20px;
+	margin: 4px 2px;
+	padding: 0 0 0 25px;
+}
+
+.home-block a.grey-link {
+	color: #aaa;
+	cursor: default;
+	text-decoration: none;
+}
+
+.home-block div {
+	background: #fff;
+	box-shadow: 0 0 20px #fff;
+	padding: 10px;
+	
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;	
+}
+
+/**********************************************/
+/**********************************************/
+/**********************************************/
+/**********************************************/
+
+
 
 article {
 	margin: 0 0 10px 0;
@@ -102,65 +166,4 @@ article h2 span {
 	border-radius: 0 0 10px 10px;
 	-moz-border-radius: 0 0 10px 10px;
 	-webkit-border-radius: 0 0 10px 10px;
-}
-
-
-.syntaxhighlighter { overflow-y: hidden !important; }
-
-
-
-.body-content {
-	background: rgba(0, 0, 0, 0.9);
-	margin: 0 auto;
-	padding: 20px 10px 10px 10px;
-	text-align: left;
-	width: 80%;
-	
-	border-radius: 0 0 10px 10px;
-	-moz-border-radius: 0 0 10px 10px;
-	-webkit-border-radius: 0 0 10px 10px;
-}
-
-.home-block {
-	width: 32%;	
-	float: left;
-	margin: 20px 10px 0 0;
-}
-
-.home-block h2 {
-	color: #fff;
-	text-align: left;
-	padding: 0 0 0 15px;
-}
-
-.home-block h3 {
-	font-size: 16px;
-	margin-top: 20px;
-	text-align: left;
-}
-
-.home-block a {
-	background: url(../images/rectangle.png) no-repeat;
-	color: #003;
-	display: block;
-	height: 20px;
-	line-height: 20px;
-	margin: 4px 2px;
-	padding: 0 0 0 25px;
-}
-
-.home-block a.grey-link {
-	color: #aaa;
-	cursor: default;
-	text-decoration: none;
-}
-
-.home-block div {
-	background: #fff;
-	box-shadow: 0 0 20px #fff;
-	padding: 10px;
-	
-	border-radius: 2px;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;	
 }

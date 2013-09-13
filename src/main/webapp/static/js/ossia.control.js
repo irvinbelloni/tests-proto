@@ -3,6 +3,8 @@ var textEditCandidate = "";
 var textAddAdministrator = "";
 var textAddCandidate = "";
 
+var dialogTextDeleteProfil = "";
+
 $(document).ready(function() {
 	// Syntax highlighter
 	SyntaxHighlighter.defaults['toolbar'] = false;
@@ -25,7 +27,22 @@ $(document).ready(function() {
 	$("#profil-form #nom").change(function(){
 		refreshPassAndLoginValues();		
 	});
+	
+	// Adjusting footer to the bottom of window
+	adjustFooterHeight();
+	
+	$(".left-list").css("minHeight", parseInt ($(".side-form").height() + 20));
 });
+
+function adjustFooterHeight() {
+	var footerHeight = $("footer").height();
+	var footerPosition = $("footer").offset();
+	var footerSize = footerHeight + footerPosition.top;
+	var windowHeight = $(window).height();	
+	if (windowHeight - footerSize - 40 > 0) {
+		 $("footer").height(windowHeight - footerPosition.top - 40);
+	}
+}
 
 function refreshPassAndLoginValues() {
 	var mode = $("#profil-form #mode").val();
@@ -35,12 +52,33 @@ function refreshPassAndLoginValues() {
 		
 		$("#profil-form #pass").val(nom);
 		$("#profil-form #login").val(prenom.substring(0, 1) + nom);
-	}
-	
+	}	
 	return false;
 }
 
-function editProfil(admin, profilId, firstname, name, email, login, pass, dateDebut, dateFin) {
+function deleteProfil(profilId, firstname, name, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
+	dialogHtml += dialogTextDeleteProfil.replace("%PROFILE%", firstname + " " + name);
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			height : 180,
+			modal : true,
+			buttons : {
+				"Supprimer" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
+
+function editProfil(profilId, firstname, name, email, login, pass, dateActivation) {
 	$(".side-form").slideUp(function() {
 		$("#mode").val("edit");
 		$("#id").val(profilId);
@@ -49,22 +87,25 @@ function editProfil(admin, profilId, firstname, name, email, login, pass, dateDe
 		$("#email").val(email);
 		$("#login").val(login);
 		$("#pass").val(pass);
-		$("#dateDebut").val(timestampToDate(dateDebut));
-		$("#dateFin").val(timestampToDate(dateFin));
-		$("#submit-button").val("Modifier");
-		
-		if (mode == "admin") {
-			$(".side-form h2").html(textEditAdministrator);
+		if (dateActivation.length > 0) {
+			$("#active1").prop("checked", true);
+			$("#active2").prop("checked", false);
 		} else {
-			$(".side-form h2").html(textEditCandidate);		
-		}	
+			$("#active1").prop("checked", false);
+			$("#active2").prop("checked", true);
+		}
+		$("#submit-button").val("Modifier");		
+		$(".side-form h2").html(textEditProfil);
+		$("span.error").hide();
 		$(".back-to-add-form").show();
 		$(".edit-field").show();
-		$(".side-form").slideDown();
+		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});
 	});	
 }
 
-function backToAddProfil (mode) {
+function backToAddProfil () {
 	$(".side-form").slideUp(function() {
 		$("#mode").val("add");
 		$("#id").val(0);
@@ -73,19 +114,16 @@ function backToAddProfil (mode) {
 		$("#email").val("");
 		$("#login").val("");
 		$("#pass").val("");
-		$("#dateDebut").val("");
-		$("#dateFin").val("");
-		$("#submit-button").val("Ajouter");
-		
-		if (mode == "admin") {
-			$(".side-form h2").html(textAddAdministrator);
-		} else {
-			$(".side-form h2").html(textAddCandidate);		
-		}	
+		$("#active1").prop("checked", true);
+		$("#active2").prop("checked", false);
+		$("#submit-button").val("Ajouter");		
+		$(".side-form h2").html(textAddProfil);
+		$("span.error").hide();
 		$(".edit-field").hide();
 		$(".back-to-add-form").hide();
-		$(".side-form").slideDown();
-		
+		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});		
 	});	
 }
 

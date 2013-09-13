@@ -2,14 +2,14 @@ package com.ossia.test.service;
 
 import java.util.Collection;
 
-import org.hibernate.exception.ConstraintViolationException;
-
 import com.ossia.test.domain.Profil;
 import com.ossia.test.web.sort.ProfilSortingInfo;
 
 public interface ProfilService {
 
-	Profil createProfil (Profil profilACreer); 
+	Profil createProfil (Profil profilACreer, int adminId); 
+	
+	Profil changeActivation (Integer profilId, int adminId);
 	
 	Profil getProfilById (Integer idProfil) ; 
 	
@@ -23,5 +23,7 @@ public interface ProfilService {
 	
 	void deleteProfil (Profil profilASupprimer) ;
 	
-	void updateProfil (Profil profilAModifier);
+	Profil deleteProfil (Integer profilId, int adminId);
+	
+	void updateProfil (Profil profilAModifier, int adminId);
 }

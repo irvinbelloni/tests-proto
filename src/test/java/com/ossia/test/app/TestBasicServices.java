@@ -54,7 +54,7 @@ public class TestBasicServices {
     @Transactional
     public void testCreationProfilOK () {
     	Profil dumb = fillDumbProfil() ;
-    	dumb = profilService.createProfil(dumb) ;
+    	dumb = profilService.createProfil(dumb , 0) ;
     	log.debug("identifiant du profil créé : "+dumb.getId()) ; 
     	Assert.assertNotNull(dumb) ; 
     }
@@ -136,7 +136,7 @@ public class TestBasicServices {
     public void testCreationEvaluation () {
     	
     	Profil dumb = fillDumbProfil() ;
-    	dumb = profilService.createProfil(dumb) ;
+    	dumb = profilService.createProfil(dumb , 0) ;
     	
     	TestSheet t0 = fillTestSheetWithQuestions() ; 
     	t0 = testSheetService.createTestSheet(t0) ; 
