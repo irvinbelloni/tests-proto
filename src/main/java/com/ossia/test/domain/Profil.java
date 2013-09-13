@@ -1,12 +1,12 @@
 package com.ossia.test.domain;//
 
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,11 +29,9 @@ public class Profil implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority(
-			"ROLE_ADMIN");
+	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
 	private static final Collection<GrantedAuthority> ADMIN = wrapAuthority(ROLE_ADMIN);
-	private static final Collection<GrantedAuthority> USER = wrapAuthority(new SimpleGrantedAuthority(
-			"ROLE_USER"));
+	private static final Collection<GrantedAuthority> USER = wrapAuthority(new SimpleGrantedAuthority("ROLE_USER"));
 	
 	public static final String MODE_ADD = "add";
 	public static final String MODE_EDIT = "edit";
@@ -56,7 +53,6 @@ public class Profil implements UserDetails {
 	private Set<Evaluation> evaluations;
 
 	@NotEmpty
-	@Column(name = "login", unique = true)
 	private String login;
 
 	@NotEmpty
@@ -64,13 +60,18 @@ public class Profil implements UserDetails {
 
 	@NotNull
 	private boolean admin;
-
-	@NotNull @DateTimeFormat(pattern="dd/MM/YYYY")
-	private Date dateDebut;
-
-	@DateTimeFormat(pattern="dd/MM/YYYY")
-	private Date dateFin;
 	
+	/**
+	 * Flag used in the forms to precise if the user is active or not
+	 */
+	@Transient
+	private boolean active = true;
+
+	private Date dateActivation;
+	
+	/**
+	 * Form action: ADD or EDIT
+	 */
 	@Transient
 	private String mode;
 
@@ -78,6 +79,7 @@ public class Profil implements UserDetails {
 		super();
 		this.id = 0;
 		this.mode = MODE_ADD;
+		this.active = true;
 	}
 
 	public Profil(String nom, String prenom) {
@@ -85,17 +87,21 @@ public class Profil implements UserDetails {
 		this.nom = nom;
 		this.prenom = prenom;
 		
-		dateDebut = new Date() ; 
+		this.dateActivation = new Date(); 
+		this.active = true;
 		this.login = generateLoginFromNom() ; 
 		this.pass = generatePassFromNom() ; 
 	}
 	
 	private String generateLoginFromNom () {
-		return getPrenom().substring(0, 1).toLowerCase().concat(getNom().toLowerCase().trim())  ; 
+		if (this.prenom != null && !this.prenom.isEmpty() && this.nom != null && !this.nom.isEmpty()) {			
+			return Normalizer.normalize(this.prenom.substring(0, 1).toLowerCase().concat(this.nom.toLowerCase().trim()), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+		}
+		return "";
 	}
 	
 	private String generatePassFromNom () {
-		return getNom().toLowerCase().trim() ; 
+		return Normalizer.normalize(getNom().toLowerCase().trim(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}", "");
 	}
 
 	/* Authorization fields */
@@ -104,7 +110,7 @@ public class Profil implements UserDetails {
 	}
 
 	public void setPass(String pass) {
-		this.pass = pass;
+		this.pass = pass;	
 	}
 
 	public Set<Evaluation> getEvaluations() {
@@ -123,20 +129,12 @@ public class Profil implements UserDetails {
 		this.login = login;
 	}
 
-	public Date getDateDebut() {
-		return dateDebut;
+	public Date getDateActivation() {
+		return dateActivation;
 	}
 
-	public void setDateDebut(Date dateDebut) {
-		this.dateDebut = dateDebut;
-	}
-
-	public Date getDateFin() {
-		return dateFin;
-	}
-
-	public void setDateFin(Date dateFin) {
-		this.dateFin = dateFin;
+	public void setDateActivation(Date dateActivation) {
+		this.dateActivation = dateActivation;
 	}
 
 	public Integer getId() {
@@ -181,8 +179,8 @@ public class Profil implements UserDetails {
 	}
 
 	public boolean isEnabled() {
-		// User is enabled only if dateFin is null or dateFin is an upcoming date
-		return getDateFin() == null || getDateFin().after(new Date());
+		// User is enabled only if dateActivation is not null
+		return getDateActivation() != null;
 	}
 
 	@Override
@@ -208,8 +206,7 @@ public class Profil implements UserDetails {
 		return true;
 	}
 
-	private static Set<GrantedAuthority> wrapAuthority(
-			GrantedAuthority authority) {
+	private static Set<GrantedAuthority> wrapAuthority(GrantedAuthority authority) {
 		return Collections.<GrantedAuthority> singleton(authority);
 	}
 
@@ -227,5 +224,17 @@ public class Profil implements UserDetails {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+	
+	public boolean getActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

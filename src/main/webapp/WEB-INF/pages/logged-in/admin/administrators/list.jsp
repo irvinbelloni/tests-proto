@@ -62,6 +62,7 @@
 
 <script>
 $(document).ready(function() {
+	textAddAdministrator = "<spring:message code="text.side.form.title.administrator.add"/>";
 	textEditAdministrator = "<spring:message code="text.side.form.title.administrator.edit"/>";
 });
-</script>
+ </script>

@@ -1,47 +1,48 @@
-/* Resetting styles */
-body, div, form, h1, h2, h3, header, html, img, input, menu, p, tr, td, table {
+@CHARSET "UTF-8";
+
+/*** Resetting styles ***/
+a, body, div, form, h1, h2, h3, header, html, img, input, nav, p, tr, td, table, ul {
 	border: 0;
-	color: #333;
-	font-family: georgia;
+	color: #003;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 12px;
 	margin: 0;
 	padding: 0;
+	text-align: left;
 }
 
-a:hover {
-	text-decoration: none;
-}
+a:hover { text-decoration: none; }
+.clear-both { clear: both; }
+.clear-left { clear: left; }
 
+
+/*** MAIN STRUCTURE ***/
 body {
-	background: #9f698d url(../images/background.png) bottom center no-repeat fixed; 
+	background: #fff;
+	padding: 0 10%; /* 10% margin on left and right side so that all the content has a 80% width */
 	text-align: center;
 }
 
 header {
-	background: #fff;	
-	box-shadow: 0 0 20px #fff;
 	height: 40px;
-	margin: 0 auto;
 	padding: 0 10px;
 	text-align: left;
-	width: 85%;
-	
-	border-radius: 0 0 4px 4px;
-	-moz-border-radius: 0 0 4px 4px;
-	-webkit-border-radius: 0 0 4px 4px;	
+	width: auto;
 }
 
-menu {
-	background: rgba(0, 0, 0, 0.9);
+header h1 {
+	color: #9f698d;
+	float: right;
+	font-size: 16px;
 	height: 40px;
-	margin: 0 auto;
-	padding: 3px 10px;
-	text-align: left;
-	width: 80%;
+	line-height: 40px;
 }
 
-menu * {
-	color: #fff;
-}
+
+/**********************************************/
+/**********************************************/
+/**********************************************/
+/**********************************************/
 
 .user {
 	background: url(../images/icon-user.png) no-repeat right;
@@ -62,7 +63,6 @@ article {
 article h2 {
 	background: rgba(0, 0, 0, 0.9);
 	color: #fff;
-	font-family: georgia;
 	font-size: 25px;
 	padding: 0 10px;
 	margin: 0 auto;	
@@ -78,14 +78,7 @@ article h2 span {
 	font-size: 14px;
 }
 
-h1 {
-	color: #9f698d;
-	float: right;
-	font-family: georgia;
-	font-size: 16px;
-	height: 40px;
-	line-height: 40px;
-}
+
 
 #question {
 	background: #fff;
@@ -111,42 +104,10 @@ h1 {
 	-webkit-border-radius: 0 0 10px 10px;
 }
 
-.clearer {
-	clear: both;
-}
-
-.clear-left {
-	clear: left;
-}
 
 .syntaxhighlighter { overflow-y: hidden !important; }
 
-/*** MENUS ***/
-ul {
-	padding:0;
-	margin:0;
-	list-style-type:none;
-}
 
-li {
-	margin-left:2px;
-	float:left; /*pour IE*/
-}
-
-ul li a {
-	display:block;
-	float:left;   
-	height: 30px;
-	line-height: 30px;
-	text-decoration:none;
-	text-align:center;
-	padding:5px 20px;
-}
-
-ul li a:hover {
-	background-color: #fff;
-	color: #9f698d
-}
 
 .body-content {
 	background: rgba(0, 0, 0, 0.9);
@@ -180,7 +141,7 @@ ul li a:hover {
 
 .home-block a {
 	background: url(../images/rectangle.png) no-repeat;
-	color: #333;
+	color: #003;
 	display: block;
 	height: 20px;
 	line-height: 20px;
@@ -202,87 +163,4 @@ ul li a:hover {
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;	
-}
-
-/*** LISTS ***/
-div.list {
-	margin: 0 310px 10px 0;
-	padding: 0 10px 0 10px;
-	width: auto;
-}
-
-.list h2 {
-	border-bottom: 1px solid #fff;
-	color:#fff;
-	font-size: 20px;
-	
-}
-
-div.list-item {
-	border-bottom: 1px solid #bbb;
-	padding: 10px;
-}
-
-div.list-item p {
-	color: #fff;
-	font-size: 12px;
-}
-
-p.actions {
-	float: right;
-	width: 25%;
-}
-
-p.main {
-	float: left;
-	font-size: 18px;
-	font-weight: bold;	
-	width: 25%;
-}
-
-p.detail {
-	float: left;
-	width: 50%;
-}
-
-p.detail span.label {
-	color: #bbb;
-	font-style: italic;
-	font-weight: normal;	
-}
-
-a.action {
-	display: block;
-	float: right;
-	height: 30px;
-	margin: 0 0 0 5px;
-	width: 30px;
-}
-
-a.action:hover {
-	background-position: 0 0;
-}
-
-a.delete {
-	background: url(../images/delete-icon.png) no-repeat;
-	background-position: 0 -30px;
-}
-
-a.edit {
-	background: url(../images/edit-icon.png) no-repeat;
-	background-position: 0 -30px;
-}
-
-a.detail {
-	background: url(../images/document.png) no-repeat;
-	background-position: 0 -30px;
-}
-
-a.print {
-	background: url(../images/print.png) no-repeat;
-	background-position: 0 -30px;
-}
-
-.error {
-    color: red;
 }

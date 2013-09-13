@@ -1,0 +1,159 @@
+@CHARSET "UTF-8";
+
+/*** Style sheet for lists ***/
+.left-list {
+	margin: 0 310px 10px 0;
+	padding: 0 10px 0 10px;
+	width: auto;
+}
+
+.left-list h2 {
+	border-bottom: 1px solid #003;
+	font-size: 16px;
+	min-height: 20px;
+	text-align: left;
+}
+
+.left-list h2 span {
+	float: right;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.left-list h2 span a {
+	text-decoration: none;
+}
+
+.left-list h2 span a:hover {
+	text-decoration: underline;
+}
+
+.left-list h2 span a.sort-on {
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.list-item {
+	border-bottom: 1px solid #bbb;
+	padding: 15px 10px;
+}
+
+p.actions {
+	float: right;
+	padding: 5px;
+	width: 30px;
+}
+
+p.actions .actions-down {
+	background: url(../images/action-down.png) no-repeat;
+	background-position: 0 -30px;
+	border-radius: 4px 4px 0 0;
+	display: block;
+	height: 30px;
+	width: 40px;	
+	
+	-moz-border-radius: 4px 4px 0 0;
+	-webkit-border-radius: 4px 4px 0 0;
+}
+
+p.actions:hover .actions-down {
+	background-color: #9f698d;
+	background-position: 0 0;
+}
+
+p.actions .sub-actions {
+	background: #9f698d;
+	border-radius: 4px 0 4px 4px;
+	display: none;
+	margin-left: -150px;
+	padding: 10px 5px 5px 5px;
+	position: absolute;
+	width: 180px;
+	
+	-moz-border-radius: 4px 0 4px 4px;
+	-webkit-border-radius: 4px 0 4px 4px;;
+}
+
+p.actions:hover .sub-actions {
+	display: block;
+}
+
+p.main {
+	float: left;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 15px;
+	width: 30%;
+}
+
+p.main a {
+	font-size: 18px;
+	text-decoration: none;
+}
+
+p.main a:hover {
+	color: #9f698d;
+}
+
+p.main span {
+	font-size: 12px;
+	font-weight: normal;
+	padding: 0 0 0 1px;
+}
+
+p.detail {
+	float: left;
+	line-height: 15px;
+	width: 40%;
+}
+
+p.detail span.label {
+	color: #aaa;
+	font-weight: normal;	
+}
+
+/*** LIST ACTION-ICON LINKS ***/
+a.action {
+	color: #fff;
+	display: block;
+	float: right;
+	height: 30px;
+	line-height: 30px;	
+	margin: 3px 0 3px 2px;
+	padding: 0 35px 0 4px;
+	text-align: right;
+	text-decoration: none;
+	width: 200px;
+}
+
+a.action:hover {
+	text-decoration: underline;
+}
+
+a.activate { 
+	background: url(../images/activate-icon.png) no-repeat;
+	background-position: top right;
+}
+
+a.delete {
+	background: url(../images/delete-icon.png) no-repeat;
+	background-position: top right;
+}
+
+a.detail {
+	background: url(../images/detail-icon.png) no-repeat;
+	background-position: top right;
+}
+
+a.edit {
+	background: url(../images/edit-icon.png) no-repeat;
+	background-position: top right;
+}
+
+a.print {
+	background: url(../images/print.png) no-repeat;
+	background-position: top right;
+}
+
+.error {
+    color: red;

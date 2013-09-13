@@ -10,6 +10,10 @@
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.2.0.3.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery-ui.1.10.3.js"></script>
 		
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shCore.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushJava.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushSql.js"></script>
@@ -29,4 +33,4 @@
         <tiles:insertAttribute name="body" />
        	<tiles:insertAttribute name="footer" />
 	</body>
-</html>
+ </html>

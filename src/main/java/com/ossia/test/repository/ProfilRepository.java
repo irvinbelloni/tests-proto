@@ -11,4 +11,6 @@ public interface ProfilRepository extends AbstractRepository<Profil, Integer> {
 	Collection<Profil> getProfilByNom (String nom) ; 
 	
 	Collection<Profil> getProfilByRole (boolean admin) ;
+	
+	Collection<Profil> getSortedProfilByRole(boolean admin, String orderingField, String orderingDirection);
 }

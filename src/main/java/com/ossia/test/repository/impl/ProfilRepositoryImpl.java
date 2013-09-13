@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Profil;
 import com.ossia.test.repository.ProfilRepository;
+import com.ossia.test.web.sort.ProfilSortingInfo;
 
 @SuppressWarnings("unused")
 @Repository 
@@ -38,4 +39,15 @@ public class ProfilRepositoryImpl extends AbstractRepositoryImpl<Profil, Integer
 		List<Profil> retrieved = (List<Profil>) query.list()  ;  
 		return retrieved ;
 	}
+	
+	@Override @SuppressWarnings("unchecked")
+	public Collection<Profil> getSortedProfilByRole(boolean admin, String orderingField, String orderingDirection) {
+		Query query = getHibernateCurrentSession().createQuery("from Profil user where user.admin=:admin order by user." + orderingField + " " + orderingDirection);
+		query.setBoolean("admin", admin);
+		
+		List<Profil> retrieved = (List<Profil>) query.list()  ;  
+		return retrieved ;
+	}
+	
+	
 }

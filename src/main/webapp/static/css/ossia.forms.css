@@ -38,47 +38,66 @@ form.login input {
 }
 
 .side-form {
-	background: #fff;
-	width: 500px;	
-	box-shadow: 0 0 20px #fff;
+	background: #9f698d;
+	border-radius: 4px;
+	box-shadow: 0 0 6px #9f698d;
 	float: right;
 	padding: 10px;
-	width: 280px;
+	width: 280px;	
 	
-	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 }
 
 .side-form h2 {
-	border-bottom: 1px solid #9f698d;
-	color: #9f698d;
-	font-size: 16px;
+	border-bottom: 1px solid #fff;
+	color: #fff;
 }
 
 .side-form label {
-	color: #333;
+	color: #fff;
 	display: block;
 	float: left;
 	font-size: 12px;
-	line-height: 30px;
+	line-height: 25px;
 	text-align: left;
-	margin: 12px 0 0 0;
-	width: 90px;
+	padding: 10px 0 0 2px;
+	width: 88px;
 }
 
 .side-form input[type=text] {
-	border: 1px solid #9f698d;
-	height: 30px;
+	border: 1px solid #003;
+	height: 25px;
 	margin: 10px 0 0 0;
 	padding: 0 0 0 2px;
 	width: 183px;
 }
 
+.side-form input[type=radio] {
+	float: left;
+	height: 25px;
+	margin: 10px 5px 0 2px;	
+}
+
+.side-form span.radio {
+	color: #fff;
+	float: left;
+	font-weight: bold;
+	margin: 15px 15px 0 0;
+}
+
 .side-form span.error {
-	color: #b00;
+	color: #800;
 	font-size: 12px;
 	font-weight: bold;
+}
+
+.side-form .last-element {
+	border-bottom: 1px solid #fff;	
+}
+
+.side-form .edit-field {
+	display: none;
 }
 
 p.errorblock {
@@ -128,7 +147,6 @@ p.errorblock {
 	text-decoration:none;
 	padding: 0 20px;
 	text-align:center;
-	text-shadow:1px 1px 0px #996499;
 	float: right;
 }
 input.small {
@@ -194,7 +212,16 @@ input.small {
 	background-color:#dfdfdf;
 }
 
+.back-to-add-form {
+	display: none;
+	float: left;
+	font-size: 12px;
+	margin: 15px 0 0 0;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 .submit .previous:active {
 	position:relative;
 	top:1px;
-}
+ }

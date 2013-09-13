@@ -5,9 +5,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class="side-form">
-	<h2><spring:message code="text.side.form.title.candidate.add"/></h2>
+	<h2><spring:message code="text.side.form.title.candidate.add" /></h2>
 	
-	<form:form method="post" action="${pageContext.request.contextPath}/admin/candidates" commandName="profil">
+	<form:form method="post" action="${pageContext.request.contextPath}/admin/candidates" commandName="profil" id="profil-form">
 		<form:hidden path="id" />
 		<form:hidden path="mode" />
 	
@@ -22,13 +22,7 @@
 			<form:input path="nom" />
 			<form:errors path="nom" class="error" />
 		</div>
-		
-		<div>
-			<label><spring:message code="form.user.login"/>*</label>
-			<form:input path="login" />
-			<form:errors path="login" class="error" />
-		</div>
-			
+					
 		<div>
 			<label><spring:message code="form.user.email"/>*</label>
 			<form:input path="email" />
@@ -36,48 +30,104 @@
 		</div>
 		
 		<div>
+			<label><spring:message code="form.user.login"/>*</label>
+			<form:input path="login" />
+			<form:errors path="login" class="error" />
+		</div>
+		
+		<div>
 			<label><spring:message code="form.user.password"/>*</label>
 			<form:input path="pass" />
 			<form:errors path="pass" class="error" />
 		</div>
-			
-		<div>	
-			<label><spring:message code="form.user.start"/>*</label>
-			<form:input path="dateDebut" class="datepicker"/>
-			<form:errors path="dateDebut" class="error" />
+					
+		<div class="last-element">	
+			<label><spring:message code="form.user.active"/></label>
+			<form:radiobutton path="active" value="1"/><span class="radio"><spring:message code="text.yes" /></span> 
+			<form:radiobutton path="active" value="0"/><span class="radio"><spring:message code="text.no" /></span>
+			<div class="clear-both"></div>
 		</div>
-			
-		<div>
-			<label><spring:message code="form.user.end"/></label>
-			<form:input path="dateFin" class="datepicker"/>
-			<form:errors path="dateFin" class="error" />
-		</div>
-		
-		<input type="submit" class="submit-button small" value="<spring:message code="form.user.add"/>" />
+					
+		<a class="back-to-add-form" href="#" onclick="backToAddProfil(${candidate.admin}); return false;">Annuler la modification</a>
+		<input type="submit" class="submit-button small" id="submit-button" value="<spring:message code="form.user.add"/>" />
 	</form:form>
 </div>
-	
 
-<div class="list">
-	<h2><spring:message code="text.list.title.candidates"/></h2>
+<div class="left-list">
+	<h2>
+		<span>
+			<spring:message code="text.sort.by"/>:&nbsp;&nbsp;
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'prenom'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>			
+			<a class="${sortOn}" href="?sort=prenom&direction=${dir}"><spring:message code="text.sort.by.firstname"/></a>&nbsp;&nbsp;-&nbsp;
+			
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'nom'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>			
+			<a class="${sortOn}" href="?sort=nom&direction=${dir}"><spring:message code="text.sort.by.name"/></a>&nbsp;&nbsp;-&nbsp;
+			
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'id'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>		
+			<a class="${sortOn}" href="?sort=id&direction=${dir}"><spring:message code="text.sort.by.creation"/></a>&nbsp;&nbsp;-&nbsp;
+			
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'dateActivation'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>			
+			<a class="${sortOn}" href="?sort=dateActivation&direction=${dir}"><spring:message code="text.sort.by.activation.date"/></a>
+			
+		</span>
+	</h2>
 	
 	<c:forEach items="${candidates}" var="candidate">	
 		<div class="list-item">
 			<p class="actions">
-				<a href="#" class="action delete"></a>
-				<a href="#" onclick="editProfil(${administrator.admin}, ${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${administrator.email}', '${administrator.login}'); return false;" class="action edit"></a>
+				<a href="#" class="actions-down"></a>
+				<span class="sub-actions">
+					<a href="#" class="action delete"><spring:message code="link.label.candidate.delete"/></a>
+					<a href="#" onclick="editProfil(${candidate.admin}, ${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${candidate.email}', '${candidate.login}', '${candidate.pass}', '${candidate.dateActivation}', '${candidate.dateActivation}'); return false;" class="action edit">
+						<spring:message code="link.label.candidate.edit" />
+					</a>
+					<a href="#" class="action activate">
+						<c:if test="${candidate.enabled}"><spring:message code="link.label.candidate.desactivate" /></c:if>
+						<c:if test="${!candidate.enabled}"><spring:message code="link.label.candidate.activate" /></c:if>
+					</a>
+					<a href="${pageContext.request.contextPath}/admin/candidate/${candidate.id}" class="action detail"><spring:message code="link.label.candidate.detail"/></a>
+				</span>		
 			</p>
-			<p class="main">${candidate.prenom} ${candidate.nom}</p>
+			<p class="main">
+				<a href="${pageContext.request.contextPath}/admin/candidate/${candidate.id}">
+					<c:if test="${sortingInfo.sortingField eq 'nom'}">${candidate.nom} ${candidate.prenom}</c:if>
+					<c:if test="${sortingInfo.sortingField ne 'nom'}">${candidate.prenom} ${candidate.nom}</c:if>
+				</a>
+				<br/>
+				<span>${candidate.email}</span>
+			</p>
 			<p class="detail">
-				<span class="label">Email:</span> ${candidate.email}<br/>
-				<span class="label">Login:</span> ${candidate.login}<br/>
-				<span class="label">Actif:</span> 
-				<c:if test="${candidate.enabled}">
-					<spring:message code="text.yes" />
-					<c:if test="${candidate.dateFin ne null}">
-						, <spring:message code="text.up.to" /> <fmt:formatDate value="${candidate.dateFin}" pattern="dd/MM/yyyy" />
-					</c:if>
-				</c:if>
+				<span class="label"><spring:message code="text.list.login.pass"/>:</span> ${candidate.login} / ${candidate.pass}<br/>
+				<span class="label"><spring:message code="text.list.active"/>:</span> 
+				<c:if test="${candidate.enabled}"><spring:message code="text.yes" /></c:if>
 				<c:if test="${!candidate.enabled}"><spring:message code="text.no" /></c:if>
 			</p>
 			<div class="clear-left"></div>		
@@ -89,6 +139,7 @@
 
 <script>
 $(document).ready(function() {
+	textAddCandidate = "<spring:message code="text.side.form.title.candidate.add"/>";
 	textEditCandidate = "<spring:message code="text.side.form.title.candidate.edit"/>";
 });
-</script>
+ </script>

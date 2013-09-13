@@ -1,0 +1,56 @@
+@CHARSET "UTF-8";
+
+/*** Style sheet for menu elements ***/
+nav {
+	border-bottom: 1px solid #9f698d;
+	box-shadow: 0px 6px 10px -8px #9f698d;
+	height: 40px;
+	margin: 10px 0;
+	text-align: left;
+	
+	-moz-box-shadow: 0px 6px 10px -8px #9f698d;
+	-webkit-box-shadow: 0px 6px 10px -8px #9f698d;
+	-o-box-shadow: 0px 6px 10px -8px #9f698d;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#9f698d, Direction=180, Strength=10);
+}
+
+nav ul {
+	list-style-type: none;
+	margin: 0 0 0 10px;
+}
+
+nav ul li {
+	float: left;
+	margin: 0 0 0 1px;
+}
+
+nav ul li a {
+	background: #eee;
+	border-radius: 2px 2px 0 0;
+	display: block;
+	float: left;   
+	height: 20px;
+	line-height: 20px;
+	margin: 10px 0 0 0;
+	padding: 5px 20px;
+	text-decoration: none;
+	text-align: center;	
+}
+
+nav ul li a:hover {
+	background: #003;
+	color: #fff;
+	height: 25px;
+	line-height: 25px;
+	margin: 5px 0 0 0;
+}
+
+nav ul li.selected-tab a, nav ul li.selected-tab a:hover {
+	background: #9f698d;
+	color: #fff;
+	cursor: default;
+	font-weight: bold;
+	height: 30px;
+	line-height: 30px;
+	margin: 0;
+}

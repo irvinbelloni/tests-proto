@@ -22,13 +22,13 @@
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/syntax-highlighter/shCoreEclipse.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.css" />
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.forms.css" />
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.menus.css" />
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/ossia.lists.css" />
 	</head>
 	<body>
 		<tiles:insertAttribute name="header" />
 		<tiles:insertAttribute name="menu" />
-		<div class="body-content">
-        	<tiles:insertAttribute name="body" />
-        </div>
+		<tiles:insertAttribute name="body" />	        
        	<tiles:insertAttribute name="footer" />
 	</body>
-</html>
+ </html>
