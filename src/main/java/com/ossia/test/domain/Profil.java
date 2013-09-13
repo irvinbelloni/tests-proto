@@ -4,6 +4,7 @@ import java.text.Normalizer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -35,6 +36,9 @@ public class Profil implements UserDetails {
 	
 	public static final String MODE_ADD = "add";
 	public static final String MODE_EDIT = "edit";
+	public static final String MODE_ACTIVATION = "activate";
+	public static final String MODE_DESACTIVATION = "desactivate";
+	public static final String MODE_DELETE = "delete";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -52,6 +56,9 @@ public class Profil implements UserDetails {
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "profil")
 	private Set<Evaluation> evaluations;
 
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
+	private Set<ProfilHisto> historique;
+	
 	@NotEmpty
 	private String login;
 
@@ -93,6 +100,15 @@ public class Profil implements UserDetails {
 		this.pass = generatePassFromNom() ; 
 	}
 	
+	public void copyPropertiesFrom(Profil profilFrom) {
+		this.nom = profilFrom.getNom();
+		this.prenom = profilFrom.getPrenom();
+		this.dateActivation = profilFrom.getDateActivation();
+		this.pass = profilFrom.getPass();
+		this.login = profilFrom.getLogin();
+		this.email = profilFrom.getEmail();		
+	}
+	
 	private String generateLoginFromNom () {
 		if (this.prenom != null && !this.prenom.isEmpty() && this.nom != null && !this.nom.isEmpty()) {			
 			return Normalizer.normalize(this.prenom.substring(0, 1).toLowerCase().concat(this.nom.toLowerCase().trim()), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
@@ -101,7 +117,7 @@ public class Profil implements UserDetails {
 	}
 	
 	private String generatePassFromNom () {
-		return Normalizer.normalize(getNom().toLowerCase().trim(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}", "");
+		return Normalizer.normalize(getNom().toLowerCase().trim(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	}
 
 	/* Authorization fields */
@@ -119,6 +135,17 @@ public class Profil implements UserDetails {
 
 	public void setEvaluations(Set<Evaluation> evaluations) {
 		this.evaluations = evaluations;
+	}
+
+	public Set<ProfilHisto> getHistorique() {
+		if (historique == null) {
+			historique = new HashSet<ProfilHisto>();
+		}
+		return historique;
+	}
+
+	public void setHistorique(Set<ProfilHisto> historique) {
+		this.historique = historique;
 	}
 
 	public String getLogin() {

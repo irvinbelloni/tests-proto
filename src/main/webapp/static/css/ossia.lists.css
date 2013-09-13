@@ -63,15 +63,19 @@ p.actions:hover .actions-down {
 
 p.actions .sub-actions {
 	background: #9f698d;
-	border-radius: 4px 0 4px 4px;
+	border-radius: 4px;
 	display: none;
-	margin-left: -150px;
-	padding: 10px 5px 5px 5px;
+	margin-left: -190px;
+	padding: 15px 5px 5px 5px;
 	position: absolute;
-	width: 180px;
+	width: 230px;
 	
-	-moz-border-radius: 4px 0 4px 4px;
-	-webkit-border-radius: 4px 0 4px 4px;;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+p.actions .sub-actions a {
+	margin: 0 10px 0 0;
 }
 
 p.actions:hover .sub-actions {
@@ -83,7 +87,7 @@ p.main {
 	font-size: 18px;
 	font-weight: bold;
 	line-height: 15px;
-	width: 30%;
+	width: 40%;
 }
 
 p.main a {
@@ -104,7 +108,7 @@ p.main span {
 p.detail {
 	float: left;
 	line-height: 15px;
-	width: 40%;
+	width: 50%;
 }
 
 p.detail span.label {
@@ -157,3 +161,9 @@ a.print {
 
 .error {
     color: red;
+}
+
+.empty-list {
+	font-size: 18px;
+	padding: 30px 10px;
+}

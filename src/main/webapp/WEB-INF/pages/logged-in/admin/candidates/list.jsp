@@ -7,7 +7,10 @@
 <div class="side-form">
 	<h2><spring:message code="text.side.form.title.candidate.add" /></h2>
 	
-	<form:form method="post" action="${pageContext.request.contextPath}/admin/candidates" commandName="profil" id="profil-form">
+	<c:url value="/admin/profile/add-or-edit" var="addOrEditUrl">
+		<c:param name="origin" value="candidates"/>
+	</c:url>
+	<form:form method="post" action="${addOrEditUrl}" commandName="profil" id="profil-form">
 		<form:hidden path="id" />
 		<form:hidden path="mode" />
 	
@@ -48,76 +51,111 @@
 			<div class="clear-both"></div>
 		</div>
 					
-		<a class="back-to-add-form" href="#" onclick="backToAddProfil(${candidate.admin}); return false;">Annuler la modification</a>
+		<a class="back-to-add-form" href="#" onclick="backToAddProfil(); return false;"><spring:message code="link.label.cancel.quick.update" /></a>
 		<input type="submit" class="submit-button small" id="submit-button" value="<spring:message code="form.user.add"/>" />
 	</form:form>
 </div>
 
 <div class="left-list">
 	<h2>
-		<span>
-			<spring:message code="text.sort.by"/>:&nbsp;&nbsp;
-			<c:set var="sortOn" value="" />
-			<c:set var="dir" value="asc" />
-			<c:if test="${sortingInfo.sortingField eq 'prenom'}">
-				<c:set var="sortOn" value="sort-on" />
-				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
-					<c:set var="dir" value="desc" />
+		<c:if test="${fn:length(candidates) gt 0}">
+			<span>
+				<spring:message code="text.sort.by"/>:&nbsp;&nbsp;
+				<c:set var="sortOn" value="" />
+				<c:set var="dir" value="asc" />
+				<c:if test="${sortingInfo.sortingField eq 'prenom'}">
+					<c:set var="sortOn" value="sort-on" />
+					<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+						<c:set var="dir" value="desc" />
+					</c:if>
+				</c:if>		
+				<c:url value="/admin/candidates" var="sortUrl">
+					<c:param name="sort" value="prenom"/>
+					<c:param name="direction" value="${dir}"/>
+				</c:url>	
+				<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.firstname"/></a>&nbsp;&nbsp;-&nbsp;
+				
+				<c:set var="sortOn" value="" />
+				<c:set var="dir" value="asc" />
+				<c:if test="${sortingInfo.sortingField eq 'nom'}">
+					<c:set var="sortOn" value="sort-on" />
+					<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+						<c:set var="dir" value="desc" />
+					</c:if>
 				</c:if>
-			</c:if>			
-			<a class="${sortOn}" href="?sort=prenom&direction=${dir}"><spring:message code="text.sort.by.firstname"/></a>&nbsp;&nbsp;-&nbsp;
-			
-			<c:set var="sortOn" value="" />
-			<c:set var="dir" value="asc" />
-			<c:if test="${sortingInfo.sortingField eq 'nom'}">
-				<c:set var="sortOn" value="sort-on" />
-				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
-					<c:set var="dir" value="desc" />
+				<c:url value="/admin/candidates" var="sortUrl">
+					<c:param name="sort" value="nom"/>
+					<c:param name="direction" value="${dir}"/>
+				</c:url>
+				<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.name"/></a>&nbsp;&nbsp;-&nbsp;
+				
+				<c:set var="sortOn" value="" />
+				<c:set var="dir" value="asc" />
+				<c:if test="${sortingInfo.sortingField eq 'id'}">
+					<c:set var="sortOn" value="sort-on" />
+					<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+						<c:set var="dir" value="desc" />
+					</c:if>
 				</c:if>
-			</c:if>			
-			<a class="${sortOn}" href="?sort=nom&direction=${dir}"><spring:message code="text.sort.by.name"/></a>&nbsp;&nbsp;-&nbsp;
-			
-			<c:set var="sortOn" value="" />
-			<c:set var="dir" value="asc" />
-			<c:if test="${sortingInfo.sortingField eq 'id'}">
-				<c:set var="sortOn" value="sort-on" />
-				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
-					<c:set var="dir" value="desc" />
+				<c:url value="/admin/candidates" var="sortUrl">
+					<c:param name="sort" value="id"/>
+					<c:param name="direction" value="${dir}"/>
+				</c:url>
+				<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.creation"/></a>&nbsp;&nbsp;-&nbsp;
+				
+				<c:set var="sortOn" value="" />
+				<c:set var="dir" value="asc" />
+				<c:if test="${sortingInfo.sortingField eq 'dateActivation'}">
+					<c:set var="sortOn" value="sort-on" />
+					<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+						<c:set var="dir" value="desc" />
+					</c:if>
 				</c:if>
-			</c:if>		
-			<a class="${sortOn}" href="?sort=id&direction=${dir}"><spring:message code="text.sort.by.creation"/></a>&nbsp;&nbsp;-&nbsp;
-			
-			<c:set var="sortOn" value="" />
-			<c:set var="dir" value="asc" />
-			<c:if test="${sortingInfo.sortingField eq 'dateActivation'}">
-				<c:set var="sortOn" value="sort-on" />
-				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
-					<c:set var="dir" value="desc" />
-				</c:if>
-			</c:if>			
-			<a class="${sortOn}" href="?sort=dateActivation&direction=${dir}"><spring:message code="text.sort.by.activation.date"/></a>
-			
-		</span>
+				<c:url value="/admin/candidates" var="sortUrl">
+					<c:param name="sort" value="dateActivation"/>
+					<c:param name="direction" value="${dir}"/>
+				</c:url>
+				<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.activation.date"/></a>
+				
+			</span>
+		</c:if>
 	</h2>
+	
+	<c:if test="${fn:length(candidates) eq 0}">
+		<p class="empty-list">
+			<spring:message code="text.empty.candidates"/>
+		</p>
+	</c:if>
 	
 	<c:forEach items="${candidates}" var="candidate">	
 		<div class="list-item">
 			<p class="actions">
 				<a href="#" class="actions-down"></a>
 				<span class="sub-actions">
-					<a href="#" class="action delete"><spring:message code="link.label.candidate.delete"/></a>
-					<a href="#" onclick="editProfil(${candidate.admin}, ${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${candidate.email}', '${candidate.login}', '${candidate.pass}', '${candidate.dateActivation}', '${candidate.dateActivation}'); return false;" class="action edit">
-						<spring:message code="link.label.candidate.edit" />
+					<c:url value="/admin/profile/delete" var="deleteUrl">
+						<c:param name="profile" value="${candidate.id}"/>
+						<c:param name="origin" value="candidates"/>
+					</c:url>
+					<a href="#" onclick="deleteProfil(${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${deleteUrl}'); return false;" class="action delete"><spring:message code="link.label.profil.delete"/></a>
+					<a href="#" onclick="editProfil(${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${candidate.email}', '${candidate.login}', '${candidate.pass}', '${candidate.dateActivation}', '${candidate.dateActivation}'); return false;" class="action edit">
+						<spring:message code="link.label.profil.edit" />
 					</a>
-					<a href="#" class="action activate">
+					<c:url value="/admin/profile/activate" var="activateUrl">
+						<c:param name="profile" value="${candidate.id}"/>
+						<c:param name="origin" value="candidates"/>
+					</c:url>
+					<a href="${activateUrl}" class="action activate">
 						<c:if test="${candidate.enabled}"><spring:message code="link.label.candidate.desactivate" /></c:if>
 						<c:if test="${!candidate.enabled}"><spring:message code="link.label.candidate.activate" /></c:if>
 					</a>
-					<a href="${pageContext.request.contextPath}/admin/candidate/${candidate.id}" class="action detail"><spring:message code="link.label.candidate.detail"/></a>
+					<c:url value="/admin/candidate" var="detailUrl">
+						<c:param name="candidate" value="${candidate.id}"/>
+					</c:url>
+					<a href="${detailUrl}" class="action detail"><spring:message code="link.label.candidate.detail"/></a>
 				</span>		
 			</p>
 			<p class="main">
-				<a href="${pageContext.request.contextPath}/admin/candidate/${candidate.id}">
+				<a href="${detailUrl}">
 					<c:if test="${sortingInfo.sortingField eq 'nom'}">${candidate.nom} ${candidate.prenom}</c:if>
 					<c:if test="${sortingInfo.sortingField ne 'nom'}">${candidate.prenom} ${candidate.nom}</c:if>
 				</a>
@@ -135,11 +173,42 @@
 	</c:forEach>
 </div>
 
-<div class="clearer"></div>
+<div class="clear-both"></div>
+
+<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.candidate"/>">
+	<p></p>
+</div>
 
 <script>
 $(document).ready(function() {
-	textAddCandidate = "<spring:message code="text.side.form.title.candidate.add"/>";
-	textEditCandidate = "<spring:message code="text.side.form.title.candidate.edit"/>";
+	textAddProfil = "<spring:message code="text.side.form.title.candidate.add"/>";
+	textEditProfil = "<spring:message code="text.side.form.title.candidate.edit"/>";
+	dialogTextDeleteProfil = "<spring:message code="dialog.text.delete.candidate"/>";
+	
+	if ($("#mode").val() == "edit") {
+		$("#submit-button").val("Modifier");
+		$(".side-form h2").html(textEditProfil);	
+		$(".back-to-add-form").show();
+	}
+	
+	<c:if test="${recentProfil ne null}">
+		<c:set var="notifyText" value="Le candidat <b>${recentProfil.prenom} ${recentProfil.nom}</b>" />
+		<c:if test="${recentProfil.mode eq 'add'}">
+			<c:set var="notifyText" value="${notifyText} a bien été créé." />
+		</c:if>
+		<c:if test="${recentProfil.mode eq 'edit'}">
+			<c:set var="notifyText" value="${notifyText} a été mis à jour avec succès." />
+		</c:if>
+		<c:if test="${recentProfil.mode eq 'activate'}">
+			<c:set var="notifyText" value="${notifyText} est maintenant actif." />
+		</c:if>
+		<c:if test="${recentProfil.mode eq 'desactivate'}">
+			<c:set var="notifyText" value="${notifyText} est désormais inactif et ne peut plus se connecter à la plateforme de tests." />
+		</c:if>
+		<c:if test="${recentProfil.mode eq 'delete'}">
+			<c:set var="notifyText" value="${notifyText} a bien été supprimé." />
+		</c:if>
+		var n = noty({text: "${notifyText}", type: "success"});
+	</c:if>
 });
- </script>
+</script>
