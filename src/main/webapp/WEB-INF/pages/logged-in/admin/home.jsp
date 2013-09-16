@@ -17,12 +17,15 @@
 			<c:if test="${list eq false}"><spring:message code="text.admin.home.tests.count.none" /></c:if>
 		</h2>
 		<div>
-			<a href="<c:url value="/admin/tests"/>"><spring:message code="link.label.admin.home.tests.see" /></a>
+			<a href="<c:url value="/admin/test/home"/>"><spring:message code="link.label.admin.home.tests.see" /></a>
 			
 			<c:if test="${list eq true}">
 				<h3><spring:message code="text.admin.home.latest.tests" /></h3>
 				<c:forEach items="${tests}" var="test" begin="0" end="4">
-					<a href="/">${test.intitule}</a>
+					<c:url value="/admin/test/detail" var="detailUrl">
+						<c:param name="id" value="${test.id}"/>
+					</c:url>
+					<a href="${detailUrl}">${test.intitule}</a>
 				</c:forEach>
 			</c:if>
 		</div>

@@ -31,7 +31,7 @@ public interface TestSheetService {
 	
 	Question getQuestionById (Integer idQuestion) ; 
 
-	Collection<Question> getAllQuestionsFromTest(TestSheet test);
+	List<Question> getAllQuestionsFromTest(TestSheet test);
 
 	Question updateQuestion(Question question);
 	

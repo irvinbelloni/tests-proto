@@ -41,6 +41,11 @@ public class PropositionReponse implements Serializable {
 	public PropositionReponse() {
 		this.id = 0 ; 
 	}
+	
+	public PropositionReponse(Question question) {
+		this.id = 0 ;
+		this.question = question ; 
+	}
 
 	public PropositionReponse(Question question, String valeur,
 			Boolean propositionCorrecte) {

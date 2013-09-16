@@ -1,6 +1,7 @@
 package com.ossia.test.web.admin;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -11,13 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
 import com.ossia.test.service.TestSheetService;
+import com.ossia.test.web.model.PropositionReponseModel;
+import com.ossia.test.web.model.QuestionModel;
 
 @Controller
 @RequestMapping("/admin")
@@ -27,23 +32,31 @@ public class TestSheetAdminController {
 	
 	@Autowired
 	private TestSheetService testSheetService ; 
+	
+	@ModelAttribute("testLists")
+    public Collection<TestSheet> getAllTests() {
+		return testSheetService.getAllTestSheets();
+	}
+	
+	/*
+	 * GESTION TESTS
+	 */
 
 	@RequestMapping(value = "/test/home", method = RequestMethod.GET)
 	public String displayTestHome(ModelMap model) {
-		
-		model.put("testLists", testSheetService.getAllTestSheets()  ) ; 
 		model.put("testSheet", new TestSheet()) ; 
-		
 		return "test-home";
 	}
 	
 	@RequestMapping(value = "/test/detail", method = RequestMethod.GET)
-	public String displayTestDetailForm(ModelMap model ,BindingResult result, HttpServletRequest arg0 ) {
-		
-		Integer identifier = Integer.parseInt( arg0.getParameter("id") ) ;  
+	public String displayTestDetailForm(@RequestParam(value = "id") String idRequestParam , ModelMap model  ) {
+
+		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		TestSheet testSheet = testSheetService.getTestSheetById( identifier ) ; 
-		model.put("question", new Question () ) ; 
-		model.put("questions", testSheet.getQuestions() ) ; 
+		model.put("questionForm", new QuestionModel (testSheet) ) ; 
+		
+		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(testSheet) ;
+		model.put("questions", liste ) ; 
 		model.put("testSheet", testSheet ) ; 
 		
 		return "test-detail";
@@ -61,128 +74,137 @@ public class TestSheetAdminController {
 		} else {
 			testSheet = testSheetService.updateTestSheet(testSheet) ; 
 		}
-		
-		model.put("testLists", testSheetService.getAllTestSheets()  ) ; 
 		model.put("testSheet", new TestSheet()) ; 
 		
-		return "test-home" ; 
+		return "redirect:" + "/admin/test/test-home" ; 
 	}
 	
 	@RequestMapping(value = "/test/delete", method = RequestMethod.GET)
-	public String deleteTest(HttpServletRequest arg0 , ModelMap model ) {
+	public String deleteTest(@RequestParam(value = "id") String idRequestParam , ModelMap model ) {
 		
-		log.debug( arg0.getParameter("id") ) ; 
-		
-		Integer identifier = Integer.parseInt( arg0.getParameter("id") ) ;  
+		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		TestSheet testSheetToDelete = testSheetService.getTestSheetById( identifier ) ; 
 		testSheetService.deleteTestSheet(testSheetToDelete) ; 
-		
-		model.put("testLists", testSheetService.getAllTestSheets() ) ; 
 		model.put("testSheet", new TestSheet()) ; 
 		
-		return "test-home";
+		return "redirect:" + "/admin/test/test-home" ; 
 	}
 
 	@RequestMapping(value = "/test/print", method = RequestMethod.GET)
-	public String printTest(HttpServletRequest arg0 , ModelMap model ) {
+	public String printTest(@RequestParam(value = "id") String idRequestParam , ModelMap model ) {
 		
-		Integer.parseInt( arg0.getParameter("id") ) ;
+//		Integer identifier = Integer.parseInt(idRequestParam) ;  
+//		TestSheet testSheetToPrint = testSheetService.getTestSheetById( identifier ) ; 
 		
 		// TODO TDS - Complete implementation 
 		
-		model.put("testLists", testSheetService.getAllTestSheets() ) ; 
 		model.put("testSheet", new TestSheet()) ; 
-		
-		return "test-home";
+		return "redirect:" + "/admin/test/test-home" ;
 	}
 	
+	/*
+	 * GESTION DES QUESTIONS 
+	 */
+	
 	@RequestMapping(value = "/question/detail", method = RequestMethod.GET)
-	public String displayQuestionDetail(ModelMap model ,BindingResult result, HttpServletRequest arg0 ) {
+	public String displayQuestionDetail(@RequestParam(value = "id") String idRequestParam , ModelMap model) {
 		
-		Integer identifier = Integer.parseInt( arg0.getParameter("id") ) ;  
-		
+		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		Question question = testSheetService.getQuestionById(identifier) ;
-		model.put("proposition", new PropositionReponse() ) ; 
-		model.put("propositions", question.getPropositionsReponses()) ; 
+		
+		model.put("proposition", new PropositionReponseModel(question) ) ; 
+		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question)) ; 
 		model.put("question", question) ; 
 		
 		return "question-detail" ; 
 	}
 	
 	@RequestMapping(value = "/question/createUpdate", method = RequestMethod.POST)
-	public String addEditQuestionToTest (@Valid Question question , HttpServletRequest arg0 , BindingResult result, ModelMap model) {
+	public String addOrEditQuestionToTest (@Valid QuestionModel questionModel , HttpServletRequest arg0 , BindingResult result, ModelMap model) {
 		
 		if (result.hasErrors()) {
 			return "test-detail";
 		}
 		
-		if (question.getId().equals(null) || question.getId() == 0) {
-			question = testSheetService.createQuestion(question) ;
+		TestSheet test = testSheetService.getTestSheetById(questionModel.getTestId()) ;
+		
+		if (questionModel.getId().equals(null) || questionModel.getId() == 0) {
+			Question questionToCreate = questionModel.convertToNewTestDomain(test) ; 
+			testSheetService.createQuestion(questionToCreate) ;
 		} else {
-			question = testSheetService.updateQuestion(question) ; 
+			Question questionToUpdate = testSheetService.getQuestionById(questionModel.getId()) ; 
+			testSheetService.updateQuestion(questionModel.updateQuestion (questionToUpdate) ) ; 
 		}
 		
-		model.put("question", new Question () ) ; 
-		model.put("questions", question.getTest().getQuestions() ) ; 
-		model.put("testSheet", question.getTest() ) ; 
+		model.put("questionForm", new QuestionModel( test ) ) ; 
 		
-		return "test-detail" ; 
+		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
+		model.put("questions", liste ) ; 
+		model.put("testSheet", test ) ; 
+		
+		return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
 	}
 	
 	@RequestMapping(value = "/question/delete", method = RequestMethod.GET)
-	public String deleteQuestionFromTest(HttpServletRequest arg0 , ModelMap model ) {
+	public String deleteQuestionFromTest(@RequestParam(value = "id") String idRequestParam , ModelMap model ) {
 		
-		log.debug( arg0.getParameter("id") ) ; 
-		Integer idQuestion  = Integer.parseInt( arg0.getParameter("id") ) ;  
+		Integer idQuestion  = Integer.parseInt(idRequestParam) ;  
 		Question questionToDelete = testSheetService.getQuestionById(idQuestion); 
 		
 		TestSheet test = questionToDelete.getTest() ; 
 		testSheetService.deleteQuestionFromTestSheet(test, questionToDelete) ;  
 		
-		Collection <Question> liste =  (Collection <Question>) testSheetService.getAllQuestionsFromTest (test) ; 
-		
-		model.put("question", new Question()) ; 
+		List<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
 		model.put("questions", liste ) ; 
+		model.put("questionForm", new QuestionModel(test)) ; 
 		model.put("testSheet", test ) ;
 		
-		return "test-detail";
+		return "redirect:/admin/test/detail" + "?id="+test.getId() ;
 	}
+	
+	/*
+	 * GESTION DES PROPOSITIONS
+	 */
 
 	@RequestMapping(value = "/proposition/createUpdate", method = RequestMethod.POST)
-	public String addEditPropositionReponseToQuestion (@Valid PropositionReponse pr , HttpServletRequest arg0 , BindingResult result , ModelMap model) {
+	public String addOrEditPropositionReponseToQuestion (@Valid PropositionReponseModel pr , HttpServletRequest arg0 , BindingResult result , ModelMap model) {
 		
 		if (result.hasErrors()) {
 			return "question-detail";
 		}
 		
-		Question question = pr.getQuestion() ; 
+		Question question = testSheetService.getQuestionById(pr.getQuestionId()) ; 
+		
 		if (pr.getId() == null || pr.getId() == 0) {
-			pr = testSheetService.createPropositionReponse(pr) ; 
+			PropositionReponse prToCreate = pr.convertToNewPropositionReponseDomain(question) ; 
+			testSheetService.createPropositionReponse(prToCreate) ; 
 		} else {
-			pr = testSheetService.updatePropositionReponse(pr) ; 
+			PropositionReponse prToUpdate = testSheetService.getPropositionReponseById(pr.getId()) ; 
+			prToUpdate = pr.updatePropositionReponseModel(prToUpdate) ; 
+			testSheetService.updatePropositionReponse(prToUpdate) ; 
 		}
 		
-		model.put("proposition", new PropositionReponse() ) ; 
-		model.put("propositions", question.getPropositionsReponses() ) ; 
+		model.put("proposition", new PropositionReponseModel(question) ) ; 
+		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
-		return "question-detail" ; 
+		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
 	}
 	
 	@RequestMapping(value = "/proposition/delete", method = RequestMethod.GET)
-	public String deletePropositionReponseFromQuestion (HttpServletRequest arg0 , ModelMap model ) {
+	public String deletePropositionReponseFromQuestion ( @RequestParam(value = "id", required = false) String idproposition , HttpServletRequest arg0 , ModelMap model ) {
 		
 		log.debug( arg0.getParameter("id") ) ; 
-		Integer idProposition  = Integer.parseInt( arg0.getParameter("id") ) ;  
+		Integer idProposition  = Integer.parseInt(idproposition) ;  
 		
 		PropositionReponse pr = testSheetService.getPropositionReponseById (idProposition) ; 
 		Question question = pr.getQuestion() ; 
 		testSheetService.deletePropositionReponseFromQuestion(pr.getQuestion(), pr) ; 
 		
-		model.put("proposition", new PropositionReponse() ) ; 
-		model.put("propositions", question.getPropositionsReponses() ) ; 
+		model.put("proposition", new PropositionReponseModel(question) ) ; 
+		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
-		return "question-detail" ; 
+		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
 	}
 }

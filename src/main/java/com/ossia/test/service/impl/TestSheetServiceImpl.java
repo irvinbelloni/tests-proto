@@ -71,8 +71,8 @@ public class TestSheetServiceImpl implements TestSheetService {
 	}
 
 	@Transactional(readOnly = true)
-	public Collection<Question> getAllQuestionsFromTest(TestSheet test) {
-		return testSheetRepository.getById(test.getId()).getQuestions() ; 
+	public List<Question> getAllQuestionsFromTest(TestSheet test) {
+		return questionRepository.getAllQuestionsByTestId(test.getId()) ; 
 	}
 	
 	@Transactional 
@@ -99,7 +99,7 @@ public class TestSheetServiceImpl implements TestSheetService {
 	
 	@Transactional
 	public List <PropositionReponse> getAllPropositionReponseFromQuestion (Question question) {
-		return propositionReponseRepository.getAll() ; 
+		return propositionReponseRepository.getAllPropositionReponseByQuestionId(question.getId()) ; 
 	} 
 	
 	@Transactional

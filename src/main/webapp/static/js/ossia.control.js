@@ -230,43 +230,131 @@ function removeDiacritics (str) {
        }
        return str;
    }
-   
-function editTestSheet (id, intitule, duree, type , text) {
-	
-//	$(".side-form input.type='submit'").val() ; 
-	$("#testSheetId").val(id);
-	$("#testSheetIntitule").val(intitule);
-	$("#testSheetDuree").val(duree);
-	$("#testSheetType").val(type);
+
+function deleteTestSheet (id, intitule, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
+	dialogHtml += dialogTextDeleteTest.replace("%TEST%", intitule );
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			height : 180,
+			modal : true,
+			buttons : {
+				"Supprimer" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
 }
 
-$(function() {
-	
-//	$("#dialog-form").dialog(
-//		{
-//			autoOpen : false,
-//			height : 300,
-//			width  : 300,
-//			modal  : true,
-//			buttons : {
-//				"Ajouter" : function() {
-//					var bValid = true;
-//					allFields.removeClass("ui-state-error");
-//					if (bValid) {
-//						$(this).dialog("close");
-//					}
-//				},
-//				Cancel : function() {
-//					$(this).dialog("close");
-//				}
-//			},
-//			close : function() {
-//				allFields.val("").removeClass("ui-state-error");
-//			}
-//		});
-//	$("#createQuestion").button().click(function() {
-//		$("#dialog-form").dialog("open");
-//	});
-	
-	
-});   
+function editTestSheet (id, intitule, duree, type) {
+	$(".side-form").slideUp(function() {
+		$("input.submit-button").val("Modifier Test");  
+		$("#testSheetId").val(id);
+		$("#testSheetIntitule").val(intitule);
+		$("#testSheetDuree").val(duree);
+		$("#testSheetType").val(type);
+		$(".side-form h2").html(textEditTest);
+		$("span.error").hide();
+		$(".edit-field").show();
+		
+		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+function deleteQuestion (id, intitule, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
+	dialogHtml += dialogTextDeleteTest.replace("%QUESTION%", intitule );
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			height : 180,
+			modal : true,
+			buttons : {
+				"Supprimer" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
+
+function editQuestion (id, intitule, niveau , contenu) {
+
+	$(".side-form").slideUp(function() {
+		$(".submit-button").val("Modifier Question");  
+		$("#questionId").val(id);
+		$("#questionIntitule").val(intitule);
+		$("#questionNiveau").val(niveau);
+		$("#questionContenu").val(contenu);
+		$(".side-form h2").html(textEditQuestion);
+		$("span.error").hide();
+		$(".edit-field").show();
+		
+		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+
+function deletePropositionReponse (id, intitule, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
+	dialogHtml += dialogTextDeletePropositionReponse.replace("%PROPOSITION%", intitule );
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			height : 180,
+			modal : true,
+			buttons : {
+				"Supprimer" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
+
+function editPropositionReponse (id, valeur, propositionCorrecte) {
+
+	$(".side-form").slideUp(function() {
+		$(".submit-button").val("Modifier Proposition");  
+		$("#propositionId").val(id);
+		$("#propositionValeur").val(valeur);
+		
+		if (propositionCorrecte == 'true') {
+			$("input[type='radio'][name='propositionCorrecte'][value='true']").attr('checked', true);
+			$("input[type='radio'][name='propositionCorrecte'][value='false']").removeProp('checked');
+		} else if (propositionCorrecte == 'false') {
+			$("input[type='radio'][name='propositionCorrecte'][value='false']").attr('checked', true);
+			$("input[type='radio'][name='propositionCorrecte'][value='true']").removeProp('checked');
+		}
+		
+		$(".side-form h2").html(textEditPropositionReponse);
+		$("span.error").hide();
+		$(".edit-field").show();
+		
+		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+

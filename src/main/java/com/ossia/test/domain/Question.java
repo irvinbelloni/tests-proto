@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "T_QUESTIONS")
@@ -31,9 +30,8 @@ public class Question implements Serializable {
 	private String niveau;
 	private String contenu;
     
-    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch=FetchType.EAGER )
     @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
-    @NotNull
     private TestSheet test;
     
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "question")
@@ -53,6 +51,15 @@ public class Question implements Serializable {
 	public Question(TestSheet testSheet) {
 		this.id = 0 ; 
 		this.test = testSheet ;
+	}
+	
+	public Integer getPropositionSize () {
+		if (propositionsReponses == null) {
+			return 0 ; 
+		}
+		else {
+			return propositionsReponses.size() ;  
+		}
 	}
 
 	public Integer getId() {

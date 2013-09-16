@@ -1,5 +1,7 @@
 package com.ossia.test.app;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -36,6 +38,7 @@ public class TestAjoutProfilAdmin {
         admin.setLogin("admin") ; 
         admin.setPass("admin") ; 
         admin.setAdmin(Boolean.TRUE) ; 
+        admin.setDateActivation(new Date()) ;
         admin.setEmail("dasilveira.tata@gmail.com"); // facultatif
         return admin ; 
     }
