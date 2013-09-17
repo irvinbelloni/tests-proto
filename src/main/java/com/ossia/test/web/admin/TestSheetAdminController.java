@@ -21,8 +21,8 @@ import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
 import com.ossia.test.service.TestSheetService;
-import com.ossia.test.web.model.PropositionReponseModel;
-import com.ossia.test.web.model.QuestionModel;
+import com.ossia.test.web.form.CreateUpdatePropositionReponseForm;
+import com.ossia.test.web.form.CreateUpdateQuestionForm;
 
 @Controller
 @RequestMapping("/admin")
@@ -53,7 +53,7 @@ public class TestSheetAdminController {
 
 		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		TestSheet testSheet = testSheetService.getTestSheetById( identifier ) ; 
-		model.put("questionForm", new QuestionModel (testSheet) ) ; 
+		model.put("questionForm", new CreateUpdateQuestionForm (testSheet) ) ; 
 		
 		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(testSheet) ;
 		model.put("questions", liste ) ; 
@@ -112,7 +112,7 @@ public class TestSheetAdminController {
 		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		Question question = testSheetService.getQuestionById(identifier) ;
 		
-		model.put("proposition", new PropositionReponseModel(question) ) ; 
+		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question)) ; 
 		model.put("question", question) ; 
 		
@@ -120,7 +120,7 @@ public class TestSheetAdminController {
 	}
 	
 	@RequestMapping(value = "/question/createUpdate", method = RequestMethod.POST)
-	public String addOrEditQuestionToTest (@Valid QuestionModel questionModel , HttpServletRequest arg0 , BindingResult result, ModelMap model) {
+	public String addOrEditQuestionToTest (@Valid CreateUpdateQuestionForm questionModel , HttpServletRequest arg0 , BindingResult result, ModelMap model) {
 		
 		if (result.hasErrors()) {
 			return "test-detail";
@@ -136,7 +136,7 @@ public class TestSheetAdminController {
 			testSheetService.updateQuestion(questionModel.updateQuestion (questionToUpdate) ) ; 
 		}
 		
-		model.put("questionForm", new QuestionModel( test ) ) ; 
+		model.put("questionForm", new CreateUpdateQuestionForm( test ) ) ; 
 		
 		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
 		model.put("questions", liste ) ; 
@@ -156,7 +156,7 @@ public class TestSheetAdminController {
 		
 		List<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
 		model.put("questions", liste ) ; 
-		model.put("questionForm", new QuestionModel(test)) ; 
+		model.put("questionForm", new CreateUpdateQuestionForm(test)) ; 
 		model.put("testSheet", test ) ;
 		
 		return "redirect:/admin/test/detail" + "?id="+test.getId() ;
@@ -167,7 +167,7 @@ public class TestSheetAdminController {
 	 */
 
 	@RequestMapping(value = "/proposition/createUpdate", method = RequestMethod.POST)
-	public String addOrEditPropositionReponseToQuestion (@Valid PropositionReponseModel pr , HttpServletRequest arg0 , BindingResult result , ModelMap model) {
+	public String addOrEditPropositionReponseToQuestion (@Valid CreateUpdatePropositionReponseForm pr , HttpServletRequest arg0 , BindingResult result , ModelMap model) {
 		
 		if (result.hasErrors()) {
 			return "question-detail";
@@ -184,7 +184,7 @@ public class TestSheetAdminController {
 			testSheetService.updatePropositionReponse(prToUpdate) ; 
 		}
 		
-		model.put("proposition", new PropositionReponseModel(question) ) ; 
+		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
@@ -201,7 +201,7 @@ public class TestSheetAdminController {
 		Question question = pr.getQuestion() ; 
 		testSheetService.deletePropositionReponseFromQuestion(pr.getQuestion(), pr) ; 
 		
-		model.put("proposition", new PropositionReponseModel(question) ) ; 
+		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		

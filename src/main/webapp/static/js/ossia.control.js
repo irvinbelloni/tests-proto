@@ -56,15 +56,15 @@ function refreshPassAndLoginValues() {
 	return false;
 }
 
-function deleteProfil(profilId, firstname, name, url) {
+function deleteProfil(profilId, firstname, name, url, title) {
 	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
 	dialogHtml += dialogTextDeleteProfil.replace("%PROFILE%", firstname + " " + name);
 	$("#dialog-confirm p").html(dialogHtml);
-			
 	$(function() {
 		$("#dialog-confirm").dialog({
 			resizable : false,
 			height : 180,
+			title: title,
 			modal : true,
 			buttons : {
 				"Supprimer" : function() {
@@ -76,6 +76,24 @@ function deleteProfil(profilId, firstname, name, url) {
 			}
 		});
 	});	
+}
+
+function assignTest() {
+	$("#assigned-tests").slideUp(function() {
+		$(".back-to-add-form").show();
+		$("#profil-detail-assign-test").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});
+}
+
+function backToDetailAssignedTests() {
+	$("#profil-detail-assign-test").slideUp(function() {
+		$("#testId").val(0);
+		$("#assigned-tests").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});
 }
 
 function editProfil(profilId, firstname, name, email, login, pass, dateActivation) {
@@ -105,6 +123,31 @@ function editProfil(profilId, firstname, name, email, login, pass, dateActivatio
 	});	
 }
 
+function editProfilDetail(profilId, firstname, name, email, login, pass, dateActivation) {
+	$("#identity").slideUp(function() {
+		$("#mode").val("edit");
+		$("#id").val(profilId);
+		$("#prenom").val(firstname);
+		$("#nom").val(name);
+		$("#email").val(email);
+		$("#login").val(login);
+		$("#pass").val(pass);
+		if (dateActivation.length > 0) {
+			$("#active1").prop("checked", true);
+			$("#active2").prop("checked", false);
+		} else {
+			$("#active1").prop("checked", false);
+			$("#active2").prop("checked", true);
+		}
+		$("span.error").hide();
+		$(".back-to-add-form").show();
+		$(".edit-field").show();
+		$("#profil-detail-edit").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
 function backToAddProfil () {
 	$(".side-form").slideUp(function() {
 		$("#mode").val("add");
@@ -122,6 +165,14 @@ function backToAddProfil () {
 		$(".edit-field").hide();
 		$(".back-to-add-form").hide();
 		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});		
+	});	
+}
+
+function backToDetailIdentity () {
+	$("#profil-detail-edit").slideUp(function() {
+		$("#identity").slideDown(function() {
 			adjustFooterHeight();
 		});		
 	});	

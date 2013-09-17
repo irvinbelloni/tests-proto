@@ -1,35 +1,33 @@
-<!DOCTYPE tiles-definitions SYSTEM "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
 <tiles-definitions>
 	<!-- Logged-in views -->
-	<definition name="logged-in-layout" template="/WEB-INF/pages/logged-in/common/layout.jsp">
-		<put-attribute name="title" value=""/>
-		<put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp"/>
-		<put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/menu.jsp"/>
-		<put-attribute name="body" value=""/>
-		<put-attribute name="footer" value="/WEB-INF/pages/logged-in/common/footer.jsp"/>
-	</definition>
+    <definition name="logged-in-layout" template="/WEB-INF/pages/logged-in/common/layout.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp" />
+        <put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/menu.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/pages/logged-in/common/footer.jsp" />
+    </definition>
+    
+    <!-- Candidate views -->
+    <definition name="candidate-home" extends="logged-in-layout">
+    	<put-attribute name="title" value="Candidat" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/candidate/home.jsp" />
+    </definition>
+    
+    <definition name="test-setup" extends="logged-in-layout">
+    	<put-attribute name="title" value="Candidat" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/candidate/setup.jsp" />
+    </definition>
+   
+    <!-- Administrator views -->    
+    <definition name="admin-home" extends="logged-in-layout">
+    	<put-attribute name="title" value="Administration" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/home.jsp" />
+    </definition>
 	
-	<definition name="question" extends="logged-in-layout">
-		<put-attribute name="title" value="Test en cours"/>
-		<put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/no-menu.jsp"/>
-		<put-attribute name="body" value="/WEB-INF/pages/logged-in/test/question.jsp"/>
-	</definition>
-	
-	<!-- Administrator views -->
-	<definition name="admin-logged-in-layout" template="/WEB-INF/pages/logged-in/common/layout-admin.jsp">
-		<put-attribute name="title" value=""/>
-		<put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp"/>
-		<put-attribute name="menu" value="/WEB-INF/pages/logged-in/common/menu.jsp"/>
-		<put-attribute name="body" value=""/>
-		<put-attribute name="footer" value="/WEB-INF/pages/logged-in/common/footer.jsp"/>
-	</definition>
-	
-	<definition name="admin-home" extends="admin-logged-in-layout">
-		<put-attribute name="title" value="Administration"/>
-		<put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/home.jsp"/>
-	</definition>
-	
-	<definition name="test-home" extends="admin-logged-in-layout">
+	<definition name="test-home" extends="logged-in-layout">
         <put-attribute name="title" value="Administration des tests" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/test-home.jsp" />
     </definition>
@@ -38,36 +36,51 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/test-detail.jsp" />
     </definition>
     
-    <definition name="question-detail" extends="admin-logged-in-layout">
+    <definition name="question-detail" extends="logged-in-layout">
         <put-attribute name="title" value="Administration des questions" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/question-detail.jsp" />
     </definition>
 	
-	<definition name="administrators" extends="admin-logged-in-layout">
-		<put-attribute name="title" value="Liste des administrateurs"/>
-		<put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/administrators/list.jsp"/>
-	</definition>
-	
-	<definition name="candidates" extends="admin-logged-in-layout">
-		<put-attribute name="title" value="Liste des candidats"/>
-		<put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/list.jsp"/>
-	</definition>
-	
-	<definition name="candidate" extends="admin-logged-in-layout">
-		<put-attribute name="title" value="Fiche d'un candidat"/>
-		<put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/detail.jsp"/>
-	</definition>
-	
-	<!--  Unlogged views -->
-	<definition name="unlogged-layout" template="/WEB-INF/pages/unlogged/common/layout.jsp">
-		<put-attribute name="title" value=""/>
-		<put-attribute name="header" value="/WEB-INF/pages/logged-in/common/header.jsp"/>
-		<put-attribute name="body" value=""/>
-		<put-attribute name="footer" value="/WEB-INF/pages/unlogged/common/footer.jsp"/>
-	</definition>
-	
-	<definition name="login" extends="unlogged-layout">
-		<put-attribute name="title" value="OSSIA Conseil - Plateforme de tests techniques"/>
-		<put-attribute name="body" value="/WEB-INF/pages/unlogged/login/login.jsp"/>
-	</definition>
-</tiles-definitions>
+    <definition name="administrators" extends="logged-in-layout">
+    	<put-attribute name="title" value="Liste des administrateurs" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/administrators/list.jsp" />
+    </definition>
+    
+    <definition name="candidates" extends="logged-in-layout">
+    	<put-attribute name="title" value="Liste des candidats" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/list.jsp" />
+    </definition>
+    
+    <definition name="candidate" extends="logged-in-layout">
+    	<put-attribute name="title" value="Fiche d'un candidat" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/detail.jsp" />
+    </definition>
+    
+    <definition name="error404" extends="logged-in-layout">
+    	<put-attribute name="title" value="Erreur 404, page non trouvÃ©e" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/errors/404.jsp" />
+    </definition>
+    
+    <definition name="error403" extends="logged-in-layout">
+    	<put-attribute name="title" value="Erreur 403, page non accessible" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/errors/403.jsp" />
+    </definition>
+    
+    <definition name="errorException" extends="logged-in-layout">
+    	<put-attribute name="title" value="Erreur interne" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/errors/exception.jsp" />
+    </definition>
+    
+    <!--  Unlogged views -->    
+    <definition name="unlogged-layout" template="/WEB-INF/pages/unlogged/common/layout.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/pages/unlogged/common/header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/pages/unlogged/common/footer.jsp" />
+    </definition>
+    
+    <definition name="login" extends="unlogged-layout">
+        <put-attribute name="title" value="OSSIA Conseil - Plateforme de tests techniques" />
+        <put-attribute name="body" value="/WEB-INF/pages/unlogged/login/login.jsp" />
+    </definition>    
+ </tiles-definitions>

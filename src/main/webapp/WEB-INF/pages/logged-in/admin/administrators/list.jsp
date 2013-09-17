@@ -128,7 +128,7 @@
 						<c:param name="profile" value="${administrator.id}"/>
 						<c:param name="origin" value="administrators"/>
 					</c:url>
-					<a href="#" onclick="deleteProfil(${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${deleteUrl}'); return false;" class="action delete"><spring:message code="link.label.profil.delete"/></a>
+					<a href="#" onclick="deleteProfil(${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.administrator"/>'); return false;" class="action delete"><spring:message code="link.label.profil.delete"/></a>
 					<a href="#" onclick="editProfil(${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${administrator.email}', '${administrator.login}', '${administrator.pass}', '${candidate.dateActivation}', '${candidate.dateActivation}'); return false;" class="action edit">
 						<spring:message code="link.label.profil.edit" />
 					</a>
@@ -143,14 +143,14 @@
 					<c:url value="/admin/administrator" var="detailUrl">
 						<c:param name="administrator" value="${administrator.id}"/>
 					</c:url>
-					<a href="${detailUrl}" class="action detail"><spring:message code="link.label.administrator.detail"/></a>
+					<!-- a href="${detailUrl}" class="action detail"><spring:message code="link.label.administrator.detail"/></a -->
 				</span>		
 			</p>
 			<p class="main">
-				<a href="${detailUrl}">
+				<!-- a href="${detailUrl}" -->
 					<c:if test="${sortingInfo.sortingField eq 'nom'}">${administrator.nom} ${administrator.prenom}</c:if>
 					<c:if test="${sortingInfo.sortingField ne 'nom'}">${administrator.prenom} ${administrator.nom}</c:if>
-				</a>
+				<!-- /a -->
 				<br/>
 				<span>${administrator.email}</span>
 			</p>
@@ -167,10 +167,6 @@
 
 <div class="clear-both"></div>
 
-<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.administrator"/>">
-	<p></p>
-</div>
-
 <script>
 $(document).ready(function() {
 	textAddProfil = "<spring:message code="text.side.form.title.administrator.add"/>";
@@ -183,24 +179,6 @@ $(document).ready(function() {
 		$(".back-to-add-form").show();
 	}
 	
-	<c:if test="${recentProfil ne null}">
-		<c:set var="notifyText" value="L'administrateur <b>${recentProfil.prenom} ${recentProfil.nom}</b>" />
-		<c:if test="${recentProfil.mode eq 'add'}">
-			<c:set var="notifyText" value="${notifyText} a bien été créé." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'edit'}">
-			<c:set var="notifyText" value="${notifyText} a été mis à jour avec succès." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'activate'}">
-			<c:set var="notifyText" value="${notifyText} est maintenant actif." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'desactivate'}">
-			<c:set var="notifyText" value="${notifyText} est désormais inactif et ne peut plus se connecter à la plateforme de tests." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'delete'}">
-			<c:set var="notifyText" value="${notifyText} a bien été supprimé." />
-		</c:if>
-		var n = noty({text: "${notifyText}", type: "success"});
-	</c:if>
+	<jsp:include page="../notify-action.jsp"/>
 });
 </script>

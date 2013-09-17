@@ -2,8 +2,8 @@
 form.login {
 	background: #fff;
 	width: 500px;	
-	box-shadow: 0 0 20px #fff;
-	margin: 100px auto 0 auto;
+	box-shadow: 0 0 20px #ccc;
+	margin: 50px auto 0 auto;
 	padding: 50px;
 	
 	border-radius: 7px;
@@ -42,6 +42,7 @@ form.login input {
 	border-radius: 4px;
 	box-shadow: 0 0 6px #9f698d;
 	float: right;
+	margin: 20px 0 0 0;
 	padding: 10px;
 	width: 280px;	
 	
@@ -49,12 +50,16 @@ form.login input {
 	-webkit-border-radius: 4px;
 }
 
-.side-form h2 {
+.side-form-detail {
+	background: #9f698d;
+}
+
+.side-form h2, .side-form-detail h2 {
 	border-bottom: 1px solid #fff;
 	color: #fff;
 }
 
-.side-form label {
+.side-form label, .side-form-detail label {
 	color: #fff;
 	display: block;
 	float: left;
@@ -65,35 +70,52 @@ form.login input {
 	width: 88px;
 }
 
-.side-form input[type=text] {
-	border: 1px solid #003;
+.side-form-detail label {
+	width: 95px;
+}
+
+.side-form input[type=text], .side-form-detail input[type=text], select {
+	border: 1px solid #6c365a;
 	height: 25px;
 	margin: 10px 0 0 0;
 	padding: 0 0 0 2px;
 	width: 183px;
 }
 
-.side-form input[type=radio] {
+.center-form-detail select {
+	width: 100%;
+}
+
+.side-form-detail input[type=text] {
+	width: 176px;
+}
+
+.side-form input[type=radio], .side-form-detail input[type=radio] {
 	float: left;
 	height: 25px;
 	margin: 10px 5px 0 2px;	
 }
 
-.side-form span.radio {
+.side-form span.radio, .side-form-detail span.radio {
 	color: #fff;
 	float: left;
 	font-weight: bold;
 	margin: 15px 15px 0 0;
 }
 
-.side-form span.error {
+.side-form-detail span.radio {
+	width: auto;
+}
+
+.side-form span.error, .side-form-detail span.error {
 	color: #800;
 	font-size: 12px;
 	font-weight: bold;
 }
 
-.side-form .last-element {
+.side-form .last-element, .side-form-detail .last-element {
 	border-bottom: 1px solid #fff;	
+	padding: 0 0 4px 0;
 }
 
 .side-form .edit-field {
@@ -114,7 +136,7 @@ p.errorblock {
 	padding: 15px 15px 0 0;
 }
 
-.submit input, input.submit-button {
+.submit input, input.submit-button, a.button {
 	-moz-box-shadow:inset 0px 1px 6px -3px #de7abd;
 	-webkit-box-shadow:inset 0px 1px 6px -3px #de7abd;
 	box-shadow:inset 0px 1px 6px -3px #de7abd;
@@ -138,7 +160,6 @@ p.errorblock {
 	border:1px solid #5c0e42;
 	display:inline-block;
 	color:#f5ebf5;
-	font-family:georgia;
 	font-size:15px;
 	font-weight:bold;
 	font-style:normal;
@@ -149,7 +170,7 @@ p.errorblock {
 	text-align:center;
 	float: right;
 }
-input.small {
+input.small, a.small {
 	height: 25px;
 	line-height: 25px;
 	font-size:11px;
@@ -213,12 +234,14 @@ input.small {
 }
 
 .back-to-add-form {
+	color: #fff;
+	cursor: pointer;
 	display: none;
 	float: left;
-	font-size: 12px;
+	font-size: 11px;
+	font-weight: normal;
 	margin: 15px 0 0 0;
-	text-decoration: underline;
-	cursor: pointer;
+	text-decoration: underline;	
 }
 
 .submit .previous:active {

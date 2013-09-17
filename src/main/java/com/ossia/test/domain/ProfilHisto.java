@@ -3,7 +3,6 @@ package com.ossia.test.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,8 +19,11 @@ public class ProfilHisto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name = "admin_id")
-	private Integer adminId;
+	/*@Column(name = "admin_id")
+	private Integer adminId;*/
+	
+	@ManyToOne @JoinColumn(name = "admin_id")
+	private Profil admin;
 	
 	private String action;
 	
@@ -44,13 +46,13 @@ public class ProfilHisto implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getAdminId() {
+	/*public Integer getAdminId() {
 		return adminId;
 	}
 
 	public void setAdminId(Integer adminId) {
 		this.adminId = adminId;
-	}
+	}*/
 
 	public String getAction() {
 		return action;
@@ -74,5 +76,13 @@ public class ProfilHisto implements Serializable {
 
 	public void setProfil(Profil profil) {
 		this.profil = profil;
-	}	
+	}
+
+	public Profil getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(Profil admin) {
+		this.admin = admin;
+	}
 }

@@ -8,6 +8,7 @@
 		<intercept-url pattern="/static/**" access="permitAll" />
 		<intercept-url pattern="/login" access="permitAll" />
 		<intercept-url pattern="/logout" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
+		<intercept-url pattern="/errors/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
 		<intercept-url pattern="/tests/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
 	    <intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN')" />
 	    <intercept-url pattern="/**" access="denyAll" />

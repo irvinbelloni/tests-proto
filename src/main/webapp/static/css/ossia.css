@@ -14,6 +14,7 @@ a, body, div, form, h1, h2, h3, header, html, img, input, nav, p, tr, td, table,
 a:hover { text-decoration: none; }
 .clear-both { clear: both; }
 .clear-left { clear: left; }
+.clear-right { clear: right; }
 .syntaxhighlighter { overflow-y: hidden !important; }
 
 /*** MAIN STRUCTURE ***/
@@ -28,6 +29,11 @@ header {
 	padding: 0 10px;
 	text-align: left;
 	width: auto;
+}
+
+header.unlogged {
+	margin: 50px 0 0 0;
+	text-align: center;
 }
 
 header h1 {
@@ -109,6 +115,41 @@ footer a {
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;	
+}
+
+
+.wide-block {
+	margin: 20px 0 0 0;
+	width: auto;
+}
+
+.wide-block h1 {
+	border-bottom: 1px solid #003;
+	font-size: 12px;
+	margin: 0 0 10px 0;
+	padding: 0 10px;
+}
+
+.wide-block h1 span {
+	color: #9f698d;
+	font-size: 18px;
+}
+
+h1.error {
+	background: #333;
+	border-radius: 3px;
+	color: #fff;
+	font-size: 16px;
+	padding: 50px;
+	width: auto;
+	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+h1.error span {
+	font-family: Georgia;
+	font-size: 60px;
 }
 
 /**********************************************/

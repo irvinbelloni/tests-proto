@@ -136,7 +136,7 @@
 						<c:param name="profile" value="${candidate.id}"/>
 						<c:param name="origin" value="candidates"/>
 					</c:url>
-					<a href="#" onclick="deleteProfil(${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${deleteUrl}'); return false;" class="action delete"><spring:message code="link.label.profil.delete"/></a>
+					<a href="#" onclick="deleteProfil(${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.candidate"/>'); return false;" class="action delete"><spring:message code="link.label.profil.delete"/></a>
 					<a href="#" onclick="editProfil(${candidate.id}, '${candidate.prenom}', '${candidate.nom}', '${candidate.email}', '${candidate.login}', '${candidate.pass}', '${candidate.dateActivation}', '${candidate.dateActivation}'); return false;" class="action edit">
 						<spring:message code="link.label.profil.edit" />
 					</a>
@@ -175,10 +175,6 @@
 
 <div class="clear-both"></div>
 
-<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.candidate"/>">
-	<p></p>
-</div>
-
 <script>
 $(document).ready(function() {
 	textAddProfil = "<spring:message code="text.side.form.title.candidate.add"/>";
@@ -191,24 +187,6 @@ $(document).ready(function() {
 		$(".back-to-add-form").show();
 	}
 	
-	<c:if test="${recentProfil ne null}">
-		<c:set var="notifyText" value="Le candidat <b>${recentProfil.prenom} ${recentProfil.nom}</b>" />
-		<c:if test="${recentProfil.mode eq 'add'}">
-			<c:set var="notifyText" value="${notifyText} a bien été créé." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'edit'}">
-			<c:set var="notifyText" value="${notifyText} a été mis à jour avec succès." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'activate'}">
-			<c:set var="notifyText" value="${notifyText} est maintenant actif." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'desactivate'}">
-			<c:set var="notifyText" value="${notifyText} est désormais inactif et ne peut plus se connecter à la plateforme de tests." />
-		</c:if>
-		<c:if test="${recentProfil.mode eq 'delete'}">
-			<c:set var="notifyText" value="${notifyText} a bien été supprimé." />
-		</c:if>
-		var n = noty({text: "${notifyText}", type: "success"});
-	</c:if>
+	<jsp:include page="../notify-action.jsp"/>	
 });
 </script>

@@ -21,6 +21,28 @@ public interface EvaluationService {
 	Collection <Evaluation> getEvaluationByTestSheet (TestSheet testSheetPasse) ;
 	
 	void deleteEvaluation (Evaluation toDelete) ; 
+	
+	/**
+	 * Deletes a evaluation based on its id.
+	 * The evaluation must belong to the given candidate to be deleted.
+	 * If onlyNonTakenTest is set to true, we can delete the evaluation only if the test has not been taken yet
+	 * If onlyNonTakenTest is set to false, we can delete the evaluation no matter what
+	 * @param evalId Evaluation id
+	 * @param candidateId Candidate id
+	 * @param onlyNonTakenTest Indicates if the test must have not been taken yet
+	 * @param admin Administrator requesting the deletion
+	 * @return the deleted evaluation
+	 */
+	Evaluation deleteEvaluation (int evalId, int candidateId, boolean onlyNonTakenTest, Profil admin);
+	
+	/**
+	 * Assing a test to a candidate
+	 * @param testId test id
+	 * @param candidateId candidate id
+	 * @param admin Administrator requesting the assignment
+	 * @return The created evaluation
+	 */
+	Evaluation assignTest (int testId, int candidateId, Profil admin);
 
 	/*
 	 * RESPONSES

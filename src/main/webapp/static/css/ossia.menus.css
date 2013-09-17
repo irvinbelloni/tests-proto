@@ -48,7 +48,6 @@ nav ul li a:hover {
 nav ul li.selected-tab a, nav ul li.selected-tab a:hover {
 	background: #9f698d;
 	color: #fff;
-	cursor: default;
 	font-weight: bold;
 	height: 30px;
 	line-height: 30px;

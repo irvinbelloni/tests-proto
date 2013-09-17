@@ -1,0 +1,20 @@
+.test-home {
+	background: #f8f8f8;
+	border-radius: 4px;
+	font-size: 25px;
+	line-height: 16px;
+	margin-bottom: 10px;
+	padding: 30px;
+	
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.test-home span {
+	font-size: 12px;
+}
+
+.setup {
+	font-size: 16px;
+	line-height: 18px;
+}

@@ -7,9 +7,9 @@ import com.ossia.test.web.sort.ProfilSortingInfo;
 
 public interface ProfilService {
 
-	Profil createProfil (Profil profilACreer, int adminId); 
+	Profil createProfil (Profil profilACreer, Profil admin); 
 	
-	Profil changeActivation (Integer profilId, int adminId);
+	Profil changeActivation (Integer profilId, Profil admin);
 	
 	Profil getProfilById (Integer idProfil) ; 
 	
@@ -23,7 +23,9 @@ public interface ProfilService {
 	
 	void deleteProfil (Profil profilASupprimer) ;
 	
-	Profil deleteProfil (Integer profilId, int adminId);
+	Profil deleteProfil (Integer profilId, Profil admin);
 	
-	void updateProfil (Profil profilAModifier, int adminId);
+	void updateProfil (Profil profilAModifier, Profil admin);
+	
+	void createHistoricalTrace (Profil profil, Profil author, String action);
 }

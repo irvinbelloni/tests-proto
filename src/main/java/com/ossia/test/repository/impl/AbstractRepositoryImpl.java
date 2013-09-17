@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +62,8 @@ public abstract class AbstractRepositoryImpl<T extends Serializable, PK extends 
  
     @SuppressWarnings("unchecked")
 	public List<T> getAll() {
-        final Criteria crit = getHibernateCurrentSession().createCriteria(type);
-        return crit.list();
+        final Query query = getHibernateCurrentSession().createQuery("from " + type.getName());
+        return (List<T>) query.list();
     }
  
     public void update(final T object) {

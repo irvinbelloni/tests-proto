@@ -1,11 +1,11 @@
-package com.ossia.test.web.model;
+package com.ossia.test.web.form;
 
 import javax.validation.constraints.NotNull;
 
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
 
-public class QuestionModel {
+public class CreateUpdateQuestionForm {
 	
 	private Integer id;
 
@@ -16,12 +16,12 @@ public class QuestionModel {
 	@NotNull
 	private Integer testId ;
 	
-	public QuestionModel() {
+	public CreateUpdateQuestionForm() {
 		super() ; 
 		this.id = 0 ; 
 	}
 	
-	public QuestionModel(TestSheet test) {
+	public CreateUpdateQuestionForm(TestSheet test) {
 		super() ; 
 		this.id = 0 ;
 		this.testId = test.getId() ; 

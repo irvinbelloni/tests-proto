@@ -20,6 +20,6 @@ public class SuccessfullLoginHandler implements AuthenticationSuccessHandler {
             response.sendRedirect(request.getContextPath() + "/admin/home");
             return;
         }
-        response.sendRedirect(request.getContextPath() + "/test/list");
+        response.sendRedirect(request.getContextPath() + "/tests/home");
 	}
 }

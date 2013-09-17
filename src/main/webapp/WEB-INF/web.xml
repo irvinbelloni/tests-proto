@@ -33,7 +33,25 @@
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+    	<dispatcher>ERROR</dispatcher>
 	</filter-mapping>
+	
+	<filter>
+      <filter-name>hibernateFilter</filter-name>
+      <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+      <init-param>
+         <param-name>sessionFactoryBeanName</param-name>
+         <param-value>sessionFactory</param-value>         
+      </init-param>      
+   </filter>
+
+   <filter-mapping>
+     <filter-name>hibernateFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+   </filter-mapping> 
 
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>
@@ -45,4 +63,22 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	
+	<error-page>
+	    <location>/errors/exception</location>
+	</error-page>
+	
+	<error-page>
+	    <error-code>404</error-code>
+	    <location>/errors/404</location>
+	</error-page>
+	
+	<error-page>
+	    <error-code>403</error-code>
+	    <location>/errors/403</location>
+	</error-page>
+	
+	<error-page>
+    	<exception-type>java.lang.Exception</exception-type>
+   		<location>/errors/exception</location>
+	</error-page>
 </web-app>

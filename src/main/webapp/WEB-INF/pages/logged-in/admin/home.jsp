@@ -50,7 +50,10 @@
 			<c:if test="${list eq true}">
 				<h3><spring:message code="text.admin.home.latest.users" /></h3>
 				<c:forEach items="${candidates}" var="candidate" begin="0" end="4">
-					<a href="/">${candidate.prenom} ${candidate.nom}</a>
+					<c:url value="/admin/candidate" var="detailUrl">
+						<c:param name="candidate" value="${candidate.id}"/>
+					</c:url>
+					<a href="${detailUrl}">${candidate.prenom} ${candidate.nom}</a>
 				</c:forEach>
 			</c:if>
 		</div>

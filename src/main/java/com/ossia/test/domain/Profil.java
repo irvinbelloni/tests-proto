@@ -1,10 +1,11 @@
 package com.ossia.test.domain;//
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,6 +20,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -53,11 +55,12 @@ public class Profil implements UserDetails {
 	@NotEmpty @Pattern(regexp = "^\\s*$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:[a-zA-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$", message = "{form.error.email.invalid}")
 	private String email;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "profil")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
 	private Set<Evaluation> evaluations;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
-	private Set<ProfilHisto> historique;
+	@OrderBy(clause = "timestamp DESC")
+	private List<ProfilHisto> historique;
 	
 	@NotEmpty
 	private String login;
@@ -109,6 +112,16 @@ public class Profil implements UserDetails {
 		this.email = profilFrom.getEmail();		
 	}
 	
+	public List<Evaluation> getAssignedTests() {
+		List<Evaluation> assignedTests = new ArrayList<Evaluation>();
+		for(Evaluation evaluation : this.evaluations) {
+			if (evaluation.getResultatOK() != null && !evaluation.getResultatOK()) {
+				assignedTests.add(evaluation);
+			}
+		}
+		return assignedTests;
+	}
+	
 	private String generateLoginFromNom () {
 		if (this.prenom != null && !this.prenom.isEmpty() && this.nom != null && !this.nom.isEmpty()) {			
 			return Normalizer.normalize(this.prenom.substring(0, 1).toLowerCase().concat(this.nom.toLowerCase().trim()), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
@@ -137,14 +150,14 @@ public class Profil implements UserDetails {
 		this.evaluations = evaluations;
 	}
 
-	public Set<ProfilHisto> getHistorique() {
+	public List<ProfilHisto> getHistorique() {
 		if (historique == null) {
-			historique = new HashSet<ProfilHisto>();
+			historique = new ArrayList<ProfilHisto>();
 		}
 		return historique;
 	}
 
-	public void setHistorique(Set<ProfilHisto> historique) {
+	public void setHistorique(List<ProfilHisto> historique) {
 		this.historique = historique;
 	}
 

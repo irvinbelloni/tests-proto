@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -28,8 +29,7 @@ public class Evaluation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
-	@JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne @JoinColumn(name = "test_id")
 	@NotNull
 	private TestSheet test;
 
@@ -44,7 +44,7 @@ public class Evaluation implements Serializable {
 	private Boolean resultatOK;
 
 	public Evaluation() {
-		this.id = 0 ; 
+		resultatOK = false;
 	}
 
 	public Evaluation(TestSheet test, Profil profil, Set<Response> responses) {
@@ -52,6 +52,11 @@ public class Evaluation implements Serializable {
 		this.test = test;
 		this.profil = profil;
 		this.responses = responses;
+	}
+	
+	@Transient
+	public boolean isTestTaken(){
+		return this.resultatOK != null && this.resultatOK;
 	}
 
 	public Integer getId() {

@@ -12,14 +12,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ossia.test.domain.Profil;
 import com.ossia.test.service.ProfilService;
 
 @Controller
-public class ProfilControler {
+public class ProfilControler extends AbstractController {
 	
 	@Autowired
 	public ProfilService profilService;
 	
+	@RequestMapping(value="/tests/home", method = RequestMethod.GET)
+	public String displayTesterHome(ModelMap model) {
+		model.put("selectedTab", TAB_HOME);
+		Profil candidate = profilService.getProfilById(((Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+		model.put("candidate", candidate);
+		return "candidate-home";
+	}
+	
+	/**
+	 * Login action
+	 * @param error
+	 * @param request
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value="/login", method = RequestMethod.GET)
 	public String login(@RequestParam(value = "error", required = false) String error, HttpServletRequest request, ModelMap model) { 
 		// Checking if user is logged in. If he is, redirecting him to the dashboard page

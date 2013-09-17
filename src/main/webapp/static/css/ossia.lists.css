@@ -159,6 +159,21 @@ a.print {
 	background-position: top right;
 }
 
+a.link {
+	background: url(../images/link-icon.png) no-repeat;
+	background-position: top right;
+}
+
+a.no-float {
+	background-position: top left;
+	float: none;
+	height: auto;
+	margin: 4px 10px 4px 0;
+	padding: 0 4px 0 35px;
+	text-align: left;
+	width: auto;
+}
+
 .error {
     color: red;
 }

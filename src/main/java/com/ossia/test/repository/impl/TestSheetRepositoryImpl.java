@@ -19,5 +19,5 @@ public class TestSheetRepositoryImpl extends AbstractRepositoryImpl<TestSheet, I
 		
 		List<TestSheet> retrieved = (List<TestSheet>) query.list()  ;  
 		return retrieved ;
-	}
+	}	
 }

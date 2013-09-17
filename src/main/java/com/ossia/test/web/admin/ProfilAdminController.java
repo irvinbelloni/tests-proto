@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,29 +18,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.TestSheet;
+import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
 import com.ossia.test.service.TestSheetService;
+import com.ossia.test.web.form.AssignTestForm;
 import com.ossia.test.web.sort.ProfilSortingInfo;
 
-@Controller
-@RequestMapping("/admin")
-public class ProfilAdminController {
+@Controller @RequestMapping("/admin")
+public class ProfilAdminController extends AbstractAdminController {
 	
 	private final static String SESSION_ADMINISTRATOR_LIST_SORT = "candidate.list.sort";
-	private final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";
-	private final static String SESSION_RECENT_PROFIL = "recent.profil";
-	
-	private final static String TAB_HOME = "home";
-	private final static String TAB_ADMINISTRATOR = "administrator";
-	private final static String TAB_CANDIDATE = "candidate";
+	private final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
 	
 	@Autowired
 	ProfilService profilService;
 	
 	@Autowired
 	TestSheetService testSheetService;
+	
+	@Autowired
+	EvaluationService evaluationService;
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String displayAdminHome(ModelMap model) {
@@ -55,10 +56,7 @@ public class ProfilAdminController {
 		ProfilSortingInfo sortingInfo = completeProfilSortingInfo((ProfilSortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT), sortingField, sortingDirection);	
 		request.getSession().setAttribute(SESSION_ADMINISTRATOR_LIST_SORT, sortingInfo);
 		
-		// Recent profil (if a profil has just been created or updated)
-		Profil recentProfil = (Profil)request.getSession().getAttribute(SESSION_RECENT_PROFIL);
-		request.getSession().removeAttribute(SESSION_RECENT_PROFIL);
-		model.put("recentProfil",  recentProfil);
+		setLastActionInModel(model, request);
 		
 		model.put("administrators", profilService.getSortedProfilByRole(true, sortingInfo));
 		model.put("sortingInfo", sortingInfo);
@@ -73,11 +71,8 @@ public class ProfilAdminController {
 		// Sorting information
 		ProfilSortingInfo sortingInfo = completeProfilSortingInfo((ProfilSortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT), sortingField, sortingDirection);	
 		request.getSession().setAttribute(SESSION_CANDIDATE_LIST_SORT, sortingInfo);
-		
-		// Recent profil (if a profil has just been created or updated)
-		Profil recentProfil = (Profil)request.getSession().getAttribute(SESSION_RECENT_PROFIL);
-		request.getSession().removeAttribute(SESSION_RECENT_PROFIL);
-		model.put("recentProfil",  recentProfil);
+				
+		setLastActionInModel(model, request);
 		
 		model.put("candidates", profilService.getSortedProfilByRole(false, sortingInfo));
 		model.put("sortingInfo", sortingInfo);
@@ -86,7 +81,28 @@ public class ProfilAdminController {
 	}
 	
 	@RequestMapping(value = "/candidate", method = RequestMethod.GET)
-	public String displayCandidateDetail(@RequestParam(value = "candidate", required = false) Integer candidateId, ModelMap model) {
+	public String displayCandidateDetail(@RequestParam(value = "candidate", required = true) Integer candidateId, @RequestParam(value = "evaluation", required = false) Integer evalId, ModelMap model, HttpServletRequest request) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Profil profil = profilService.getProfilById(candidateId);
+		if (profil == null) {
+			return "redirect:/errors/404";
+		}
+		
+		setLastActionInModel(model, request);
+		
+		// Deleting the test assigned to this candidate
+		if (evalId != null) {
+			Evaluation deletedEval = evaluationService.deleteEvaluation(evalId, candidateId, true, admin);
+			if (deletedEval != null) {
+				model.put("lastAction", buildNotifyMessage("text.notify.deassign.test.to.candidate", deletedEval.getTest().getIntitule(), profil.getPrenom(), profil.getNom()));
+			}
+		}
+				
+		// Test assigning form
+		model.put("assignTest", new AssignTestForm());
+		
+		model.put("profil",  profil);
+		model.put("selectedTab", TAB_CANDIDATE);
 		return "candidate";
 	}
 	
@@ -101,8 +117,27 @@ public class ProfilAdminController {
 	@RequestMapping(value = "/profile/activate", method = RequestMethod.GET)
 	public String changeProfileActivation(@RequestParam(value = "profile") Integer profileId, @RequestParam(value = "origin") String origin, ModelMap model, HttpServletRequest request) {
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		request.getSession().setAttribute(SESSION_RECENT_PROFIL, profilService.changeActivation(profileId, admin.getId()));
-		return "redirect:/admin/" + origin;
+		
+		Profil changedProfile = profilService.changeActivation(profileId, admin);
+		if (changedProfile == null) {
+			return "redirect:/errors/404";
+		}
+		String messageCodeForLastAction = "text.notify.deactivate.";
+		if (changedProfile.isEnabled()) {
+			messageCodeForLastAction = "text.notify.activate."; 
+		}
+		if (changedProfile.isAdmin()) {
+			messageCodeForLastAction += "administrator";
+		} else {
+			messageCodeForLastAction += "candidate";
+		}
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, changedProfile.getPrenom(), changedProfile.getNom()));
+		
+		String redirectUrl = "/admin/" + origin;
+		if (origin.equals("candidate")) {
+			redirectUrl += "?candidate=" + profileId;
+		}
+		return "redirect:" + redirectUrl;
 	}
 		
 	/**
@@ -116,8 +151,24 @@ public class ProfilAdminController {
 	@RequestMapping(value = "/profile/delete", method = RequestMethod.GET)
 	public String deleteProfile(@RequestParam(value = "profile") Integer profileId, @RequestParam(value = "origin") String origin, ModelMap model, HttpServletRequest request) {
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		request.getSession().setAttribute(SESSION_RECENT_PROFIL, profilService.deleteProfil(profileId, admin.getId()));
-		return "redirect:/admin/" + origin;
+		
+		Profil deletedProfile = profilService.deleteProfil(profileId, admin);
+		if (deletedProfile == null) {
+			return "redirect:/errors/404";
+		}
+		String messageCodeForLastAction = "text.notify.delete.candidate";
+		if (deletedProfile.isAdmin()) {
+			messageCodeForLastAction = "text.notify.delete.administrator";
+		}
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, deletedProfile.getPrenom(), deletedProfile.getNom()));
+		
+		String redirectUrl = "/admin/";
+		if (origin.startsWith("candidate")) {
+			redirectUrl += "candidates";
+		} else {
+			redirectUrl += "administrators";
+		}
+		return "redirect:" + redirectUrl;
 	}
 	
 	/**
@@ -139,7 +190,9 @@ public class ProfilAdminController {
 		}
 		if (result.hasErrors()) {			
 			return origin;
-		}		
+		}	
+		model.remove("selectedTab");
+		
 		// Form data is valid
 		profil.setAdmin(false);
 		if (origin.equals("administrators")) {
@@ -147,24 +200,69 @@ public class ProfilAdminController {
 		}
 		
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String messageCodeForLastAction = null;
 		try {
 			if (profil.getMode().equals(Profil.MODE_ADD)) {
-				profilService.createProfil(profil, admin.getId());			
+				profilService.createProfil(profil, admin);
+				messageCodeForLastAction = "text.notify.add.candidate";
+				if (profil.isAdmin()) {
+					messageCodeForLastAction = "text.notify.add.administrator";
+				}
 			} else {
-				profilService.updateProfil(profil, admin.getId());
+				profilService.updateProfil(profil, admin);
+				messageCodeForLastAction = "text.notify.edit.candidate";
+				if (profil.isAdmin()) {
+					messageCodeForLastAction = "text.notify.edit.administrator";
+				}
 			}
-		} catch (ConstraintViolationException cve) { // Login is already used by someone else
+		} catch (NotFoundException nfe) { // Trying to edit a profil that does not exist
+			return "redirect:/errors/404";
+		} catch (ConstraintViolationException cve) { // Login is already used by someone else (ADD mode)
 			rejectDuplicateLogin(cve, result);
-			return origin;
-			
-		} catch (DataIntegrityViolationException dive) {
+			return origin;			
+		} catch (DataIntegrityViolationException dive) { // Login is already used by someone else (EDIT mode)
 			rejectDuplicateLogin(dive, result);
 			return origin;
+		}		
+		
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, profil.getPrenom(), profil.getNom()));
+		String redirectUrl = "/admin/" + origin;
+		if (origin.equals("candidate")) {
+			redirectUrl += "?candidate=" + profil.getId();
+		}
+		return "redirect:" + redirectUrl;
+	}
+	
+	/**
+	 * Assign a test to a candidate
+	 * @param assignTestForm
+	 * @param result
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/profile/assign-test", method = RequestMethod.POST)
+	public String assignTest(@Valid AssignTestForm assignTestForm, BindingResult result, HttpServletRequest request, ModelMap model) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		model.put("sortingInfo", (ProfilSortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
+	
+		String redirectUrl = "/admin/candidate?candidate=" + assignTestForm.getCandidateId();
+		
+		if (assignTestForm.getTestId() == 0) { // No test has been picked
+			return "redirect:" + redirectUrl;
 		}
 		
-		model.remove("selectedTab");
-		request.getSession().setAttribute(SESSION_RECENT_PROFIL, profil);
-		return "redirect:/admin/" + origin;
+		Evaluation evaluation = evaluationService.assignTest(assignTestForm.getTestId(), assignTestForm.getCandidateId(), admin);
+		
+		if (evaluation == null) {
+			String errorAction = buildNotifyMessage("text.notify.assign.test.to.candidate.error");
+			request.getSession().setAttribute(SESSION_ERROR_ACTION, errorAction);		
+		} else {
+			String lastAction = buildNotifyMessage("text.notify.assign.test.to.candidate", evaluation.getTest().getIntitule(), evaluation.getProfil().getPrenom(), evaluation.getProfil().getNom());
+			request.getSession().setAttribute(SESSION_LAST_ACTION, lastAction);			
+		}
+		
+		return "redirect:" + redirectUrl;
 	}
 	
 	@ModelAttribute("candidates")
