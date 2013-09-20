@@ -17,7 +17,7 @@
 			<form:label path="intitule">
 				<spring:message code="text.admin.tests.page.intitule" />
 			</form:label>
-			<form:input id="testSheetIntitule" path="intitule" size="10" maxlength="255" />
+			<form:input id="testSheetIntitule" path="intitule" maxlength="255" />
 			<form:errors path="intitule" cssClass="error" />
 		</div>	
 
@@ -91,10 +91,6 @@
 </div>
 
 <div class="clear-both"></div>
-
-<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.tests"/>">
-	<p></p>
-</div>
 
 <script>
 $(document).ready(function() {

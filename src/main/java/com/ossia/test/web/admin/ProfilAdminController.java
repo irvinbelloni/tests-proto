@@ -30,9 +30,6 @@ import com.ossia.test.web.sort.ProfilSortingInfo;
 @Controller @RequestMapping("/admin")
 public class ProfilAdminController extends AbstractAdminController {
 	
-	private final static String SESSION_ADMINISTRATOR_LIST_SORT = "candidate.list.sort";
-	private final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
-	
 	@Autowired
 	ProfilService profilService;
 	

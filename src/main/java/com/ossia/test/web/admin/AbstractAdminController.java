@@ -10,6 +10,9 @@ import org.springframework.ui.ModelMap;
 
 public abstract class AbstractAdminController {
 	
+	protected final static String SESSION_ADMINISTRATOR_LIST_SORT = "candidate.list.sort";
+	protected final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
+	
 	protected final static String SESSION_LAST_ACTION = "last.action";
 	protected final static String SESSION_ERROR_ACTION = "error.action";
 	

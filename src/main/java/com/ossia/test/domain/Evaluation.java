@@ -1,6 +1,7 @@
 package com.ossia.test.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -29,11 +30,12 @@ public class Evaluation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	@ManyToOne @JoinColumn(name = "test_id")
+	@ManyToOne
+	@JoinColumn(name = "test_id")
 	@NotNull
 	private TestSheet test;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne
 	@JoinColumn(name = "profil_id", referencedColumnName = "id", nullable = false)
 	@NotNull
 	private Profil profil;
@@ -41,10 +43,14 @@ public class Evaluation implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<Response> responses;
 
-	private Boolean resultatOK;
+	private Boolean statut;
+	
+	private Date start_time ; 
+	
+	private Date end_time ; 
 
 	public Evaluation() {
-		resultatOK = false;
+		statut = false;
 	}
 
 	public Evaluation(TestSheet test, Profil profil, Set<Response> responses) {
@@ -56,7 +62,7 @@ public class Evaluation implements Serializable {
 	
 	@Transient
 	public boolean isTestTaken(){
-		return this.resultatOK != null && this.resultatOK;
+		return this.statut != null && this.statut;
 	}
 
 	public Integer getId() {
@@ -91,11 +97,27 @@ public class Evaluation implements Serializable {
 		this.responses = responses;
 	}
 
-	public Boolean getResultatOK() {
-		return resultatOK;
+	public Boolean getStatut() {
+		return statut;
 	}
 
-	public void setResultatOK(Boolean resultatOK) {
-		this.resultatOK = resultatOK;
+	public void setStatut(Boolean statut) {
+		this.statut = statut;
+	}
+
+	public Date getStart_time() {
+		return start_time;
+	}
+
+	public void setStart_time(Date start_time) {
+		this.start_time = start_time;
+	}
+
+	public Date getEnd_time() {
+		return end_time;
+	}
+
+	public void setEnd_time(Date end_time) {
+		this.end_time = end_time;
 	}
 }

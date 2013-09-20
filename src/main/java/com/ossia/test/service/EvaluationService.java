@@ -1,9 +1,13 @@
 package com.ossia.test.service;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import com.ossia.test.domain.Evaluation;
+import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.Profil;
+import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
 
@@ -19,6 +23,8 @@ public interface EvaluationService {
 	Collection <Evaluation> getEvaluationByProfil (Profil profilCandidat) ; 
 	
 	Collection <Evaluation> getEvaluationByTestSheet (TestSheet testSheetPasse) ;
+	
+	List<Evaluation> getAllActiveResultats(); 
 	
 	void deleteEvaluation (Evaluation toDelete) ; 
 	
@@ -52,5 +58,15 @@ public interface EvaluationService {
 	Response getResponseById (Integer idResponse) ; 
 	
 	void deleteResponse (Evaluation evaluationAModifier , Response response ) ; 
+	
+	Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) ;
 
+	String determinerNoteGlobale(Evaluation evalParamEntree);
+
+	String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau object);
+	
+	/*
+	 * CALCULS 
+	 */
+	
 }

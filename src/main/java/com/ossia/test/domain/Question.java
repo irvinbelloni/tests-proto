@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +29,10 @@ public class Question implements Serializable {
     private Integer id;
 
 	private String intitule;
-	private String niveau;
+	
+	@Enumerated(EnumType.STRING)
+	private Niveau niveau;
+	
 	private String contenu;
     
     @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch=FetchType.EAGER )
@@ -41,7 +46,7 @@ public class Question implements Serializable {
     	this.id = 0 ; 
 	}
 
-	public Question(String intitule, String niveau, String contenu) {
+	public Question(String intitule, Niveau niveau, String contenu) {
 		super();
 		this.intitule = intitule;
 		this.niveau = niveau;
@@ -78,11 +83,11 @@ public class Question implements Serializable {
         this.intitule = intitule;
     }
 
-    public String getNiveau() {
+    public Niveau getNiveau() {
         return niveau;
     }
 
-    public void setNiveau(String niveau) {
+    public void setNiveau(Niveau niveau) {
         this.niveau = niveau;
     }
 

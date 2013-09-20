@@ -1,15 +1,17 @@
 package com.ossia.test.domain;//
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -30,15 +32,14 @@ public class Response implements Serializable {
     @NotNull
     private Question question;
     
-    @OneToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
-    @JoinColumn(name = "repChoisie", referencedColumnName = "id", nullable = false)
-    private PropositionReponse reponseChoisie ; 
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    private Set<PropositionReponse> reponseChoisie ; 
 
     public Response() {
     	this.id = 0 ; 
 	}
 
-	public Response(Question question, PropositionReponse reponseChoisie) {
+	public Response(Question question, Set<PropositionReponse> reponseChoisie) {
 		super();
 		this.question = question;
 		this.reponseChoisie = reponseChoisie;
@@ -59,4 +60,12 @@ public class Response implements Serializable {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
+	public Set<PropositionReponse> getReponseChoisie() {
+		return reponseChoisie;
+	}
+
+	public void setReponseChoisie(Set<PropositionReponse> reponseChoisie) {
+		this.reponseChoisie = reponseChoisie;
+	}
 }

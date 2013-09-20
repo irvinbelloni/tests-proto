@@ -41,7 +41,6 @@ public class TestSheetAdminController {
 	/*
 	 * GESTION TESTS
 	 */
-
 	@RequestMapping(value = "/test/home", method = RequestMethod.GET)
 	public String displayTestHome(ModelMap model) {
 		model.put("testSheet", new TestSheet()) ; 
@@ -76,7 +75,7 @@ public class TestSheetAdminController {
 		}
 		model.put("testSheet", new TestSheet()) ; 
 		
-		return "redirect:" + "/admin/test/test-home" ; 
+		return "redirect:" + "/admin/test/home" ; 
 	}
 	
 	@RequestMapping(value = "/test/delete", method = RequestMethod.GET)
@@ -142,7 +141,7 @@ public class TestSheetAdminController {
 		model.put("questions", liste ) ; 
 		model.put("testSheet", test ) ; 
 		
-		return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
+		return "redirect:"+ "/admin/test/detail" + "?id="+test.getId() ; 
 	}
 	
 	@RequestMapping(value = "/question/delete", method = RequestMethod.GET)
@@ -159,7 +158,7 @@ public class TestSheetAdminController {
 		model.put("questionForm", new CreateUpdateQuestionForm(test)) ; 
 		model.put("testSheet", test ) ;
 		
-		return "redirect:/admin/test/detail" + "?id="+test.getId() ;
+		return "redirect:"+ "/admin/test/detail" + "?id="+test.getId() ;
 	}
 	
 	/*
@@ -188,7 +187,7 @@ public class TestSheetAdminController {
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
-		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
+		return "redirect:" + "/admin/question/detail" + "?id="+question.getId() ; 
 	}
 	
 	@RequestMapping(value = "/proposition/delete", method = RequestMethod.GET)
@@ -205,6 +204,6 @@ public class TestSheetAdminController {
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
-		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
+		return "redirect:" + "/admin/question/detail" + "?id="+question.getId() ; 
 	}
 }

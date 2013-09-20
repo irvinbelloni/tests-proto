@@ -18,7 +18,7 @@
 	        <form:label path="valeur">
 	             <spring:message code="text.admin.propositionReponses.page.valeur" />
 	        </form:label>
-	        <form:input id="propositionValeur" path="valeur" size="10" maxlength="25"/>
+	        <form:input id="propositionValeur" path="valeur" maxlength="255"/>
 	        <form:errors path="valeur" cssClass="error"/><br/>
         </div>
         
@@ -87,10 +87,6 @@
 </div>
 
 <div class="clear-both"></div>
-
-<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.propositionReponses"/>">
-	<p></p>
-</div>
 
 <script>
 $(document).ready(function() {

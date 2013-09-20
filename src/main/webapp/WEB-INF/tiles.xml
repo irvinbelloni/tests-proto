@@ -41,6 +41,11 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/tests/question-detail.jsp" />
     </definition>
 	
+    <definition name="resultat-home" extends="logged-in-layout">
+    	<put-attribute name="title" value="Administration des résultats" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/resultats/home.jsp" />
+    </definition>
+    
     <definition name="administrators" extends="logged-in-layout">
     	<put-attribute name="title" value="Liste des administrateurs" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/administrators/list.jsp" />

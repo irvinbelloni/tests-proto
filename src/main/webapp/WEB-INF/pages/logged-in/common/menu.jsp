@@ -15,12 +15,17 @@
 			<%-- Tests tab --%>
 			<c:set var="selectedClass" value="" />
 			<c:if test="${selectedTab eq 'test'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
-			<li class="${selectedClass}"><a href="<c:url value="/admin/tests"/>"><spring:message code="menu.label.tests" /></a></li>
+			<li class="${selectedClass}"><a href="<c:url value="/admin/test/home"/>"><spring:message code="menu.label.tests" /></a></li>
 			
 			<%-- Candidates tab --%>
 			<c:set var="selectedClass" value="" />
 			<c:if test="${selectedTab eq 'candidate'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
 			<li class="${selectedClass}"><a href="<c:url value="/admin/candidates"/>"><spring:message code="menu.label.users" /></a></li>
+			
+			<%-- Results tab --%>
+			<c:set var="selectedClass" value="" />
+			<c:if test="${selectedTab eq 'resultat'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
+			<li class="${selectedClass}"><a href="<c:url value="/admin/resultats"/>"><spring:message code="menu.label.resultats" /></a></li>
 			
 			<%-- Administrators tab --%>
 			<c:set var="selectedClass" value="" />

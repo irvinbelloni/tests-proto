@@ -2,6 +2,7 @@ package com.ossia.test.web.form;
 
 import javax.validation.constraints.NotNull;
 
+import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
 
@@ -12,6 +13,8 @@ public class CreateUpdateQuestionForm {
 	private String intitule;
 	private String niveau;
 	private String contenu;
+	
+	private final String[] levels = { Niveau.JUNIOR.getValue() , Niveau.INTERMEDIAIRE.getValue() , Niveau.SENIOR.getValue() } ; 
 	
 	@NotNull
 	private Integer testId ;
@@ -30,7 +33,8 @@ public class CreateUpdateQuestionForm {
 	public Question updateQuestion(Question qu) {
 		qu.setContenu(this.contenu) ; 
 		qu.setIntitule(this.intitule) ; 
-		qu.setNiveau(this.niveau) ; 
+		
+		qu.setNiveau(Niveau.fromValue (niveau) ) ; 
 		
 		return qu ; 
 	} 
@@ -39,7 +43,8 @@ public class CreateUpdateQuestionForm {
 		Question qu = new Question() ; 
 		qu.setContenu(this.contenu) ; 
 		qu.setIntitule(this.intitule) ; 
-		qu.setNiveau(this.niveau) ; 
+		
+		qu.setNiveau(Niveau.fromValue (niveau) ) ; 
 		qu.setTest(test) ; 
 		
 		return qu ; 
@@ -83,6 +88,10 @@ public class CreateUpdateQuestionForm {
 
 	public void setTestId(Integer testId) {
 		this.testId = testId;
+	}
+
+	public String[] getLevels() {
+		return levels;
 	}
 
 }

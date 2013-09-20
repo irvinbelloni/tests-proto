@@ -1,6 +1,8 @@
 package com.ossia.test.service.impl;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.HistoAction;
+import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.Profil;
+import com.ossia.test.domain.PropositionReponse;
+import com.ossia.test.domain.Question;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
 import com.ossia.test.repository.EvaluationRepository;
 import com.ossia.test.repository.ProfilRepository;
+import com.ossia.test.repository.QuestionRepository;
 import com.ossia.test.repository.ResponseRepository;
 import com.ossia.test.repository.TestSheetRepository;
 import com.ossia.test.service.EvaluationService;
@@ -37,8 +43,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 	@Autowired
 	private TestSheetRepository testSheetRepository;
 	
+	@Autowired
+	private QuestionRepository questionRepository ; 
+	
 	@Autowired 
-	ProfilService profilService;
+	private ProfilService profilService;
 
 	public Evaluation createEvaluation(Evaluation toCreate) {
 		Integer id = evaluationRepository.create(toCreate); 
@@ -59,6 +68,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public Collection<Evaluation> getEvaluationByTestSheet(
 			TestSheet testSheetPasse) {
 		return evaluationRepository.getEvaluationByTestSheet(testSheetPasse);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Evaluation> getAllActiveResultats() {
+		return  evaluationRepository.getAll() ;
 	}
 
 	public void deleteEvaluation(Evaluation toDelete) {
@@ -128,4 +142,56 @@ public class EvaluationServiceImpl implements EvaluationService {
 		
 		return evaluation;
 	}	
+	
+	public Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) {
+		Boolean resultat = null ; 
+		for (PropositionReponse propositionReponse : reponses) {
+			if (propositionReponse.getPropositionCorrecte()) {
+				resultat = Boolean.TRUE ; 
+			}
+			else {
+				resultat = Boolean.FALSE ; 
+				break ; 
+			}
+		}
+		return resultat ; 
+	}
+
+	@Override
+	public String determinerNoteGlobale(Evaluation evalParamEntree) {
+		Integer nombreQuestions = evalParamEntree.getResponses().size() ;
+		Integer nombreReponsesVraies = 0 ; 
+		Integer nombreReponsesFausses = 0 ;
+		
+		for (Response response : evalParamEntree.getResponses()) {
+			Set<PropositionReponse> reponseChoisie = response.getReponseChoisie() ; 
+			
+			if (verifyConformityResponse(reponseChoisie)) {
+				nombreReponsesVraies ++ ; 
+			} else {
+				nombreReponsesFausses ++ ; 
+			}
+		}
+		return nombreReponsesVraies + "/" + nombreQuestions ;
+	}
+
+	@Override
+	public String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau level) {
+		List<Question> liste = questionRepository.getQuestionsByTestAndNiveau(evalParamEntree.getTest(), level) ;
+		Integer nombreQuestions = liste.size() ;
+		Integer nombreReponsesVraies = 0 ; 
+		Integer nombreReponsesFausses = 0 ;
+		
+		for (Question question : liste) {
+			Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
+			Set<PropositionReponse> reponseChoisie = response.getReponseChoisie() ; 
+			
+			if (verifyConformityResponse(reponseChoisie)) {
+				nombreReponsesVraies ++ ; 
+			} else {
+				nombreReponsesFausses ++ ; 
+			}
+		}
+		return nombreReponsesVraies + "/" + nombreQuestions ;
+	}
 }

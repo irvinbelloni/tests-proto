@@ -18,15 +18,15 @@
 	        <form:label path="intitule">
 	             <spring:message code="text.admin.questions.page.intitule" />
 	        </form:label>
-	        <form:input id="questionIntitule" path="intitule" size="10" maxlength="25"/>
+	        <form:input id="questionIntitule" path="intitule" maxlength="25"/>
 	        <form:errors path="intitule" cssClass="error"/><br/>
         </div>
         
         <div>
 	        <form:label path="niveau">
 	             <spring:message code="text.admin.questions.page.niveau" />
-	        </form:label>     
-	        <form:input id="questionNiveau" path="niveau" maxlength="10"/>
+	        </form:label>   
+	        <form:select path="niveau" items="${questionForm.levels}" />  
 	        <form:errors path="niveau" cssClass="error"/><br/>
         </div>
         
@@ -92,10 +92,6 @@
 </div>
 
 <div class="clear-both"></div>
-
-<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.questions"/>">
-	<p></p>
-</div>
 
 <script>
 $(document).ready(function() {
