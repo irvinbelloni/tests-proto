@@ -15,6 +15,7 @@ public abstract class AbstractController {
 	protected final static String SESSION_ERROR_ACTION = "error.action";
 	
 	protected final static String TAB_HOME = "home";
+	protected final static String TAB_CURRENT_TEST = "current.test";
 	
 	@Autowired
 	protected ProfilService profilService;

@@ -18,7 +18,7 @@ import com.ossia.test.domain.ProfilHisto;
 import com.ossia.test.repository.ProfilHistoRepository;
 import com.ossia.test.repository.ProfilRepository;
 import com.ossia.test.service.ProfilService;
-import com.ossia.test.web.sort.ProfilSortingInfo;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Service("profilService") @Transactional
 public class ProfilServiceImpl implements ProfilService, UserDetailsService {
@@ -98,7 +98,7 @@ public class ProfilServiceImpl implements ProfilService, UserDetailsService {
 	}
 	
 	@Override @Transactional(readOnly = true)
-	public Collection<Profil> getSortedProfilByRole(boolean admin, ProfilSortingInfo sortingInfo) {
+	public Collection<Profil> getSortedProfilByRole(boolean admin, SortingInfo sortingInfo) {
 		return profilRepository.getSortedProfilByRole(admin, sortingInfo.getSortingField(), sortingInfo.getSortingDirection());
 	}
 

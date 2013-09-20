@@ -10,6 +10,7 @@ import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
+import com.ossia.test.web.form.QuestionForm;
 
 public interface EvaluationService {
 
@@ -42,13 +43,19 @@ public interface EvaluationService {
 	Evaluation deleteEvaluation (int evalId, int candidateId, boolean onlyNonTakenTest, Profil admin);
 	
 	/**
-	 * Assing a test to a candidate
+	 * Assigns a test to a candidate
 	 * @param testId test id
 	 * @param candidateId candidate id
 	 * @param admin Administrator requesting the assignment
 	 * @return The created evaluation
 	 */
 	Evaluation assignTest (int testId, int candidateId, Profil admin);
+	
+	/**
+	 * Marks the test as started by setting its start time to NOW
+	 * @param evaluation
+	 */
+	void markTestAsStarted (Evaluation evaluation);
 
 	/*
 	 * RESPONSES
@@ -58,15 +65,27 @@ public interface EvaluationService {
 	Response getResponseById (Integer idResponse) ; 
 	
 	void deleteResponse (Evaluation evaluationAModifier , Response response ) ; 
+		
+	/**
+	 * Checks if the time allowed to pass the test is over or not
+	 * @param evaluation
+	 * @return true if time is over, false otherwise
+	 */
+	boolean isTimeOver (Evaluation evaluation);
 	
-	Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) ;
-
-	String determinerNoteGlobale(Evaluation evalParamEntree);
-
-	String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau object);
+	Evaluation saveCandidateResponse(QuestionForm questionForm);
+	
+	void closeTest(int evaluationId);
 	
 	/*
 	 * CALCULS 
 	 */
+	
+	Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) ;
+	
+	String determinerNoteGlobale(Evaluation evalParamEntree);
+	
+	String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau object);
+	
 	
 }

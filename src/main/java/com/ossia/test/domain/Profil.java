@@ -115,7 +115,7 @@ public class Profil implements UserDetails {
 	public List<Evaluation> getAssignedTests() {
 		List<Evaluation> assignedTests = new ArrayList<Evaluation>();
 		for(Evaluation evaluation : this.evaluations) {
-			if (evaluation.getStatut() != null && !evaluation.getStatut()) {
+			if (!evaluation.isTestTaken()) {
 				assignedTests.add(evaluation);
 			}
 		}

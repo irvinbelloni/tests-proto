@@ -66,7 +66,7 @@ p.actions .sub-actions {
 	border-radius: 4px;
 	display: none;
 	margin-left: -190px;
-	padding: 15px 5px 5px 5px;
+	padding: 15px 5px 8px 5px;
 	position: absolute;
 	width: 230px;
 	
@@ -75,7 +75,7 @@ p.actions .sub-actions {
 }
 
 p.actions .sub-actions a {
-	margin: 0 10px 0 0;
+	margin: 1px 10px 4px 0;
 }
 
 p.actions:hover .sub-actions {
@@ -132,6 +132,11 @@ a.action {
 
 a.action:hover {
 	text-decoration: underline;
+}
+
+a.add {
+	background: url(../images/add-icon.png) no-repeat;
+	background-position: top right;
 }
 
 a.activate { 

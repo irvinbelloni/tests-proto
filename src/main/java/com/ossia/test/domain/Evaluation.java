@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,22 +36,24 @@ public class Evaluation implements Serializable {
 	@NotNull
 	private TestSheet test;
 
-	@ManyToOne
-	@JoinColumn(name = "profil_id", referencedColumnName = "id", nullable = false)
+	/* @ManyToOne
+	@JoinColumn(name = "profil_id", referencedColumnName = "id", nullable = false) */
+	@ManyToOne @JoinColumn(name = "profil_id")
 	@NotNull
 	private Profil profil;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "evaluation")
 	private Set<Response> responses;
 
-	private Boolean statut;
+	private Integer status;
 	
-	private Date start_time ; 
+	@Column(name = "start_time")
+	private Date startTime ; 
 	
-	private Date end_time ; 
+	@Column(name = "end_time")
+	private Date endTime ; 
 
 	public Evaluation() {
-		statut = false;
 	}
 
 	public Evaluation(TestSheet test, Profil profil, Set<Response> responses) {
@@ -62,8 +65,18 @@ public class Evaluation implements Serializable {
 	
 	@Transient
 	public boolean isTestTaken(){
-		return this.statut != null && this.statut;
+		return this.status == TestStatus.DONE.getCode();
 	}
+	
+	@Transient
+	public boolean isTestInProgress(){
+		return this.status == TestStatus.IN_PROGRESS.getCode();
+	}	
+
+	@Transient
+	public boolean isTestAssigned(){
+		return this.status == TestStatus.ASSIGNED.getCode();
+ 	}
 
 	public Integer getId() {
 		return id;
@@ -97,27 +110,27 @@ public class Evaluation implements Serializable {
 		this.responses = responses;
 	}
 
-	public Boolean getStatut() {
-		return statut;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setStatut(Boolean statut) {
-		this.statut = statut;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
-	public Date getStart_time() {
-		return start_time;
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setStart_time(Date start_time) {
-		this.start_time = start_time;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
-	public Date getEnd_time() {
-		return end_time;
+	public Date getEndTime() {
+		return endTime;
 	}
 
-	public void setEnd_time(Date end_time) {
-		this.end_time = end_time;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 }

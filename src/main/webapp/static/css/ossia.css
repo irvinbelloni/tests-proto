@@ -130,9 +130,17 @@ footer a {
 	padding: 0 10px;
 }
 
+.wide-block h1 p {
+	float: right;
+}
+
 .wide-block h1 span {
 	color: #9f698d;
 	font-size: 18px;
+}
+
+.wide-block h1 span.normal {
+	color: #003;
 }
 
 h1.error {
@@ -152,59 +160,14 @@ h1.error span {
 	font-size: 60px;
 }
 
-/**********************************************/
-/**********************************************/
-/**********************************************/
-/**********************************************/
-
-
-
-article {
-	margin: 0 0 10px 0;
-	text-align: left;
-	width: 100%;
-}
-
-article h2 {
-	background: rgba(0, 0, 0, 0.9);
-	color: #fff;
-	font-size: 25px;
-	padding: 0 10px;
-	margin: 0 auto;	
-	text-align: right;
-	width: 80%;
-}
-
-h2.top-padding {
-	padding-top: 15px;
-}
-
-article h2 span {
-	font-size: 14px;
-}
-
-
-
-#question {
-	background: #fff;
-	width: inherit;	
-	box-shadow: 0 0 20px #fff;
-}
-
-#question p {
-	padding: 10px;
-	margin: 0 auto;
-	width: 80%;
-}
-
-#answer {
-	background: rgba(0, 0, 0, 0.9);
-	color: #fff;
-	margin: 0 auto;
-	padding: 10px 10px 0 10px;	
-	width: 80%;
-	
-	border-radius: 0 0 10px 10px;
-	-moz-border-radius: 0 0 10px 10px;
-	-webkit-border-radius: 0 0 10px 10px;
+/* Modal screen */
+#modal {
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99999;
 }

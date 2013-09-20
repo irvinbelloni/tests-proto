@@ -1,6 +1,8 @@
 package com.ossia.test.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,38 +13,45 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.annotations.OrderBy;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.format.annotation.NumberFormat.Style;
 
 @Entity
 @Table(name = "T_SHEETS")
 public class TestSheet implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	@NotBlank
+	@NotEmpty
 	private String intitule;
 
-	@NotNull
+	@NotNull @NumberFormat(style = Style.NUMBER)
+    @Min(1)
+    @Max(300)
 	private int duree;
 
 	@NotEmpty
 	private String type;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "test")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "test")
 	private Set<Evaluation> evaluations;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	private Set<Question> questions;
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy = "test")
+	private List<Question> questions;
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "test")
+	@OrderBy(clause = "timestamp DESC")
+	private List<TestHisto> historique;
 
 	public TestSheet() {
 		this.id = 0 ; 
@@ -85,11 +94,11 @@ public class TestSheet implements Serializable {
 		this.type = type;
 	}
 
-	public Set<Question> getQuestions() {
+	public List<Question> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(Set<Question> questions) {
+	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}
 
@@ -103,5 +112,16 @@ public class TestSheet implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public List<TestHisto> getHistorique() {
+		if (historique == null) {
+			historique = new ArrayList<TestHisto>();
+		}
+		return historique;
+	}
+
+	public void setHistorique(List<TestHisto> historique) {
+		this.historique = historique;
 	}
 }

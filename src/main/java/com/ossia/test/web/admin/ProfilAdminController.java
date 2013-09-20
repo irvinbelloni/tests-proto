@@ -13,19 +13,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Profil;
-import com.ossia.test.domain.TestSheet;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
 import com.ossia.test.service.TestSheetService;
 import com.ossia.test.web.form.AssignTestForm;
-import com.ossia.test.web.sort.ProfilSortingInfo;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Controller @RequestMapping("/admin")
 public class ProfilAdminController extends AbstractAdminController {
@@ -38,24 +36,21 @@ public class ProfilAdminController extends AbstractAdminController {
 	
 	@Autowired
 	EvaluationService evaluationService;
-
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String displayAdminHome(ModelMap model) {
-		model.put("selectedTab", TAB_HOME);
-		return "admin-home";
-	}
+	
+	private final static String SESSION_ADMINISTRATOR_LIST_SORT = "administrator.list.sort";
+ 	private final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
 	
 	@RequestMapping(value = "/administrators", method = RequestMethod.GET)
 	public String displayAdministratorsList(@RequestParam(value = "sort", required = false) String sortingField, @RequestParam(value = "direction", required = false) String sortingDirection, ModelMap model, HttpServletRequest request) {
 		model.put("profil", new Profil());
 		
 		// Sorting information
-		ProfilSortingInfo sortingInfo = completeProfilSortingInfo((ProfilSortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT), sortingField, sortingDirection);	
+		SortingInfo sortingInfo = completeProfilSortingInfo((SortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT), sortingField, sortingDirection);	
 		request.getSession().setAttribute(SESSION_ADMINISTRATOR_LIST_SORT, sortingInfo);
 		
 		setLastActionInModel(model, request);
 		
-		model.put("administrators", profilService.getSortedProfilByRole(true, sortingInfo));
+		model.put("administrators", getProfilList(true, request));
 		model.put("sortingInfo", sortingInfo);
 		model.put("selectedTab", TAB_ADMINISTRATOR);
 		return "administrators";
@@ -66,12 +61,12 @@ public class ProfilAdminController extends AbstractAdminController {
 		model.put("profil", new Profil());
 		
 		// Sorting information
-		ProfilSortingInfo sortingInfo = completeProfilSortingInfo((ProfilSortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT), sortingField, sortingDirection);	
+		SortingInfo sortingInfo = completeProfilSortingInfo((SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT), sortingField, sortingDirection);	
 		request.getSession().setAttribute(SESSION_CANDIDATE_LIST_SORT, sortingInfo);
 				
 		setLastActionInModel(model, request);
 		
-		model.put("candidates", profilService.getSortedProfilByRole(false, sortingInfo));
+		model.put("candidates", getProfilList(false, request));
 		model.put("sortingInfo", sortingInfo);
 		model.put("selectedTab", TAB_CANDIDATE);
 		return "candidates";
@@ -179,11 +174,14 @@ public class ProfilAdminController extends AbstractAdminController {
 	 */
 	@RequestMapping(value = "/profile/add-or-edit", method = RequestMethod.POST)
 	public String addOrEditProfile(@RequestParam(value = "origin") String origin, @Valid Profil profil, BindingResult result, HttpServletRequest request, ModelMap model) {
-		model.put("selectedTab", TAB_CANDIDATE);
-		model.put("sortingInfo", (ProfilSortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
 		if (origin.equals("administrators")) {
 			model.put("selectedTab", TAB_ADMINISTRATOR);
-			model.put("sortingInfo", (ProfilSortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT));
+			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT));
+			model.put("administrators", getProfilList(true, request));
+		} else {
+			model.put("selectedTab", TAB_CANDIDATE);
+			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
+			model.put("candidates", getProfilList(false, request));
 		}
 		if (result.hasErrors()) {			
 			return origin;
@@ -241,7 +239,7 @@ public class ProfilAdminController extends AbstractAdminController {
 	@RequestMapping(value = "/profile/assign-test", method = RequestMethod.POST)
 	public String assignTest(@Valid AssignTestForm assignTestForm, BindingResult result, HttpServletRequest request, ModelMap model) {
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		model.put("sortingInfo", (ProfilSortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
+		model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
 	
 		String redirectUrl = "/admin/candidate?candidate=" + assignTestForm.getCandidateId();
 		
@@ -262,37 +260,48 @@ public class ProfilAdminController extends AbstractAdminController {
 		return "redirect:" + redirectUrl;
 	}
 	
-	@ModelAttribute("candidates")
-    public Collection<Profil> getAllUsers() {
-		return profilService.getSortedProfilByRole(false, new ProfilSortingInfo());
-	}
 	
-	@ModelAttribute("administrators")
-    public Collection<Profil> getAllAdministrators() {
-		return profilService.getProfilByRole(true);
-	}
 	
-	@ModelAttribute("tests")
-    public Collection<TestSheet> getAllTests() {
-		return testSheetService.getAllTestSheets();
-	}
-	
-	private ProfilSortingInfo completeProfilSortingInfo (ProfilSortingInfo sortingInfo, String sortingField, String sortingDirection) {
+	private SortingInfo completeProfilSortingInfo (SortingInfo sortingInfo, String sortingField, String sortingDirection) {
 		if (sortingInfo == null) {
-			sortingInfo = new ProfilSortingInfo();
+			sortingInfo = new SortingInfo();
+			sortingInfo.setSortingDirection(SortingInfo.DESC);
+			sortingInfo.setSortingField(SortingInfo.SORT_CREATION_DATE);
 		}
 		if (sortingField != null) {
-			if (ProfilSortingInfo.SORT_ACTIVE.equals(sortingField) || ProfilSortingInfo.SORT_CREATION_DATE.equals(sortingField) || ProfilSortingInfo.SORT_NAME.equals(sortingField) || ProfilSortingInfo.SORT_FIRSTNAME.equals(sortingField)) {
+			if (SortingInfo.SORT_ACTIVE.equals(sortingField) || SortingInfo.SORT_CREATION_DATE.equals(sortingField) || SortingInfo.SORT_NAME.equals(sortingField) || SortingInfo.SORT_FIRSTNAME.equals(sortingField)) {
 				sortingInfo.setSortingField(sortingField);
 			}
 		}
 		if (sortingDirection != null) {
-			if (ProfilSortingInfo.ASC.equals(sortingDirection) || ProfilSortingInfo.DESC.equals(sortingDirection)) {
+			if (SortingInfo.ASC.equals(sortingDirection) || SortingInfo.DESC.equals(sortingDirection)) {
 				sortingInfo.setSortingDirection(sortingDirection);
 			}
+		}		
+		return sortingInfo;
+	}
+	
+	/**
+	 * Gets the list of profiles (administrators or candidates)
+	 * @param admin Flag indicating if we want the administrators (true) or the candidates (false)
+	 * @param request To get the sorting information
+	 * @return Collection of profiles
+	 */
+	private Collection<Profil> getProfilList(boolean admin, HttpServletRequest request) {
+		
+		SortingInfo sortingInfo = null;
+		if (admin) {
+			sortingInfo = (SortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT);
+		} else {
+			sortingInfo = (SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT);
+		}
+		if (sortingInfo == null) {
+			sortingInfo = new SortingInfo();
+			sortingInfo.setSortingDirection(SortingInfo.DESC);
+			sortingInfo.setSortingField(SortingInfo.SORT_CREATION_DATE);
 		}
 		
-		return sortingInfo;
+		return profilService.getSortedProfilByRole(admin, sortingInfo);
 	}
 	
 	private void rejectDuplicateLogin (Exception e, BindingResult result) {

@@ -17,8 +17,18 @@
     </definition>
     
     <definition name="test-setup" extends="logged-in-layout">
-    	<put-attribute name="title" value="Candidat" />
+    	<put-attribute name="title" value="Test en cours" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/candidate/setup.jsp" />
+    </definition>
+    
+    <definition name="question" extends="logged-in-layout">
+    	<put-attribute name="title" value="Test en cours" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/candidate/question.jsp" />
+    </definition>
+    
+    <definition name="end-of-test" extends="logged-in-layout">
+    	<put-attribute name="title" value="Test en cours" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/candidate/end-of-test.jsp" />
     </definition>
    
     <!-- Administrator views -->    

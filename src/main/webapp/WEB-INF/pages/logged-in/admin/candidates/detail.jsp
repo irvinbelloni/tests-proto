@@ -83,10 +83,6 @@
 	
 	<div class="control">
 		<div class="container">
-			<c:url value="/admin/profile/delete" var="linkUrl">
-				<c:param name="profile" value="${profil.id}"/>
-				<c:param name="origin" value="candidate"/>
-			</c:url>
 			<a href="#" onclick="assignTest(); return false;" class="action link no-float">
 				<spring:message code="link.label.candidate.detail.link.test"/>
 			</a>
@@ -121,13 +117,18 @@
 		<div class="container" id="assigned-tests">
 			<h2><spring:message code="content.title.candidate.detail.assigned.tests"/></h2>
 			<c:forEach items="${profil.evaluations}" var="eval">
-				<c:if test="${!eval.resultatOK}">
+				<c:if test="${eval.status ne 3}">
 					<p>
 						<c:url value="/admin/candidate" var="deleteEvalUrl">
 							<c:param name="candidate" value="${profil.id}"/>
 							<c:param name="evaluation" value="${eval.id}"/>
 						</c:url>
-						<span>(<a href="${deleteEvalUrl}">supprimer</a>)</span>
+						<c:if test="${eval.status eq 1}">
+							<span>(<a href="${deleteEvalUrl}"><spring:message code="link.label.delete"/></a>)</span>
+						</c:if>
+						<c:if test="${eval.status eq 2}">
+							<span>(<spring:message code="text.detail.test.in.progress"/>)</span>
+						</c:if>
 						${eval.test.intitule}
 					</p>
 				</c:if>
@@ -157,7 +158,7 @@
 		<div class="container" style="margin-top: 10px">
 			<h2><spring:message code="content.title.candidate.detail.taken.tests"/></h2>
 			<c:forEach items="${profil.evaluations}" var="eval">
-				<c:if test="${eval.resultatOK}">
+				<c:if test="${eval.status eq 3}">
 					<p>
 						${eval.test.intitule}
 					</p>

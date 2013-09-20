@@ -12,7 +12,11 @@
 		ci-dessous.<br/><br/>
 		Mettre les autres consignes ici.
 		
-		<a href="#" class="button"><spring:message code="link.label.start.test" /></a>
+		<c:url value="/tests/question" var="testUrl">
+			<c:param name="test" value="${evaluation.id}"/>
+			<c:param name="question" value="1"/>
+		</c:url>
+		<a href="${testUrl}" class="button"><spring:message code="link.label.start.test" /></a>
 		<br/><br/><br/>
 	</p>
 </div>

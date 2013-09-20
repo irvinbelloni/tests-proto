@@ -37,7 +37,14 @@
 			<%-- Home tab --%>
 			<c:set var="selectedClass" value="" />
 			<c:if test="${selectedTab eq 'home'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
-			<li class="${selectedClass}"><a href="<c:url value="/tests/home"/>"><spring:message code="menu.label.candidate.home" /></a></li>	
+			<li class="${selectedClass}"><a href="<c:url value="/tests/home"/>"><spring:message code="menu.label.candidate.home" /></a></li>
+			
+			<%-- Current test tab --%>
+			<c:if test="${testEnCours}">
+				<c:set var="selectedClass" value="" />
+				<c:if test="${selectedTab eq 'current.test'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
+				<li class="${selectedClass}"><a href="#"><spring:message code="menu.label.candidate.current.test" /></a></li>	
+			</c:if>
 		</sec:authorize>
 	</ul>
  </nav>

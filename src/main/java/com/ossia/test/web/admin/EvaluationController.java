@@ -17,7 +17,7 @@ import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
 import com.ossia.test.service.TestSheetService;
 import com.ossia.test.web.form.AssignTestForm;
-import com.ossia.test.web.sort.ProfilSortingInfo;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Controller
 @RequestMapping("/admin")
@@ -44,7 +44,7 @@ public class EvaluationController {
 	
 	@ModelAttribute("candidates")
 	public Collection<Profil> displayCandidatesList() {
-		return profilService.getSortedProfilByRole(false, new ProfilSortingInfo() );
+		return profilService.getSortedProfilByRole(false, new SortingInfo() );
 	}
 	
 	@RequestMapping(value = "/resultats", method = RequestMethod.GET)

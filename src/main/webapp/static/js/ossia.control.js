@@ -2,8 +2,13 @@ var textEditAdministrator = "";
 var textEditCandidate = "";
 var textAddAdministrator = "";
 var textAddCandidate = "";
+var textTestTimeOver = "";
+var textTestTimeOverPrecision = "";
 
 var dialogTextDeleteProfil = "";
+
+var remainingTime;
+var timeoutRT;
 
 $(document).ready(function() {
 	// Syntax highlighter
@@ -33,6 +38,50 @@ $(document).ready(function() {
 	
 	$(".left-list").css("minHeight", parseInt ($(".side-form").height() + 20));
 });
+
+function displayRemainingTime(testId) {
+	remainingTime --;
+	if (remainingTime == 0) {
+		clearInterval(timeoutRT);
+		var popupHtml = "<div id=\"time-over\"><span>" + textTestTimeOver + "</span><br/><br/>" + textTestTimeOverPrecision + "</div>";
+	    
+	    $("#modal", window.parent.document).fadeIn (400, function() {
+	    	$("#modal", window.parent.document).after (popupHtml);
+	    });
+	    
+	    setTimeout('document.location="/Tests-Proto/tests/end-of-test?test=' + testId + '";', 5000);
+		
+	}
+	$("#remaining-time").html(getRemainingTime());
+}
+
+function log(text) {
+	$("#log").html($("#log").html() + "<br/>" + text);
+}
+function getRemainingTime() {
+	var remTime = remainingTime;
+	var displayTime = "";
+	var nbHours = Math.floor(remTime / 3600);
+	if (nbHours < 10) {
+		displayTime += "0";
+	}
+	displayTime += nbHours + ":";
+	remTime -= nbHours * 3600;
+		
+	var nbMinutes = Math.floor(remTime / 60);
+	if (nbMinutes < 10) {
+		displayTime += "0";
+	}
+	displayTime += nbMinutes + ":";
+	remTime -= nbMinutes * 60;
+	
+	if (remTime < 10) {
+		displayTime += "0";
+	}
+	displayTime += remTime;		
+	
+	return displayTime;
+}
 
 function adjustFooterHeight() {
 	var footerHeight = $("footer").height();
@@ -290,7 +339,7 @@ function deleteTestSheet (id, intitule, url) {
 	$(function() {
 		$("#dialog-confirm").dialog({
 			resizable : false,
-			height : 180,
+			height : 210,
 			modal : true,
 			buttons : {
 				"Supprimer" : function() {

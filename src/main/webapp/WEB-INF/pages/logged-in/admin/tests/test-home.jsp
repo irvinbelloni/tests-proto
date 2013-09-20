@@ -43,14 +43,58 @@
 
 <div class="left-list">
 	<h2>
+		<span>
+			<spring:message code="text.sort.by"/>:&nbsp;&nbsp;
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'intitule'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>		
+			<c:url value="/admin/test/home" var="sortUrl">
+				<c:param name="sort" value="intitule"/>
+				<c:param name="direction" value="${dir}"/>
+			</c:url>	
+			<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.intitule"/></a>&nbsp;&nbsp;-&nbsp;
+			
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'type'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>
+			<c:url value="/admin/test/home" var="sortUrl">
+				<c:param name="sort" value="type"/>
+				<c:param name="direction" value="${dir}"/>
+			</c:url>
+			<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.type"/></a>&nbsp;&nbsp;-&nbsp;
+			
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'duree'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>
+			<c:url value="/admin/test/home" var="sortUrl">
+				<c:param name="sort" value="duree"/>
+				<c:param name="direction" value="${dir}"/>
+			</c:url>
+			<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.duree"/></a>			
+		</span>
 		<spring:message code="text.admin.tests.page.liste" />
 	</h2>
 	
-	<c:if test="${fn:length(testLists) eq 0}">
+	<c:if test="${fn:length(tests) eq 0}">
 		<spring:message code="text.admin.tests.page.liste.nulle" />
 	</c:if>
 	
-	<c:forEach var="currentTest" items="${testLists}">
+	<c:forEach var="currentTest" items="${tests}">
 		<div class="list-item">
 			<p class="actions">
 				<a href="#" class="actions-down"></a>
@@ -79,11 +123,13 @@
 					
 				</span>
 			</p>
-			<p class="main">${currentTest.type}</p>
+			<p class="main">
+				<a href="${detailUrl}">${currentTest.intitule}</a>
+			</p>
 			<p class="detail">
-				<span class="label"><spring:message code="text.admin.tests.page.intitule" /> : </span>${currentTest.intitule} <br/> 
-				<span class="label"><spring:message code="text.admin.tests.page.duree" /> : </span>${currentTest.duree} <br />
-				<span class="label"><spring:message code="text.admin.tests.page.questions" /></span>${currentTest.questionSize}<br />
+				<span class="label"><spring:message code="text.admin.tests.page.type" />: </span> ${currentTest.type}<br/> 
+				<span class="label"><spring:message code="text.admin.tests.page.duree" />: </span>${currentTest.duree} <spring:message code="text.admin.tests.page.minutes" /><br />
+				<span class="label"><spring:message code="text.admin.tests.page.questions" />: </span>${currentTest.questionSize}<br />
 			</p>
 			<div class="clear-left"></div>
 		</div>
@@ -98,5 +144,10 @@ $(document).ready(function() {
 	textEditTest = "<spring:message code="text.side.form.title.tests.edit"/>";
 	dialogTextDeleteTest = "<spring:message code="dialog.text.delete.tests"/>";
 	
+	if ($("#testSheetDuree").val() == 0) {
+		$("#testSheetDuree").val("");
+	}
+	
+	<jsp:include page="../notify-action.jsp"/>	
 });
 </script>	

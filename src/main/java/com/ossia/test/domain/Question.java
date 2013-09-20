@@ -35,8 +35,7 @@ public class Question implements Serializable {
 	
 	private String contenu;
     
-    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} , fetch=FetchType.EAGER )
-    @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne @JoinColumn(name = "test_id")
     private TestSheet test;
     
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "question")

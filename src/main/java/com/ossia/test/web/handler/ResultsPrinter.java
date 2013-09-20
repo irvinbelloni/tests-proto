@@ -12,7 +12,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,8 +178,8 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		paragraph.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_NOTE_GLOBALE , noteGlobale )) ; 
 		paragraph.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_DUREE_TEST , evalParamEntree.getTest().getDuree()+"" )) ; 
 		
-		paragraph.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , evalParamEntree.getStart_time().toString())) ;  
-		paragraph.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , evalParamEntree.getEnd_time().toString())) ;
+		paragraph.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , evalParamEntree.getStartTime().toString())) ;  
+		paragraph.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , evalParamEntree.getEndTime().toString())) ;
 		
 		for (Niveau object : Niveau.values()) {
 			String noteParNiveau = evaluationService.determinerNoteParNiveau (evalParamEntree , object) ; 
@@ -194,7 +193,7 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		
 		for (Response response : evalParamEntree.getResponses()) {
 			phrase = new Phrase();
-			Set<PropositionReponse> reponseChoisie = response.getReponseChoisie() ; 
+			Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
 			
 			phrase.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_QUESTION , response.getQuestion().getIntitule() )) ;
 			phrase.add( createChunkWithFont( FONT_NORMAL ,ITEXT_DOCUMENT_CHAPTER_NIVEAU , response.getQuestion().getNiveau().getValue() )) ;

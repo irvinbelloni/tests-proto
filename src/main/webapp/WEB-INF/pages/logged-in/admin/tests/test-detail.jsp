@@ -5,6 +5,39 @@
 <%@ page language="java" pageEncoding="UTF-8"
 	contentType="text/html; charset=utf-8"%>
 
+<div class="wide-block">
+	<h1>
+		<a href="<c:url value="/admin/test/home"/>"><spring:message code="link.label.back.to.test.list"/></a>
+		<span>${testSheet.intitule}</span> (<spring:message code="content.title.test.detail"/> ${testSheet.type}) 
+	</h1>
+	
+	<div class="control">
+		<div class="container">
+			<a href="#" onclick="addQuestion(); return false;" class="action add no-float">
+				<spring:message code="link.label.test.detail.add.question"/>
+			</a>
+		</div>
+		
+		<div class="container" style="margin-top: 10px">
+			<a href="#" onclick="editProfilDetail(${profil.id}, '${profil.prenom}', '${profil.nom}', '${profil.email}', '${profil.login}', '${profil.pass}', '${profil.dateActivation}', '${profil.dateActivation}'); return false;" class="action edit no-float">
+				<spring:message code="link.label.candidate.detail.edit" />
+			</a>
+		</div>
+		
+		<div class="container" style="margin-top: 10px">
+			<c:url value="/admin/profile/delete" var="deleteUrl">
+				<c:param name="profile" value="${profil.id}"/>
+				<c:param name="origin" value="candidate"/>
+			</c:url>
+			<a href="#" onclick="deleteProfil(${profil.id}, '${profil.prenom}', '${profil.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.candidate"/>'); return false;" class="action delete no-float">
+				<spring:message code="link.label.candidate.detail.delete"/>
+			</a>
+		</div>
+	</div>
+	
+	<div class="clear-both"></div>
+</div>
+
 <div class="side-form">
 
 	<h2><spring:message code="text.admin.questions.page.ajout" /></h2>

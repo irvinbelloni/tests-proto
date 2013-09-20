@@ -3,7 +3,7 @@ package com.ossia.test.service;
 import java.util.Collection;
 
 import com.ossia.test.domain.Profil;
-import com.ossia.test.web.sort.ProfilSortingInfo;
+import com.ossia.test.web.sort.SortingInfo;
 
 public interface ProfilService {
 
@@ -19,7 +19,7 @@ public interface ProfilService {
 	
 	Collection<Profil> getProfilByRole (boolean admin); 
 	
-	Collection<Profil> getSortedProfilByRole(boolean admin, ProfilSortingInfo sortingInfo);
+	Collection<Profil> getSortedProfilByRole(boolean admin, SortingInfo sortingInfo);
 	
 	void deleteProfil (Profil profilASupprimer) ;
 	

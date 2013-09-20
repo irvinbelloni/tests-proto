@@ -2,7 +2,6 @@ package com.ossia.test.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,17 +17,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table (name = "T_PROPOSITIONS_RESPONSES")
 public class PropositionReponse implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id ; 
 	
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
-    @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne @JoinColumn(name = "question_id")
     @NotNull
 	private Question question ; 
 	

@@ -9,44 +9,55 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
 import com.ossia.test.service.TestSheetService;
 import com.ossia.test.web.form.CreateUpdatePropositionReponseForm;
 import com.ossia.test.web.form.CreateUpdateQuestionForm;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Controller
 @RequestMapping("/admin")
-public class TestSheetAdminController {
+public class TestSheetAdminController extends AbstractAdminController {
 	
 	private final Log log = LogFactory.getLog(getClass()) ; 
 	
+	private final static String SESSION_TEST_LIST_SORT = "test.list.sort";
+	
 	@Autowired
 	private TestSheetService testSheetService ; 
-	
-	@ModelAttribute("testLists")
-    public Collection<TestSheet> getAllTests() {
-		return testSheetService.getAllTestSheets();
-	}
-	
+
 	/*
 	 * GESTION TESTS
 	 */
 	@RequestMapping(value = "/test/home", method = RequestMethod.GET)
-	public String displayTestHome(ModelMap model) {
-		model.put("testSheet", new TestSheet()) ; 
-		return "test-home";
-	}
-	
+	public String displayTestHome(@RequestParam(value = "sort", required = false) String sortingField, @RequestParam(value = "direction", required = false) String sortingDirection, ModelMap model, HttpServletRequest request) {
+		
+		// Sorting information
+		SortingInfo sortingInfo = completeTestSortingInfo((SortingInfo)request.getSession().getAttribute(SESSION_TEST_LIST_SORT), sortingField, sortingDirection);	
+		request.getSession().setAttribute(SESSION_TEST_LIST_SORT, sortingInfo);
+		
+		setLastActionInModel(model, request);
+				
+		model.put("tests", getTestList(request));
+		model.put("sortingInfo", sortingInfo);
+		
+ 		model.put("testSheet", new TestSheet()) ; 
+		model.put("selectedTab", TAB_TEST);
+ 		return "test-home";
+ 	}
+		 	
 	@RequestMapping(value = "/test/detail", method = RequestMethod.GET)
 	public String displayTestDetailForm(@RequestParam(value = "id") String idRequestParam , ModelMap model  ) {
 
@@ -57,36 +68,55 @@ public class TestSheetAdminController {
 		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(testSheet) ;
 		model.put("questions", liste ) ; 
 		model.put("testSheet", testSheet ) ; 
-		
+		model.put("selectedTab", TAB_TEST);
 		return "test-detail";
 	}
 	
 	@RequestMapping(value = "/test/createUpdate", method = RequestMethod.POST)
-	public String addOrEditTest (@Valid TestSheet testSheet , BindingResult result, ModelMap model) {
+	public String addOrEditTest (@Valid TestSheet testSheet , BindingResult result, HttpServletRequest request, ModelMap model) {
 		
 		if (result.hasErrors()) {
-			return "test-home";
+			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_TEST_LIST_SORT));
+			model.put("selectedTab", TAB_TEST);
+			model.put("tests", getTestList(request));
+ 			return "test-home";
 		}
+		model.remove("selectedTab");
+		
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String messageCodeForLastAction = null;
 		
 		if (testSheet.getId().equals(null) || testSheet.getId() == 0) {
-			testSheet = testSheetService.createTestSheet(testSheet) ;
+			testSheet = testSheetService.createTestSheet(testSheet, admin) ;
+			messageCodeForLastAction = "text.notify.add.test";
 		} else {
-			testSheet = testSheetService.updateTestSheet(testSheet) ; 
+			testSheet = testSheetService.updateTestSheet(testSheet , admin) ;
+			try {
+				testSheet = testSheetService.updateTestSheet(testSheet, admin) ; 
+				messageCodeForLastAction = "text.notify.edit.test";
+			} catch (NotFoundException nfe) { // Trying to edit a test that does not exist
+				return "redirect:/errors/404";
+			} 
 		}
+		
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, testSheet.getIntitule()));
+		
 		model.put("testSheet", new TestSheet()) ; 
 		
 		return "redirect:" + "/admin/test/home" ; 
 	}
 	
 	@RequestMapping(value = "/test/delete", method = RequestMethod.GET)
-	public String deleteTest(@RequestParam(value = "id") String idRequestParam , ModelMap model ) {
+	public String deleteTest(@RequestParam(value = "id") String idRequestParam, HttpServletRequest request, ModelMap model ) {
 		
 		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		TestSheet testSheetToDelete = testSheetService.getTestSheetById( identifier ) ; 
 		testSheetService.deleteTestSheet(testSheetToDelete) ; 
 		model.put("testSheet", new TestSheet()) ; 
 		
-		return "redirect:" + "/admin/test/test-home" ; 
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.test", testSheetToDelete.getIntitule()));
+		
+		return "redirect:" + "/admin/test/home" ; 
 	}
 
 	@RequestMapping(value = "/test/print", method = RequestMethod.GET)
@@ -98,7 +128,7 @@ public class TestSheetAdminController {
 		// TODO TDS - Complete implementation 
 		
 		model.put("testSheet", new TestSheet()) ; 
-		return "redirect:" + "/admin/test/test-home" ;
+		return "redirect:" + "/admin/test/home" ;
 	}
 	
 	/*
@@ -206,4 +236,35 @@ public class TestSheetAdminController {
 		
 		return "redirect:" + "/admin/question/detail" + "?id="+question.getId() ; 
 	}
+	
+	
+	private SortingInfo completeTestSortingInfo (SortingInfo sortingInfo, String sortingField, String sortingDirection) {
+		if (sortingInfo == null) {
+			sortingInfo = new SortingInfo();
+			sortingInfo.setSortingDirection(SortingInfo.ASC);
+			sortingInfo.setSortingField(SortingInfo.SORT_INTITULE);
+		}
+		if (sortingField != null) {
+			if (SortingInfo.SORT_INTITULE.equals(sortingField) || SortingInfo.SORT_DUREE.equals(sortingField) || SortingInfo.SORT_TYPE.equals(sortingField)) {
+				sortingInfo.setSortingField(sortingField);
+			}
+		}
+		if (sortingDirection != null) {
+			if (SortingInfo.ASC.equals(sortingDirection) || SortingInfo.DESC.equals(sortingDirection)) {
+				sortingInfo.setSortingDirection(sortingDirection);
+			}
+		}		
+		return sortingInfo;
+	}
+	
+    private Collection<TestSheet> getTestList(HttpServletRequest request) {
+		SortingInfo sortingInfo = (SortingInfo)request.getSession().getAttribute(SESSION_TEST_LIST_SORT);
+		if (sortingInfo == null) {
+			sortingInfo = new SortingInfo();
+			sortingInfo.setSortingField(SortingInfo.SORT_INTITULE);
+			sortingInfo.setSortingDirection(SortingInfo.ASC);
+		}
+		return testSheetService.getSortedTestSheets(sortingInfo);
+	}
+	
 }

@@ -11,6 +11,7 @@ import com.ossia.test.repository.PropositionReponseRepository;
 @Repository
 public class PropositionReponseRepositoryImpl extends AbstractRepositoryImpl<PropositionReponse, Integer> implements PropositionReponseRepository {
 
+	@SuppressWarnings("unchecked")
 	public List<PropositionReponse> getAllPropositionReponseByQuestionId(Integer id) {
 		
 		Query query = getHibernateCurrentSession().createQuery("from PropositionReponse pr where pr.question.id=:id")

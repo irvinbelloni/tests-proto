@@ -12,9 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "T_PROFIL_HISTORIQUES")
-public class ProfilHisto implements Serializable {
-	
+@Table(name = "T_SHEET_HISTORIQUES")
+public class TestHisto implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
@@ -26,12 +26,12 @@ public class ProfilHisto implements Serializable {
 	
 	private Date timestamp;
 	
-	@ManyToOne @JoinColumn(name = "profil_id")
-	private Profil profil;
+	@ManyToOne @JoinColumn(name = "test_id")
+	private TestSheet test;
 	
-	private static final long serialVersionUID = -8442467703708358760L;
+	private static final long serialVersionUID = -8442467703345558760L;
 	
-	public ProfilHisto() {
+	public TestHisto() {
 		this.timestamp = new Date();
 	}
 
@@ -59,12 +59,12 @@ public class ProfilHisto implements Serializable {
 		this.timestamp = timestamp;
 	}
 
-	public Profil getProfil() {
-		return profil;
+	public TestSheet getTestSheet() {
+		return test;
 	}
 
-	public void setProfil(Profil profil) {
-		this.profil = profil;
+	public void setTestSheet(TestSheet test) {
+		this.test = test;
 	}
 
 	public Profil getAdmin() {

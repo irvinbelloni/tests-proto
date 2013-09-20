@@ -18,3 +18,75 @@
 	font-size: 16px;
 	line-height: 18px;
 }
+
+#time-over {
+	background: #fff;
+	border-radius: 4px;
+	font-size: 20px;
+	left: 50%;
+	line-height: 23px;
+	margin-left: -225px;
+	padding: 30px;
+	position: absolute;
+	top: 150px;
+	width: 450px;
+	z-index: 100000;
+	
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#time-over span {
+	font-family: Georgia;
+	font-size: 50px;	
+}
+
+.question, .navigation {
+	background: #f8f8f8;
+	border-radius: 4px;
+	font-size: 20px;
+	line-height: 16px;
+	margin-bottom: 10px;
+	padding: 30px;
+	
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.navigation {
+	padding: 20px;
+	text-align: center;
+}
+
+.question-navigation {
+	margin: 0 20%;
+	padding: 10px 5px 0 5px;
+	text-align: center;
+	width: auto;
+}
+
+.answer {
+	padding: 20px 30px;
+}
+
+.answer table {
+	width: 100%;
+}
+
+.answer table td {
+	padding: 10px;
+}
+
+.answer table td.checkbox {
+	text-align: left;
+	vertical-align: middle;
+	width: 20px;
+}
+
+.answer table tr.odd td {
+	background: #f8f8f8;
+}
+
+.answer table tr.even td {
+	background: #fff;
+}

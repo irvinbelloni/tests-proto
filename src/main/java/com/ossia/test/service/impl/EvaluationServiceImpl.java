@@ -1,6 +1,9 @@
 package com.ossia.test.service.impl;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +20,7 @@ import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
+import com.ossia.test.domain.TestStatus;
 import com.ossia.test.repository.EvaluationRepository;
 import com.ossia.test.repository.ProfilRepository;
 import com.ossia.test.repository.QuestionRepository;
@@ -24,6 +28,7 @@ import com.ossia.test.repository.ResponseRepository;
 import com.ossia.test.repository.TestSheetRepository;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
+import com.ossia.test.web.form.QuestionForm;
 
 @Service
 @Transactional
@@ -47,7 +52,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 	private QuestionRepository questionRepository ; 
 	
 	@Autowired 
-	private ProfilService profilService;
+	ProfilService profilService;
 
 	public Evaluation createEvaluation(Evaluation toCreate) {
 		Integer id = evaluationRepository.create(toCreate); 
@@ -132,7 +137,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 		
 		Evaluation evaluation = new Evaluation();
 		evaluation.setProfil(candidate);
-		evaluation.setTest(testSheet);	
+		evaluation.setTest(testSheet);
+		evaluation.setStatus(TestStatus.ASSIGNED.getCode());
 		testSheet.getEvaluations().add(evaluation);				
 		candidate.getEvaluations().add(evaluation);		
 		profilRepository.update(candidate);
@@ -164,7 +170,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		Integer nombreReponsesFausses = 0 ;
 		
 		for (Response response : evalParamEntree.getResponses()) {
-			Set<PropositionReponse> reponseChoisie = response.getReponseChoisie() ; 
+			Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
 			
 			if (verifyConformityResponse(reponseChoisie)) {
 				nombreReponsesVraies ++ ; 
@@ -184,7 +190,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		
 		for (Question question : liste) {
 			Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
-			Set<PropositionReponse> reponseChoisie = response.getReponseChoisie() ; 
+			Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
 			
 			if (verifyConformityResponse(reponseChoisie)) {
 				nombreReponsesVraies ++ ; 
@@ -194,4 +200,98 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 		return nombreReponsesVraies + "/" + nombreQuestions ;
 	}
+	
+	@Override
+	public void markTestAsStarted(Evaluation evaluation) {
+		evaluation.setStartTime(new Date());
+		evaluation.setStatus(TestStatus.IN_PROGRESS.getCode());
+		
+		evaluationRepository.update(evaluation);
+	}
+
+	@Override
+	public boolean isTimeOver(Evaluation evaluation) {
+		if (evaluation.getStatus() != TestStatus.IN_PROGRESS.getCode()) { // The test must be in progress
+			return true;
+		}	
+		
+		try {
+			Date now = new Date();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(evaluation.getStartTime());
+			calendar.add(Calendar.MINUTE, evaluation.getTest().getDuree()); // adds the test length to the starting time
+			Date estimatedEndTime = calendar.getTime();
+			
+			// The current timestamp is after the estimated ending time, so the test is over, we return true, false otherwise (the test can go on)
+			return now.after(estimatedEndTime);
+		} catch (NullPointerException npe) { // In case the starting time has not been set
+			return true;
+		}
+	}
+
+	@Override
+	public Evaluation saveCandidateResponse(QuestionForm questionForm) {
+		Evaluation evaluation = evaluationRepository.getById(questionForm.getEvaluationId());
+		if (evaluation == null) {
+			return null;
+		}
+		
+		boolean newAnswer = true;
+		
+		// Checking if the question has already been answered
+		for (Response response : evaluation.getResponses()) {
+			if (response.getQuestion().getId() == questionForm.getQuestionId()) {
+				// The question has already been answered. Then we have to update the answers picked by the candidate
+				response.setReponsesChoisies(new HashSet<PropositionReponse>());
+				newAnswer = false;
+				
+				for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
+					for (int i : questionForm.getPropositions()) {
+						if (i == proposition.getId()) {
+							response.getReponsesChoisies().add(proposition);
+						}
+					}
+				}	
+			}
+		}
+		
+		if (newAnswer) { // The question has never been answered before		
+			Response response = new Response();
+			response.setEvaluation(evaluation);
+			
+			for (Question question : evaluation.getTest().getQuestions()) { // Parsing all the test
+				if (question.getId() == questionForm.getQuestionId()) {
+					response.setQuestion(question);
+					
+					for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
+						for (int i : questionForm.getPropositions()) {
+							if (i == proposition.getId()) {
+								response.getReponsesChoisies().add(proposition);
+							}
+						}
+					}			
+				}
+			}
+			evaluation.getResponses().add(response);
+		}		
+		
+		evaluationRepository.update(evaluation);	
+		return evaluation;
+	}
+
+	@Override
+	public void closeTest(int evaluationId) {
+		Evaluation evaluation = evaluationRepository.getById(evaluationId);
+		if (evaluation == null) {
+			return;
+		}
+		if (!evaluation.isTestInProgress()) {
+			return;
+		}
+		
+		evaluation.setEndTime(new Date());
+		evaluation.setStatus(TestStatus.DONE.getCode());
+		
+		evaluationRepository.update(evaluation);		
+	}	
 }

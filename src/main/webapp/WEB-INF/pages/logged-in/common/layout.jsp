@@ -41,6 +41,8 @@
        	<tiles:insertAttribute name="footer" />
        	
        	<div id="dialog-confirm" title=""><p></p></div>
+       	
+       	<div id="modal"></div>
 	</body>
 	
 	<script>

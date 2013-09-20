@@ -17,6 +17,8 @@ public abstract class AbstractAdminController {
 	protected final static String SESSION_ERROR_ACTION = "error.action";
 	
 	protected final static String TAB_HOME = "home";
+	protected final static String TAB_TEST = "test";
+	protected final static String TAB_RESULTAT = "resultat";
 	protected final static String TAB_ADMINISTRATOR = "administrator";
 	protected final static String TAB_CANDIDATE = "candidate";
 	

@@ -1,7 +1,9 @@
 package com.ossia.test.app;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -54,9 +56,9 @@ public class TestBasicServices {
     @Transactional
     public void testCreationProfilOK () {
     	Profil dumb = fillDumbProfil() ;
-//    	dumb = profilService.createProfil(dumb , 0) ;
-//    	log.debug("identifiant du profil créé : "+dumb.getId()) ; 
-//    	Assert.assertNotNull(dumb) ; 
+    	dumb = profilService.createProfil(dumb , dumb) ;
+    	log.debug("identifiant du profil crÃ©Ã© : "+dumb.getId()) ; 
+    	Assert.assertNotNull(dumb) ; 
     }
 
     private Profil fillDumbProfil () {
@@ -69,9 +71,9 @@ public class TestBasicServices {
     @Test
     @Transactional
     public void testCreationTestSheetOK () {
-    	
+    	Profil dumb = fillDumbProfil() ;
     	TestSheet t0 = fillTestSheetWithQuestions() ; 
-    	t0 = testSheetService.createTestSheet(t0) ; 
+    	t0 = testSheetService.createTestSheet(t0, dumb) ; 
     	
     	Assert.assertNotNull(t0.getId()) ; 
     	log.debug("test numero "+t0.getId()) ; 
@@ -123,7 +125,7 @@ public class TestBasicServices {
         testJava.setIntitule("Tests Java - niveau Intermédiare");
         testJava.setType("Java");
 
-        Set<Question> questions = new HashSet<Question> ();
+        List<Question> questions = new ArrayList<Question> ();
         questions.add(fillDumbQuestion0(testJava)) ;
         questions.add(fillDumbQuestion1(testJava)) ; 
 		testJava.setQuestions(questions);
@@ -136,15 +138,15 @@ public class TestBasicServices {
     public void testCreationEvaluation () {
     	
     	Profil dumb = fillDumbProfil() ;
-//    	dumb = profilService.createProfil(dumb , 0) ;
-//    	
-//    	TestSheet t0 = fillTestSheetWithQuestions() ; 
-//    	t0 = testSheetService.createTestSheet(t0) ; 
-//    	
-//    	Evaluation eval = fillDumbEvaluation(dumb, t0)  ; 
-//    	eval = evaluationService.createEvaluation(eval) ;
-//    	
-//    	Assert.assertNotNull(eval) ; 
+    	dumb = profilService.createProfil(dumb , dumb) ;
+    	
+    	TestSheet t0 = fillTestSheetWithQuestions() ; 
+    	t0 = testSheetService.createTestSheet(t0, dumb) ; 
+    	
+    	Evaluation eval = fillDumbEvaluation(dumb, t0)  ; 
+    	eval = evaluationService.createEvaluation(eval) ;
+    	
+    	Assert.assertNotNull(eval) ; 
     }
     
     private Evaluation fillDumbEvaluation (Profil candidat, TestSheet testJava) {
@@ -154,20 +156,20 @@ public class TestBasicServices {
         return evaluation ; 
     }
 
-	private Set<Response> fillDumbResponses(Set<Question> questions) {
+	private Set<Response> fillDumbResponses(List<Question> questions) {
 		Set<Response> rs = new HashSet<Response>() ; 
 		
 		for (Question question : questions) {
 			PropositionReponse pr = null ; 
-			// choix de la première occurence lors de la lecture 
+			// choix de la premiÃ¨re occurence lors de la lecture 
 			for (PropositionReponse pr0 : question.getPropositionsReponses()) {
 				pr = pr0 ; 
 				break ; 
 			}
-			
+			Response e = new Response(question);
 			Set<PropositionReponse> set = new HashSet<PropositionReponse>() ;
 			set.add(pr) ; 
-			Response e = new Response(question , set );
+			e.setReponsesChoisies(set) ; 
 			rs.add(e ) ; 
 		}
 		return rs ;

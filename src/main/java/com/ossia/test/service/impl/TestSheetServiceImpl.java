@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ossia.test.domain.HistoAction;
+import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
+import com.ossia.test.domain.TestHisto;
 import com.ossia.test.domain.TestSheet;
 import com.ossia.test.repository.PropositionReponseRepository;
 import com.ossia.test.repository.QuestionRepository;
 import com.ossia.test.repository.TestSheetRepository;
 import com.ossia.test.service.TestSheetService;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Service 
 public class TestSheetServiceImpl implements TestSheetService {
@@ -28,8 +32,17 @@ public class TestSheetServiceImpl implements TestSheetService {
 	private PropositionReponseRepository propositionReponseRepository ; 
 
 	@Transactional
-	public TestSheet createTestSheet(TestSheet testSheetACreer) {
-		Integer id = testSheetRepository.create(testSheetACreer); 
+	public TestSheet createTestSheet(TestSheet testSheetACreer, Profil admin) {
+		
+		// Tracing the creation
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.ADD.getCode());
+		histo.setTestSheet(testSheetACreer);
+		
+		testSheetACreer.getHistorique().add(histo);
+		
+		Integer id = testSheetRepository.create(testSheetACreer);		
 		return getTestSheetById(id) ; 
 	}
 
@@ -48,8 +61,21 @@ public class TestSheetServiceImpl implements TestSheetService {
 		return testSheetRepository.getAll() ;
 	}
 	
+	@Override
+	public List<TestSheet> getSortedTestSheets(SortingInfo sortingInfo) {
+		return testSheetRepository.getSortedTestSheets(sortingInfo.getSortingField(), sortingInfo.getSortingDirection());
+	}
+	
 	@Transactional
-	public TestSheet updateTestSheet(TestSheet testSheet) {
+	public TestSheet updateTestSheet(TestSheet testSheet, Profil admin) {
+		// Tracing the creation
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.EDIT.getCode());
+		histo.setTestSheet(testSheet);
+		
+		testSheet.getHistorique().add(histo);
+		
 		testSheetRepository.update(testSheet) ; 
 		return testSheetRepository.getById(testSheet.getId()) ; 
 	}

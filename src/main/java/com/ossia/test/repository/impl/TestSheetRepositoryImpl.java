@@ -19,5 +19,13 @@ public class TestSheetRepositoryImpl extends AbstractRepositoryImpl<TestSheet, I
 		
 		List<TestSheet> retrieved = (List<TestSheet>) query.list()  ;  
 		return retrieved ;
+	}
+	
+	@Override @SuppressWarnings("unchecked")
+	public List<TestSheet> getSortedTestSheets(String orderingField, String orderingDirection) {
+		Query query = getHibernateCurrentSession().createQuery("from TestSheet test order by test." + orderingField + " " + orderingDirection);
+		
+		List<TestSheet> retrieved = (List<TestSheet>) query.list()  ;  
+		return retrieved ;
 	}	
 }
