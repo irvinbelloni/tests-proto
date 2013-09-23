@@ -1,4 +1,4 @@
-package com.ossia.test.web.handler;
+package com.ossia.test.web.admin;
 
 public interface ResultsPrinterInterface {
 	

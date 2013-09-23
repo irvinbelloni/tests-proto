@@ -1,5 +1,6 @@
 package com.ossia.test.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -183,22 +184,40 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 	@Override
 	public String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau level) {
-		List<Question> liste = questionRepository.getQuestionsByTestAndNiveau(evalParamEntree.getTest(), level) ;
-		Integer nombreQuestions = liste.size() ;
+		List<Question> listeQuestionsParNiveau = questionRepository.getQuestionsByTestAndNiveau(evalParamEntree.getTest(), level) ;
+		Integer nombreQuestions = listeQuestionsParNiveau.size() ;
 		Integer nombreReponsesVraies = 0 ; 
 		Integer nombreReponsesFausses = 0 ;
 		
-		for (Question question : liste) {
-			Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
-			Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
-			
-			if (verifyConformityResponse(reponseChoisie)) {
-				nombreReponsesVraies ++ ; 
-			} else {
-				nombreReponsesFausses ++ ; 
+		if (nombreQuestions == 0 ) {
+			for (Question question : listeQuestionsParNiveau) {
+				Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
+				if (response != null) {
+					Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
+					
+					if (verifyConformityResponse(reponseChoisie)) {
+						nombreReponsesVraies ++ ; 
+					} else {
+						nombreReponsesFausses ++ ; 
+					}
+				} else {
+					break ; 
+				}
 			}
 		}
 		return nombreReponsesVraies + "/" + nombreQuestions ;
+	}
+	
+	@Override
+	public List<PropositionReponse> determinerPropositionsCorrectesByReponse(Response response) {
+		Set<PropositionReponse> reponses = response.getQuestion().getPropositionsReponses() ; 
+		List<PropositionReponse> listeToReturn = new ArrayList<PropositionReponse>() ; 
+		for (PropositionReponse propositionReponse : reponses) {
+			if (propositionReponse.isPropositionCorrecte()) {
+				listeToReturn.add(propositionReponse) ; 
+			}
+		}
+		return listeToReturn;
 	}
 	
 	@Override

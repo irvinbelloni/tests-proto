@@ -55,6 +55,12 @@ public class Evaluation implements Serializable {
 
 	public Evaluation() {
 	}
+	
+	public Evaluation(TestSheet test, Profil profil) {
+		super();
+		this.test = test;
+		this.profil = profil;
+	}
 
 	public Evaluation(TestSheet test, Profil profil, Set<Response> responses) {
 		super();

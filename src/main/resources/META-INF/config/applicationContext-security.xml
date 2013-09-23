@@ -11,6 +11,7 @@
 		<intercept-url pattern="/errors/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
 		<intercept-url pattern="/tests/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
 	    <intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN')" />
+	    <intercept-url pattern="/print/**" access="hasAnyRole('ROLE_ADMIN')" />
 	    <intercept-url pattern="/**" access="denyAll" />
 	    		
 	    <form-login login-page="/login" authentication-failure-url="/login?error=failed" authentication-success-handler-ref="successfullLoginHandler" />

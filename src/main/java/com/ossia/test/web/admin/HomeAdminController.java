@@ -45,7 +45,7 @@ public class HomeAdminController extends AbstractAdminController {
 		return profilService.getProfilByRole(true);
 	}
 	
-	@ModelAttribute("tests")
+	@ModelAttribute("tests" )
     public Collection<TestSheet> getAllTests() {
 		SortingInfo sortingInfo = new SortingInfo();
 		sortingInfo.setSortingField(SortingInfo.SORT_CREATION_DATE);

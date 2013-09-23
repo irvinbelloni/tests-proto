@@ -134,7 +134,6 @@ public class TestBasicServices {
     }
     
     @Test
-    @Transactional
     public void testCreationEvaluation () {
     	
     	Profil dumb = fillDumbProfil() ;
@@ -150,13 +149,13 @@ public class TestBasicServices {
     }
     
     private Evaluation fillDumbEvaluation (Profil candidat, TestSheet testJava) {
-        Set<Response> reponses = fillDumbResponses (testJava.getQuestions())  ; 
-        
-        Evaluation evaluation = new Evaluation(testJava , candidat, reponses) ;
+    	Evaluation evaluation = new Evaluation(testJava , candidat) ; 
+    	Set<Response> reponses = fillDumbResponses (evaluation , testJava.getQuestions())  ; 
+        evaluation.setResponses(reponses) ;
         return evaluation ; 
     }
 
-	private Set<Response> fillDumbResponses(List<Question> questions) {
+	private Set<Response> fillDumbResponses(Evaluation evaluation , List<Question> questions) {
 		Set<Response> rs = new HashSet<Response>() ; 
 		
 		for (Question question : questions) {
@@ -167,6 +166,7 @@ public class TestBasicServices {
 				break ; 
 			}
 			Response e = new Response(question);
+			e.setEvaluation(evaluation) ; 
 			Set<PropositionReponse> set = new HashSet<PropositionReponse>() ;
 			set.add(pr) ; 
 			e.setReponsesChoisies(set) ; 

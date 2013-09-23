@@ -80,6 +80,10 @@ public class PropositionReponse implements Serializable {
 
 	public void setPropositionCorrecte(Boolean propositionCorrecte) {
 		this.propositionCorrecte = propositionCorrecte;
+	}
+
+	public boolean isPropositionCorrecte() {
+		return propositionCorrecte;
 	} 
 
 }

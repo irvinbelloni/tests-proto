@@ -86,6 +86,9 @@ public interface EvaluationService {
 	String determinerNoteGlobale(Evaluation evalParamEntree);
 	
 	String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau object);
+
+	List<PropositionReponse> determinerPropositionsCorrectesByReponse(
+			Response response);
 	
 	
 }

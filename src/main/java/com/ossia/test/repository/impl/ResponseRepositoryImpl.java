@@ -1,5 +1,7 @@
 package com.ossia.test.repository.impl;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.ossia.test.domain.Evaluation;
@@ -13,7 +15,10 @@ public class ResponseRepositoryImpl extends AbstractRepositoryImpl<Response, Int
 	@Override
 	public Response getResponseByEvaluationAndQuestion(
 			Evaluation evalParamEntree, Question question) {
-		// TODO Auto-generated method stub
-		return null;
+	    Criteria crit = getHibernateCurrentSession().createCriteria(Response.class); 
+	    crit.add(Restrictions.eq("evaluation", evalParamEntree))  ; 
+	    crit.add(Restrictions.eq("question", question))  ;
+	    Response liste = (Response) crit.uniqueResult();  
+	    return liste ; 
 	}
 }
