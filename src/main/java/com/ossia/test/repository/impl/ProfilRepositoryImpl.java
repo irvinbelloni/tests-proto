@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Profil;
 import com.ossia.test.repository.ProfilRepository;
+import com.ossia.test.web.sort.SortingInfo;
 
+@SuppressWarnings("unused")
 @Repository 
 public class ProfilRepositoryImpl extends AbstractRepositoryImpl<Profil, Integer> implements ProfilRepository {
 	

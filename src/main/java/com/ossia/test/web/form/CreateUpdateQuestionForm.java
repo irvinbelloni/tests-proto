@@ -2,6 +2,7 @@ package com.ossia.test.web.form;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestSheet;
@@ -10,8 +11,13 @@ public class CreateUpdateQuestionForm {
 	
 	private Integer id;
 
+	@NotEmpty
 	private String intitule;
+	
+	@NotEmpty
 	private String niveau;
+	
+	@NotEmpty
 	private String contenu;
 	
 	private final String[] levels = { Niveau.JUNIOR.getValue() , Niveau.INTERMEDIAIRE.getValue() , Niveau.SENIOR.getValue() } ; 

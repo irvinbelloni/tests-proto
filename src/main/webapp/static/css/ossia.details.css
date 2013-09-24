@@ -14,6 +14,10 @@
 	width: 28%;
 }
 
+#test-detail .identity {
+	width: 23%;
+}
+
 .identity hr {
 	color: #ccc;
 	height: 1px;
@@ -23,7 +27,7 @@
 	float: left;
 	font-size: 12px;
 	font-weight: normal;
-	width: 100px;
+	width: 40%;
 }
 
 .identity span.error {
@@ -38,17 +42,50 @@
 	width: 25%;
 }
 
-.profil-tests {	
+#test-detail .control {
+	width: 23%;
+}
+
+.central {	
 	margin: 0 25% 0 28%;
 }
 
-.profil-tests p {
+#test-detail .central {
+	margin: 0 23% 0 23%;
+}
+
+.central .detail-list-item {
 	border-bottom: 1px dotted #d5d5d5;
 	padding: 10px 0;
 }
 
-.profil-tests p span {
+.central div span {
 	float: right;
+}
+
+.central div span a.detail-link {
+	text-decoration: none;
+}
+
+.central div span a.detail-link:hover {
+	color: #9f698d;
+}
+
+#questions span.question-count {
+	float : left;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 0;
+	width: 40px;
+}
+
+#questions span {
+	float: none;
+}
+
+#questions span.important {
+	float: none;
+	font-weight: bold;
 }
 
 .container {
@@ -80,9 +117,13 @@
 	margin-right: 0;
 }
 
-#profil-detail-edit, #profil-detail-assign-test {
+#detail-edit, #profil-detail-assign-test, #question-edit {
 	display: none;
 }
+
+ #question-edit {
+ 	margin-bottom: 10px;
+ }
 
 .historic {
 	background: #f8f8f8;

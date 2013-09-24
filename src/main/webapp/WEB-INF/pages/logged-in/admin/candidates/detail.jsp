@@ -27,13 +27,13 @@
 			<div class="clear-both"></div>
 		</div>
 		
-		<div id="profil-detail-edit" class="container side-form-detail">
+		<div id="detail-edit" class="container side-form-detail">
 			<h2><spring:message code="text.side.form.title.candidate.edit" /></h2>
 			
 			<c:url value="/admin/profile/add-or-edit" var="addOrEditUrl">
 				<c:param name="origin" value="candidate"/>
 			</c:url>
-			<form:form method="post" action="${addOrEditUrl}" commandName="profil" id="profil-form">
+			<form:form method="post" action="${addOrEditUrl}" commandName="profilForm" id="profil-form">
 				<form:hidden path="id" />
 				<form:hidden path="mode" />
 			
@@ -113,12 +113,12 @@
 		</div>
 	</div>
 	
-	<div class="profil-tests">
+	<div class="central">
 		<div class="container" id="assigned-tests">
 			<h2><spring:message code="content.title.candidate.detail.assigned.tests"/></h2>
 			<c:forEach items="${profil.evaluations}" var="eval">
 				<c:if test="${eval.status ne 3}">
-					<p>
+					<div class="detail-list-item">
 						<c:url value="/admin/candidate" var="deleteEvalUrl">
 							<c:param name="candidate" value="${profil.id}"/>
 							<c:param name="evaluation" value="${eval.id}"/>
@@ -130,7 +130,7 @@
 							<span>(<spring:message code="text.detail.test.in.progress"/>)</span>
 						</c:if>
 						${eval.test.intitule}
-					</p>
+					</div>
 				</c:if>
 			</c:forEach>
 		</div>
@@ -151,7 +151,7 @@
 											
 				<a class="back-to-add-form" href="#" onclick="backToDetailAssignedTests(); return false;"><spring:message code="link.label.cancel.test.assignment" /></a>
 				<input type="submit" class="submit-button small" id="submit-button" value="<spring:message code="form.user.assign"/>" />
-				<p style="border:0; height: 17px"></p>
+				<p style="border:0; height: 35px">&nbsp;</p>
 			</form:form>
 		</div>
 		
@@ -183,7 +183,8 @@ $(document).ready(function() {
 	
 	if ($("#mode").val() == "edit") {
 		$("#identity").slideUp(function() {
-			$("#profil-detail-edit").slideDown(function() {
+			$(".back-to-add-form").show();
+			$("#detail-edit").slideDown(function() {
 				adjustFooterHeight();
 			});
 		});	

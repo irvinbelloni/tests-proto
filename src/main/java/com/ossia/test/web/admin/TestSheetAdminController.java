@@ -1,7 +1,6 @@
 package com.ossia.test.web.admin;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -14,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,57 +53,62 @@ public class TestSheetAdminController extends AbstractAdminController {
 		model.put("tests", getTestList(request));
 		model.put("sortingInfo", sortingInfo);
 		
- 		model.put("testSheet", new TestSheet()) ; 
+		model.put("testSheetForm", new TestSheet()) ; 
 		model.put("selectedTab", TAB_TEST);
- 		return "test-home";
- 	}
-		 	
+		return "test-home";
+	}
+	
 	@RequestMapping(value = "/test/detail", method = RequestMethod.GET)
-	public String displayTestDetailForm(@RequestParam(value = "id") String idRequestParam , ModelMap model  ) {
+	public String displayTestDetailForm(@RequestParam(value = "id") String idRequestParam, HttpServletRequest request, ModelMap model  ) {
 
 		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		TestSheet testSheet = testSheetService.getTestSheetById( identifier ) ; 
 		model.put("questionForm", new CreateUpdateQuestionForm (testSheet) ) ; 
 		
-		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(testSheet) ;
-		model.put("questions", liste ) ; 
+		setLastActionInModel(model, request);
+		
 		model.put("testSheet", testSheet ) ; 
 		model.put("selectedTab", TAB_TEST);
 		return "test-detail";
 	}
 	
 	@RequestMapping(value = "/test/createUpdate", method = RequestMethod.POST)
-	public String addOrEditTest (@Valid TestSheet testSheet , BindingResult result, HttpServletRequest request, ModelMap model) {
+	public String addOrEditTest (@RequestParam(value = "origin") String origin, @Valid @ModelAttribute(value = "testSheetForm") TestSheet testSheetForm, BindingResult result, HttpServletRequest request, ModelMap model) {
 		
-		if (result.hasErrors()) {
-			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_TEST_LIST_SORT));
-			model.put("selectedTab", TAB_TEST);
+		if (result.hasErrors()) {			
+			model.put("selectedTab", TAB_TEST);			
+			if (origin.equals("detail")) {
+				model.put("displayEditForm", true);
+				return "test-detail";
+			}			
 			model.put("tests", getTestList(request));
- 			return "test-home";
+			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_TEST_LIST_SORT));
+			return "test-home";
 		}
 		model.remove("selectedTab");
 		
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String messageCodeForLastAction = null;
 		
-		if (testSheet.getId().equals(null) || testSheet.getId() == 0) {
-			testSheet = testSheetService.createTestSheet(testSheet, admin) ;
+		if (testSheetForm.getId() == null || testSheetForm.getId() == 0) {
+			testSheetForm = testSheetService.createTestSheet(testSheetForm, admin) ;
 			messageCodeForLastAction = "text.notify.add.test";
 		} else {
-			testSheet = testSheetService.updateTestSheet(testSheet , admin) ;
 			try {
-				testSheet = testSheetService.updateTestSheet(testSheet, admin) ; 
+				testSheetForm = testSheetService.updateTestSheet(testSheetForm, admin) ; 
 				messageCodeForLastAction = "text.notify.edit.test";
 			} catch (NotFoundException nfe) { // Trying to edit a test that does not exist
 				return "redirect:/errors/404";
 			} 
 		}
 		
-		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, testSheet.getIntitule()));
-		
-		model.put("testSheet", new TestSheet()) ; 
-		
-		return "redirect:" + "/admin/test/home" ; 
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, testSheetForm.getIntitule()));
+				
+		String redirectUrl = "/admin/test/" + origin;
+		if (origin.equals("detail")) {
+			redirectUrl += "?id=" + testSheetForm.getId();
+		}
+		return "redirect:" + redirectUrl;
 	}
 	
 	@RequestMapping(value = "/test/delete", method = RequestMethod.GET)
@@ -115,6 +120,7 @@ public class TestSheetAdminController extends AbstractAdminController {
 		model.put("testSheet", new TestSheet()) ; 
 		
 		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.test", testSheetToDelete.getIntitule()));
+		
 		
 		return "redirect:" + "/admin/test/home" ; 
 	}
@@ -149,21 +155,31 @@ public class TestSheetAdminController extends AbstractAdminController {
 	}
 	
 	@RequestMapping(value = "/question/createUpdate", method = RequestMethod.POST)
-	public String addOrEditQuestionToTest (@Valid CreateUpdateQuestionForm questionModel , HttpServletRequest arg0 , BindingResult result, ModelMap model) {
-		
+	public String addOrEditQuestionToTest (@RequestParam(value = "origin") String origin, @Valid @ModelAttribute(value = "questionForm") CreateUpdateQuestionForm questionForm, BindingResult result, ModelMap model, HttpServletRequest request) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (result.hasErrors()) {
+			model.put("selectedTab", TAB_TEST);
+			if (origin.equals("test")) {
+				model.put("testSheet",  testSheetService.getTestSheetById(questionForm.getTestId()));
+			}
+			model.put("displayAddQuestionForm", true);
 			return "test-detail";
 		}
 		
-		TestSheet test = testSheetService.getTestSheetById(questionModel.getTestId()) ;
+		TestSheet test = testSheetService.getTestSheetById(questionForm.getTestId()) ;
 		
-		if (questionModel.getId().equals(null) || questionModel.getId() == 0) {
-			Question questionToCreate = questionModel.convertToNewTestDomain(test) ; 
-			testSheetService.createQuestion(questionToCreate) ;
+		String messageCodeForLastAction = null;
+		Question question = null;
+		if (questionForm.getId() == null || questionForm.getId() == 0) {
+			question = testSheetService.addQuestionToTest(test, questionForm.convertToNewTestDomain(test), admin);
+			messageCodeForLastAction = "text.notify.add.question";
 		} else {
-			Question questionToUpdate = testSheetService.getQuestionById(questionModel.getId()) ; 
-			testSheetService.updateQuestion(questionModel.updateQuestion (questionToUpdate) ) ; 
+			Question existingQuestion = testSheetService.getQuestionById(questionForm.getId()) ; 
+			question = testSheetService.updateQuestion(questionForm.updateQuestion (existingQuestion) ) ; 
+			messageCodeForLastAction = "text.notify.edit.question";
 		}
+		
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, question.getIntitule(), question.getTest().getIntitule()));
 		
 		model.put("questionForm", new CreateUpdateQuestionForm( test ) ) ; 
 		
@@ -171,24 +187,19 @@ public class TestSheetAdminController extends AbstractAdminController {
 		model.put("questions", liste ) ; 
 		model.put("testSheet", test ) ; 
 		
-		return "redirect:"+ "/admin/test/detail" + "?id="+test.getId() ; 
+		return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
 	}
 	
 	@RequestMapping(value = "/question/delete", method = RequestMethod.GET)
-	public String deleteQuestionFromTest(@RequestParam(value = "id") String idRequestParam , ModelMap model ) {
-		
-		Integer idQuestion  = Integer.parseInt(idRequestParam) ;  
-		Question questionToDelete = testSheetService.getQuestionById(idQuestion); 
+	public String deleteQuestionFromTest(@RequestParam(value = "id") Integer questionId, HttpServletRequest request, ModelMap model ) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Question questionToDelete = testSheetService.getQuestionById(questionId); 
 		
 		TestSheet test = questionToDelete.getTest() ; 
-		testSheetService.deleteQuestionFromTestSheet(test, questionToDelete) ;  
+		testSheetService.deleteQuestionFromTestSheet(test, questionToDelete, admin) ;  
 		
-		List<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
-		model.put("questions", liste ) ; 
-		model.put("questionForm", new CreateUpdateQuestionForm(test)) ; 
-		model.put("testSheet", test ) ;
-		
-		return "redirect:"+ "/admin/test/detail" + "?id="+test.getId() ;
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.question", questionToDelete.getIntitule(), test.getIntitule()));
+		return "redirect:/admin/test/detail" + "?id="+test.getId() ;
 	}
 	
 	/*
@@ -217,7 +228,7 @@ public class TestSheetAdminController extends AbstractAdminController {
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
-		return "redirect:" + "/admin/question/detail" + "?id="+question.getId() ; 
+		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
 	}
 	
 	@RequestMapping(value = "/proposition/delete", method = RequestMethod.GET)
@@ -234,9 +245,8 @@ public class TestSheetAdminController extends AbstractAdminController {
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
 		model.put("question", question) ; 
 		
-		return "redirect:" + "/admin/question/detail" + "?id="+question.getId() ; 
+		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
 	}
-	
 	
 	private SortingInfo completeTestSortingInfo (SortingInfo sortingInfo, String sortingField, String sortingDirection) {
 		if (sortingInfo == null) {

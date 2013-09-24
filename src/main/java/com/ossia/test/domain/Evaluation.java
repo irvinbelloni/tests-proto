@@ -31,13 +31,12 @@ public class Evaluation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	@ManyToOne
-	@JoinColumn(name = "test_id")
+	@ManyToOne @JoinColumn(name = "test_id")
 	@NotNull
 	private TestSheet test;
 
-	/* @ManyToOne
-	@JoinColumn(name = "profil_id", referencedColumnName = "id", nullable = false) */
+	/*@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@JoinColumn(name = "profil_id", referencedColumnName = "id", nullable = false)*/
 	@ManyToOne @JoinColumn(name = "profil_id")
 	@NotNull
 	private Profil profil;
@@ -48,10 +47,10 @@ public class Evaluation implements Serializable {
 	private Integer status;
 	
 	@Column(name = "start_time")
-	private Date startTime ; 
+	private Date startTime;
 	
 	@Column(name = "end_time")
-	private Date endTime ; 
+	private Date endTime;
 
 	public Evaluation() {
 	}

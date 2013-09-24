@@ -86,9 +86,22 @@ public class TestSheetServiceImpl implements TestSheetService {
 	}
 
 	@Transactional
-	public Question createQuestion(Question questionACreer) {
-		Integer id = questionRepository.create(questionACreer);
-		return questionRepository.getById(id);
+	public Question addQuestionToTest (TestSheet test, Question question, Profil admin) {
+		
+		question.setContenu(encodeTextareaContent(question.getContenu()));
+		
+		question.setTest(test);
+		test.getQuestions().add(question);
+		
+		// Tracing the creation
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.ADD_QUESTION.getCode());
+		histo.setTestSheet(test);				
+		test.getHistorique().add(histo);
+		
+		testSheetRepository.update(test);		
+		return question;
 	}
 
 	@Transactional(readOnly = true)
@@ -108,8 +121,16 @@ public class TestSheetServiceImpl implements TestSheetService {
 	}
 	
 	@Transactional
-	public void deleteQuestionFromTestSheet(TestSheet test, Question aSupprimer) {
+	public void deleteQuestionFromTestSheet(TestSheet test, Question aSupprimer, Profil admin) {
 		questionRepository.delete(aSupprimer);
+		
+		// Tracing the deletion
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.DELETE_QUESTION.getCode());
+		histo.setTestSheet(test);				
+		test.getHistorique().add(histo);		
+		testSheetRepository.update(test);	
 	}
 	
 	@Transactional
@@ -137,5 +158,15 @@ public class TestSheetServiceImpl implements TestSheetService {
 	@Transactional
 	public void deletePropositionReponseFromQuestion (Question question , PropositionReponse pr ) {
 		propositionReponseRepository.delete(pr);
+	}
+	
+	private String encodeTextareaContent(String content) {
+		String encodedContent = content.replace("\"", "[DB]");
+		encodedContent = encodedContent.replace("   ", "[TAB]");
+		encodedContent = encodedContent.replace("\r\n", "[NL]");
+		encodedContent = encodedContent.replace("\n\r", "[NL]");
+		encodedContent = encodedContent.replace("\r", "[NL]");
+		encodedContent = encodedContent.replace("\n", "[NL]");		
+		return encodedContent;
 	}
 }

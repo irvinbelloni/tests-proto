@@ -10,7 +10,7 @@
 	<c:url value="/admin/profile/add-or-edit" var="addOrEditUrl">
 		<c:param name="origin" value="administrators"/>
 	</c:url>
-	<form:form method="post" action="${addOrEditUrl}" commandName="profil" id="profil-form">
+	<form:form method="post" action="${addOrEditUrl}" commandName="profilForm" id="profil-form">
 		<form:hidden path="id" />
 		<form:hidden path="mode" />
 	

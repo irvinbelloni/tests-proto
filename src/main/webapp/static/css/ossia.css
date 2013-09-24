@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 /*** Resetting styles ***/
-a, body, div, form, h1, h2, h3, header, html, img, input, nav, p, tr, td, table, ul {
+a, body, div, form, h1, h2, h3, header, html, img, input, nav, p, select, tr, td, table, textarea, ul {
 	border: 0;
 	color: #003;
 	font-family: Tahoma, Geneva, sans-serif;

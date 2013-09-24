@@ -10,11 +10,9 @@ import org.springframework.ui.ModelMap;
 
 public abstract class AbstractAdminController {
 	
-	protected final static String SESSION_ADMINISTRATOR_LIST_SORT = "candidate.list.sort";
-	protected final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
-	
 	protected final static String SESSION_LAST_ACTION = "last.action";
 	protected final static String SESSION_ERROR_ACTION = "error.action";
+	protected final static String SESSION_WARNING_ACTION = "warning.action";
 	
 	protected final static String TAB_HOME = "home";
 	protected final static String TAB_TEST = "test";
@@ -38,6 +36,10 @@ public abstract class AbstractAdminController {
 		String errorAction = (String)request.getSession().getAttribute(SESSION_ERROR_ACTION);
 		request.getSession().removeAttribute(SESSION_ERROR_ACTION);
 		model.put("errorAction",  errorAction);
+		
+		String warningAction = (String)request.getSession().getAttribute(SESSION_WARNING_ACTION);
+		request.getSession().removeAttribute(SESSION_WARNING_ACTION);
+		model.put("warningAction",  warningAction);
 	}
 	
 	/**

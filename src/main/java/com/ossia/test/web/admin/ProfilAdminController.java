@@ -1,6 +1,8 @@
 package com.ossia.test.web.admin;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -13,12 +15,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Profil;
+import com.ossia.test.domain.TestSheet;
+import com.ossia.test.domain.TestStatus;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
 import com.ossia.test.service.TestSheetService;
@@ -27,6 +32,9 @@ import com.ossia.test.web.sort.SortingInfo;
 
 @Controller @RequestMapping("/admin")
 public class ProfilAdminController extends AbstractAdminController {
+	
+	private final static String SESSION_ADMINISTRATOR_LIST_SORT = "administrator.list.sort";
+	private final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
 	
 	@Autowired
 	ProfilService profilService;
@@ -37,12 +45,9 @@ public class ProfilAdminController extends AbstractAdminController {
 	@Autowired
 	EvaluationService evaluationService;
 	
-	private final static String SESSION_ADMINISTRATOR_LIST_SORT = "administrator.list.sort";
- 	private final static String SESSION_CANDIDATE_LIST_SORT = "candidate.list.sort";	
-	
 	@RequestMapping(value = "/administrators", method = RequestMethod.GET)
 	public String displayAdministratorsList(@RequestParam(value = "sort", required = false) String sortingField, @RequestParam(value = "direction", required = false) String sortingDirection, ModelMap model, HttpServletRequest request) {
-		model.put("profil", new Profil());
+		model.put("profilForm", new Profil());
 		
 		// Sorting information
 		SortingInfo sortingInfo = completeProfilSortingInfo((SortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT), sortingField, sortingDirection);	
@@ -53,12 +58,13 @@ public class ProfilAdminController extends AbstractAdminController {
 		model.put("administrators", getProfilList(true, request));
 		model.put("sortingInfo", sortingInfo);
 		model.put("selectedTab", TAB_ADMINISTRATOR);
+		
 		return "administrators";
 	}
 	
 	@RequestMapping(value = "/candidates", method = RequestMethod.GET)
 	public String displayCandidatesList(@RequestParam(value = "sort", required = false) String sortingField, @RequestParam(value = "direction", required = false) String sortingDirection, ModelMap model, HttpServletRequest request) {
-		model.put("profil", new Profil());
+		model.put("profilForm", new Profil());
 		
 		// Sorting information
 		SortingInfo sortingInfo = completeProfilSortingInfo((SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT), sortingField, sortingDirection);	
@@ -92,8 +98,10 @@ public class ProfilAdminController extends AbstractAdminController {
 				
 		// Test assigning form
 		model.put("assignTest", new AssignTestForm());
+		model.put("tests", getAssignableTests(profil));
 		
 		model.put("profil",  profil);
+		model.put("profilForm",  profil);
 		model.put("selectedTab", TAB_CANDIDATE);
 		return "candidate";
 	}
@@ -173,15 +181,23 @@ public class ProfilAdminController extends AbstractAdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "/profile/add-or-edit", method = RequestMethod.POST)
-	public String addOrEditProfile(@RequestParam(value = "origin") String origin, @Valid Profil profil, BindingResult result, HttpServletRequest request, ModelMap model) {
+	public String addOrEditProfile(@RequestParam(value = "origin") String origin, @Valid @ModelAttribute(value="profilForm") Profil profilForm, BindingResult result, HttpServletRequest request, ModelMap model) {
 		if (origin.equals("administrators")) {
 			model.put("selectedTab", TAB_ADMINISTRATOR);
 			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_ADMINISTRATOR_LIST_SORT));
 			model.put("administrators", getProfilList(true, request));
 		} else {
 			model.put("selectedTab", TAB_CANDIDATE);
-			model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
-			model.put("candidates", getProfilList(false, request));
+			if (origin.equals("candidates")) {
+				model.put("sortingInfo", (SortingInfo)request.getSession().getAttribute(SESSION_CANDIDATE_LIST_SORT));
+				model.put("candidates", getProfilList(false, request));
+			} else {
+				Profil candidate = profilService.getProfilById(profilForm.getId());
+				model.put("profil", candidate);
+				// Test assigning form
+				model.put("assignTest", new AssignTestForm());
+				model.put("tests", getAssignableTests(candidate));
+			}
 		}
 		if (result.hasErrors()) {			
 			return origin;
@@ -189,24 +205,24 @@ public class ProfilAdminController extends AbstractAdminController {
 		model.remove("selectedTab");
 		
 		// Form data is valid
-		profil.setAdmin(false);
+		profilForm.setAdmin(false);
 		if (origin.equals("administrators")) {
-			profil.setAdmin(true);
+			profilForm.setAdmin(true);
 		}
 		
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String messageCodeForLastAction = null;
 		try {
-			if (profil.getMode().equals(Profil.MODE_ADD)) {
-				profilService.createProfil(profil, admin);
+			if (profilForm.getMode().equals(Profil.MODE_ADD)) {
+				profilService.createProfil(profilForm, admin);
 				messageCodeForLastAction = "text.notify.add.candidate";
-				if (profil.isAdmin()) {
+				if (profilForm.isAdmin()) {
 					messageCodeForLastAction = "text.notify.add.administrator";
 				}
 			} else {
-				profilService.updateProfil(profil, admin);
+				profilService.updateProfil(profilForm, admin);
 				messageCodeForLastAction = "text.notify.edit.candidate";
-				if (profil.isAdmin()) {
+				if (profilForm.isAdmin()) {
 					messageCodeForLastAction = "text.notify.edit.administrator";
 				}
 			}
@@ -220,10 +236,10 @@ public class ProfilAdminController extends AbstractAdminController {
 			return origin;
 		}		
 		
-		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, profil.getPrenom(), profil.getNom()));
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, profilForm.getPrenom(), profilForm.getNom()));
 		String redirectUrl = "/admin/" + origin;
 		if (origin.equals("candidate")) {
-			redirectUrl += "?candidate=" + profil.getId();
+			redirectUrl += "?candidate=" + profilForm.getId();
 		}
 		return "redirect:" + redirectUrl;
 	}
@@ -252,9 +268,12 @@ public class ProfilAdminController extends AbstractAdminController {
 		if (evaluation == null) {
 			String errorAction = buildNotifyMessage("text.notify.assign.test.to.candidate.error");
 			request.getSession().setAttribute(SESSION_ERROR_ACTION, errorAction);		
+		} else if (evaluation.getStatus() == TestStatus.ALREADY_ASSIGNED.getCode()) {
+			String warningAction = buildNotifyMessage("text.notify.assign.test.to.candidate.already.assigned", evaluation.getTest().getIntitule(), evaluation.getProfil().getPrenom(), evaluation.getProfil().getNom());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);			
 		} else {
 			String lastAction = buildNotifyMessage("text.notify.assign.test.to.candidate", evaluation.getTest().getIntitule(), evaluation.getProfil().getPrenom(), evaluation.getProfil().getNom());
-			request.getSession().setAttribute(SESSION_LAST_ACTION, lastAction);			
+				request.getSession().setAttribute(SESSION_LAST_ACTION, lastAction);			
 		}
 		
 		return "redirect:" + redirectUrl;
@@ -309,4 +328,32 @@ public class ProfilAdminController extends AbstractAdminController {
 			result.rejectValue("login", "form.error.login.already.exists");
 		}
 	}
+	
+	/**
+	 * Gets the list of tests that are not currently assigned to or runned by the candidate
+	 * @Param candidate
+	 * @return
+	 */
+	private Collection<TestSheet> getAssignableTests(Profil candidate) {
+		SortingInfo sortingInfo = new SortingInfo();
+		sortingInfo.setSortingField(SortingInfo.SORT_INTITULE);
+		sortingInfo.setSortingDirection(SortingInfo.ASC);
+		List<TestSheet> allTests = testSheetService.getSortedTestSheets(sortingInfo);
+		List<TestSheet> assignableTests = new ArrayList<TestSheet>();
+		
+		boolean assignable = true;
+		for(TestSheet test : allTests) {
+			assignable = true;
+			for (Evaluation evaluation : candidate.getEvaluations()) {
+				if (evaluation.getTest().getId() == test.getId() && !evaluation.isTestTaken()) {
+					assignable = false;
+				}
+			}
+			if (assignable) {
+				assignableTests.add(test);
+			}
+		}
+		
+		return assignableTests;
+	}	
 }

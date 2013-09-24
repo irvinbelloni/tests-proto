@@ -31,7 +31,7 @@ public interface TestSheetService {
 	/*
 	 * QUESTION
 	 */	
-	Question createQuestion (Question questionACreer) ; 
+	Question addQuestionToTest (TestSheet test, Question question, Profil admin) ; 
 	
 	Question getQuestionById (Integer idQuestion) ; 
 
@@ -39,7 +39,7 @@ public interface TestSheetService {
 
 	Question updateQuestion(Question question);
 	
-	void deleteQuestionFromTestSheet (TestSheet test , Question aSupprimer) ;
+	void deleteQuestionFromTestSheet (TestSheet test , Question aSupprimer, Profil admin) ; 
 
 	/*
 	 * PROPOSITION_REPONSE

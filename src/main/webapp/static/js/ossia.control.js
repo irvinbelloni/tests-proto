@@ -6,6 +6,8 @@ var textTestTimeOver = "";
 var textTestTimeOverPrecision = "";
 
 var dialogTextDeleteProfil = "";
+var dialogTextDeleteTest = "";
+var dialogTextDeleteQuestion = "";
 
 var remainingTime;
 var timeoutRT;
@@ -191,7 +193,19 @@ function editProfilDetail(profilId, firstname, name, email, login, pass, dateAct
 		$("span.error").hide();
 		$(".back-to-add-form").show();
 		$(".edit-field").show();
-		$("#profil-detail-edit").slideDown(function() {
+		$("#detail-edit").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+function editTestDetail() {
+	$("#identity").slideUp(function() {
+		$("#mode").val("edit");
+		//$("#id").val(profilId);
+		$("span.error").hide();
+		$(".back-to-add-form").show();
+		$("#detail-edit").slideDown(function() {
 			adjustFooterHeight();
 		});
 	});	
@@ -219,8 +233,25 @@ function backToAddProfil () {
 	});	
 }
 
+function backToAddTest () {
+	$(".side-form").slideUp(function() {
+		$("input.submit-button").val("Ajouter");  
+		$("#testSheetId").val("");
+		$("#testSheetIntitule").val("");
+		$("#testSheetDuree").val("");
+		$("#testSheetType").val("");
+		$(".side-form h2").html(textAddTest);
+		$("span.error").hide();
+		
+		$(".back-to-add-form").hide();
+		$(".side-form").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
 function backToDetailIdentity () {
-	$("#profil-detail-edit").slideUp(function() {
+	$("#detail-edit").slideUp(function() {
 		$("#identity").slideDown(function() {
 			adjustFooterHeight();
 		});		
@@ -362,8 +393,8 @@ function editTestSheet (id, intitule, duree, type) {
 		$("#testSheetType").val(type);
 		$(".side-form h2").html(textEditTest);
 		$("span.error").hide();
-		$(".edit-field").show();
 		
+		$(".back-to-add-form").show();
 		$(".side-form").slideDown(function() {
 			adjustFooterHeight();
 		});
@@ -372,13 +403,14 @@ function editTestSheet (id, intitule, duree, type) {
 
 function deleteQuestion (id, intitule, url) {
 	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
-	dialogHtml += dialogTextDeleteTest.replace("%QUESTION%", intitule );
+	dialogHtml += dialogTextDeleteQuestion.replace("%QUESTION%", intitule );
 	$("#dialog-confirm p").html(dialogHtml);
+	
 			
 	$(function() {
 		$("#dialog-confirm").dialog({
 			resizable : false,
-			height : 180,
+			height : 210,
 			modal : true,
 			buttons : {
 				"Supprimer" : function() {
@@ -392,19 +424,35 @@ function deleteQuestion (id, intitule, url) {
 	});	
 }
 
-function editQuestion (id, intitule, niveau , contenu) {
+function addQuestion () {
 
-	$(".side-form").slideUp(function() {
-		$(".submit-button").val("Modifier Question");  
+	$("#question-edit").slideUp(function() {
+		$("#question-submit-button").val("Ajouter");  
+		$("#questionId").val("");
+		$("#questionIntitule").val("");
+		$("#questionNiveau").val("");
+		$("#questionContenu").html("");
+		$("#question-edit h2").html(textAddQuestion);
+		$("span.error").hide();
+		$(".back-to-add-form").show();				
+		$("#question-edit").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+function editQuestion (id, intitule, niveau , contenu) {
+	$("#question-edit").slideUp(function() {
+		$("#question-submit-button").val("Modifier");
 		$("#questionId").val(id);
 		$("#questionIntitule").val(intitule);
 		$("#questionNiveau").val(niveau);
-		$("#questionContenu").val(contenu);
-		$(".side-form h2").html(textEditQuestion);
-		$("span.error").hide();
-		$(".edit-field").show();
 		
-		$(".side-form").slideDown(function() {
+		$("#questionContenu").val(decodeTextAreaContent(contenu));
+		$("#question-edit h2").html(textEditQuestion);
+		$("span.error").hide();
+				
+		$("#question-edit").slideDown(function() {
 			adjustFooterHeight();
 		});
 	});	
@@ -456,5 +504,12 @@ function editPropositionReponse (id, valeur, propositionCorrecte) {
 			adjustFooterHeight();
 		});
 	});	
+}
+
+function decodeTextAreaContent(content) {
+	content = content.replace(/\[TAB\]/g, "   ");
+	content = content.replace(/\[NL\]/g, "\r\n");
+	content = content.replace(/\[DB\]/g, "\"");	
+	return content;
 }
 

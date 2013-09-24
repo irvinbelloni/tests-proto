@@ -7,3 +7,7 @@
 <c:if test="${errorAction ne null}">	
 	var n = noty({text: "${errorAction}", type: "error"});
 </c:if>
+
+<c:if test="${warningAction ne null}">	
+	var n = noty({text: "${warningAction}", type: "warning"});
+</c:if>

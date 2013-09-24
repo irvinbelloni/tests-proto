@@ -63,18 +63,23 @@ form.login input {
 	color: #fff;
 	display: block;
 	float: left;
-	font-size: 12px;
+	font-size: 11px;
 	line-height: 25px;
+	font-weight: normal;
 	text-align: left;
 	padding: 10px 0 0 2px;
 	width: 88px;
 }
 
 .side-form-detail label {
-	width: 95px;
+	width: 33%;
 }
 
-.side-form input[type=text], .side-form-detail input[type=text], select {
+.center-form-detail label {
+	width: 22%;
+}
+
+.side-form input[type=text], .side-form-detail input[type=text], select, textarea {
 	border: 1px solid #6c365a;
 	height: 25px;
 	margin: 10px 0 0 0;
@@ -82,12 +87,22 @@ form.login input {
 	width: 183px;
 }
 
-.center-form-detail select {
-	width: 100%;
+.side-form-detail input[type=text] {
+	width: 63%;
 }
 
-.side-form-detail input[type=text] {
-	width: 176px;
+.center-form-detail input[type=text] {
+	width: 76%;
+}
+
+.center-form-detail textarea {
+	height: 130px;
+	padding: 2px 1px;
+	width: 76%;
+}
+
+.center-form-detail select {
+	width: 100%;
 }
 
 .side-form input[type=radio], .side-form-detail input[type=radio] {

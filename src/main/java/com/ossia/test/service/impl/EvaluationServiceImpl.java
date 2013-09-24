@@ -139,6 +139,15 @@ public class EvaluationServiceImpl implements EvaluationService {
 		Evaluation evaluation = new Evaluation();
 		evaluation.setProfil(candidate);
 		evaluation.setTest(testSheet);
+		
+		// Checking if the test is not already assigned
+		for(Evaluation evaluationLoop : candidate.getEvaluations()) {
+			if (evaluationLoop.getTest().getId() == testId && !evaluationLoop.isTestTaken()) {
+				evaluation.setStatus(TestStatus.ALREADY_ASSIGNED.getCode());
+				return evaluation;
+			}
+		}		
+		
 		evaluation.setStatus(TestStatus.ASSIGNED.getCode());
 		testSheet.getEvaluations().add(evaluation);				
 		candidate.getEvaluations().add(evaluation);		
@@ -265,9 +274,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 				newAnswer = false;
 				
 				for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
-					for (int i : questionForm.getPropositions()) {
-						if (i == proposition.getId()) {
-							response.getReponsesChoisies().add(proposition);
+					if (questionForm.getPropositions() != null) {
+						for (int i : questionForm.getPropositions()) {
+							if (i == proposition.getId()) {
+								response.getReponsesChoisies().add(proposition);
+							}
 						}
 					}
 				}	

@@ -3,7 +3,8 @@ package com.ossia.test.domain;
 public enum TestStatus {
 	ASSIGNED(1),
 	IN_PROGRESS(2),
-	DONE(3);
+	DONE(3),
+	ALREADY_ASSIGNED(4);
 	
 	private int code;
 	

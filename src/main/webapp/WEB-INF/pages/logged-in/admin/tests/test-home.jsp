@@ -9,15 +9,17 @@
 
 	<h2><spring:message code="text.admin.tests.page.ajout" /></h2>
 	
-	<c:url value="/admin/test/createUpdate" var="createUpdateUrl"/>
-	<form:form  action="${createUpdateUrl}" commandName="testSheet" method="POST">
+	<c:url value="/admin/test/createUpdate" var="createUpdateUrl">
+		<c:param name="origin" value="home"/>
+	</c:url>
+	<form:form  action="${createUpdateUrl}" commandName="testSheetForm" method="POST">
 
 		<form:hidden path="id" id="testSheetId"/>
 		<div>
 			<form:label path="intitule">
 				<spring:message code="text.admin.tests.page.intitule" />
 			</form:label>
-			<form:input id="testSheetIntitule" path="intitule" maxlength="255" />
+			<form:input id="testSheetIntitule" path="intitule" size="10" maxlength="255" />
 			<form:errors path="intitule" cssClass="error" />
 		</div>	
 
@@ -37,7 +39,8 @@
 			<form:errors path="type" cssClass="error" />
 		</div>	
 
-		<input type="submit" value="<spring:message code="form.test.add"/>" class="submit-button small" />
+		<a class="back-to-add-form" href="#" onclick="backToAddTest(); return false;"><spring:message code="link.label.cancel.quick.update" /></a>
+		<input type="submit" value="<spring:message code="form.test.add"/>" id="submit-button" class="submit-button small" />
 	</form:form>
 </div>
 
@@ -138,6 +141,10 @@
 
 <div class="clear-both"></div>
 
+<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.tests"/>">
+	<p></p>
+</div>
+
 <script>
 $(document).ready(function() {
 	textAddTest = "<spring:message code="text.side.form.title.tests.add"/>";
@@ -146,6 +153,11 @@ $(document).ready(function() {
 	
 	if ($("#testSheetDuree").val() == 0) {
 		$("#testSheetDuree").val("");
+	}
+	if ($("#testSheetId").val() != "" && $("#testSheetId").val() != "0") {
+		$("#submit-button").val("Modifier");
+		$(".side-form h2").html(textEditTest);	
+		$(".back-to-add-form").show();
 	}
 	
 	<jsp:include page="../notify-action.jsp"/>	
