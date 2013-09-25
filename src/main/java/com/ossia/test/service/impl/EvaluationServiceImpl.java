@@ -273,8 +273,8 @@ public class EvaluationServiceImpl implements EvaluationService {
 				response.setReponsesChoisies(new HashSet<PropositionReponse>());
 				newAnswer = false;
 				
-				for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
-					if (questionForm.getPropositions() != null) {
+				if (questionForm.getPropositions() != null) {
+					for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {					
 						for (int i : questionForm.getPropositions()) {
 							if (i == proposition.getId()) {
 								response.getReponsesChoisies().add(proposition);
@@ -293,13 +293,15 @@ public class EvaluationServiceImpl implements EvaluationService {
 				if (question.getId() == questionForm.getQuestionId()) {
 					response.setQuestion(question);
 					
-					for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
-						for (int i : questionForm.getPropositions()) {
-							if (i == proposition.getId()) {
-								response.getReponsesChoisies().add(proposition);
+					if (questionForm.getPropositions() != null) {
+						for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
+							for (int i : questionForm.getPropositions()) {
+								if (i == proposition.getId()) {
+									response.getReponsesChoisies().add(proposition);
+								}
 							}
 						}
-					}			
+					}
 				}
 			}
 			evaluation.getResponses().add(response);

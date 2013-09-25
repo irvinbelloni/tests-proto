@@ -7,6 +7,9 @@
 	<c:if test="${fn:length(candidate.assignedTests) eq 0}">
 		<p class="test-home"><spring:message code="text.no.test.assigned"/></p>
 	</c:if>
+	<c:if test="${recentTest ne null}">
+		<p class="test-home"><spring:message code="text.recent.test" arguments="${recentTest.test.intitule}"/></p>
+	</c:if>
 	<c:forEach items="${candidate.assignedTests}" var="eval">
 		<p class="test-home">
 			<c:url value="/tests/setup" var="setupUrl">
@@ -19,3 +22,10 @@
 	</c:forEach>
 	<div class="clear-both"></div>
 </div>
+
+<script>
+noBack(); 
+window.onload=noBack; 
+window.onpageshow=function(evt){if(evt.persisted)noBack()} 
+window.onunload=function(){void(0)} 
+</script>

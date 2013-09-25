@@ -129,6 +129,28 @@ function deleteProfil(profilId, firstname, name, url, title) {
 	});	
 }
 
+function noBack(){
+	window.history.forward();
+} 
+
+
+function confirmTestValidation(nbUnansweredQuestions) {
+	var popupHtml = "<div id=\"time-over\"><span>" + textLeftQuestions + "</span><br/><br/>" + textLeftQuestionsPrecisions;
+	
+	popupHtml += "<p><a class=\"previous\" href=\"#\" onclick=\"hideModalConfirmation();return false\">Poursuivre le test</a><a class=\"button\" href=\"#\" onclick=\"$('.question-form').submit();\">Valider d&eacute;finitivement</a></p></div>";
+    
+    $("#modal", window.parent.document).fadeIn (400, function() {
+    	$("#modal", window.parent.document).after (popupHtml);
+    });
+    
+    //setTimeout('document.location="/Tests-Proto/tests/end-of-test?test=' + testId + '";', 5000);	
+}
+
+function hideModalConfirmation() {
+	$("#time-over").fadeOut();
+	$("#modal").fadeOut();
+}
+
 function assignTest() {
 	$("#assigned-tests").slideUp(function() {
 		$(".back-to-add-form").show();

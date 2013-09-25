@@ -2,6 +2,7 @@ package com.ossia.test.web;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,24 @@ public class EvaluationControler extends AbstractController {
 	@RequestMapping(value = "/end-of-test", method = RequestMethod.GET)
 	public String displayEndOfTest(@RequestParam("test") Integer evalId, ModelMap model) {
 		evaluationService.closeTest(evalId);
+		
+		model.put("recentTest", evaluationService.getEvaluationById(evalId));		
+		
+		// Checking if the candidate msut pass other tests
+		Profil candidate = (Profil)model.get("candidate");
+		if (candidate.hasTestsToPass()) {
+			model.put("selectedTab", TAB_HOME);
+			model.put("candidate", candidate);			
+			return "candidate-home";
+		}
+		
+		model.put("testEnCours",  true);
+		model.put("selectedTab", TAB_CURRENT_TEST);
 		return "end-of-test";
 	}
 	
 	@RequestMapping(value = "/question", method = RequestMethod.GET)
-	public String displayQuestion(@RequestParam("test") Integer evalId, @RequestParam("question") Integer questionIndex, ModelMap model) {
-		
+	public String displayQuestion(@RequestParam("test") Integer evalId, @RequestParam("question") Integer questionIndex, @RequestParam(value = "unansweredQuestions", required = false) Integer nbUnansweredQuestions, HttpServletResponse response, ModelMap model) {
 		// Checking that the evaluation exists and that the test is really assign to the candidate
 		Evaluation evaluation = evaluationService.getEvaluationById(evalId);		
 		Profil candidate = (Profil)model.get("candidate");
@@ -80,7 +93,15 @@ public class EvaluationControler extends AbstractController {
 			return "redirect:/tests/end-of-test?test=" + evaluation.getId();
 		}
 					
-		model.put("questionForm", buildQuestionForm(evaluation, questionIndex));		
+		QuestionForm questionForm = buildQuestionForm(evaluation, questionIndex);
+		
+		// Are there unansweredQuestions?
+		model.put("nbUnansweredQuestions", nbUnansweredQuestions);
+		if (nbUnansweredQuestions != null) {
+			questionForm.setWarnedCandidate(true);
+		}
+					
+		model.put("questionForm", questionForm);		
 		
 		model.put("question",  evaluation.getTest().getQuestions().get(questionIndex - 1));
 		model.put("questionCount", questionIndex);
@@ -91,6 +112,11 @@ public class EvaluationControler extends AbstractController {
 		
 		model.put("testEnCours",  true);
 		model.put("selectedTab", TAB_CURRENT_TEST);
+		
+		// Set no cache to force page reloading when user hits the "back" button in the browser
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setDateHeader("Expires", 0); // Proxies
 		return "question";
 	}	
 	
@@ -104,6 +130,11 @@ public class EvaluationControler extends AbstractController {
 		
 		// Last question was answer, the test is now over
 		if (evaluation.getTest().getQuestionSize() == questionForm.getQuestionIndex()) {
+			// Checking if there are unanswered questions
+			if (evaluation.getNbUnansweredQuestions() > 0 && !questionForm.isWarnedCandidate()) {
+				// Redirecting to last question to warn the candidate
+				return "redirect:/tests/question?test=" + questionForm.getEvaluationId() + "&question=" + evaluation.getTest().getQuestionSize() + "&unansweredQuestions=" + evaluation.getNbUnansweredQuestions();
+			}
 			return "redirect:/tests/end-of-test?test=" + evaluation.getId();
 		}
 		
