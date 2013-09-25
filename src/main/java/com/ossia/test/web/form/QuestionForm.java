@@ -10,6 +10,8 @@ public class QuestionForm {
 	
 	private int[] propositions;
 	
+	private boolean warnedCandidate = false;
+	
 	public QuestionForm() {
 		
 	}
@@ -50,5 +52,13 @@ public class QuestionForm {
 
 	public void setQuestionIndex(int questionIndex) {
 		this.questionIndex = questionIndex;
-	}	
+	}
+
+	public boolean isWarnedCandidate() {
+		return warnedCandidate;
+	}
+
+	public void setWarnedCandidate(boolean warnedCandidate) {
+		this.warnedCandidate = warnedCandidate;
+	}
 }

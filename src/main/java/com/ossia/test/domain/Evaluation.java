@@ -22,9 +22,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "T_EVALUATIONS")
 public class Evaluation implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -35,8 +32,6 @@ public class Evaluation implements Serializable {
 	@NotNull
 	private TestSheet test;
 
-	/*@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
-	@JoinColumn(name = "profil_id", referencedColumnName = "id", nullable = false)*/
 	@ManyToOne @JoinColumn(name = "profil_id")
 	@NotNull
 	private Profil profil;
@@ -82,6 +77,18 @@ public class Evaluation implements Serializable {
 	public boolean isTestAssigned(){
 		return this.status == TestStatus.ASSIGNED.getCode();
  	}
+	
+	@Transient
+	public int getNbUnansweredQuestions() {
+		int nbUnansweredQuestions = 0;
+		for (Response response : responses) {
+			if (response.getReponsesChoisies().size() == 0) {
+				nbUnansweredQuestions ++;
+			}
+		}
+		
+		return nbUnansweredQuestions;
+	}
 
 	public Integer getId() {
 		return id;

@@ -112,6 +112,10 @@ public class Profil implements UserDetails {
 		this.email = profilFrom.getEmail();		
 	}
 	
+	public boolean hasTestsToPass() {
+		return getAssignedTests().size() > 0;
+	}
+	
 	public List<Evaluation> getAssignedTests() {
 		List<Evaluation> assignedTests = new ArrayList<Evaluation>();
 		for(Evaluation evaluation : this.evaluations) {

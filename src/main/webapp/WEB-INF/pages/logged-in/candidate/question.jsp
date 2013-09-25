@@ -18,6 +18,7 @@
 		<form:hidden path="evaluationId"/>
 		<form:hidden path="questionIndex"/>
 		<form:hidden path="questionId"/>
+		<form:hidden path="warnedCandidate"/>
 		<div class="answer">	
 			<table>
 				<c:set var="trClass" value="odd"/>
@@ -94,10 +95,16 @@
 <script>
 $(document).ready(function() {
 	textTestTimeOver = "<spring:message code="text.detail.test.time.over"/>";
-	textTestTimeOverPrecision = "<spring:message code="text.detail.test.time.over.precision"/>";
+	textTestTimeOverPrecision = "<spring:message code="text.detail.test.time.over.precision"/>";	
 	remainingTime = ${remainingTime};
 	
 	displayRemainingTime(${evaluation.id});
 	timeoutRT = setInterval('displayRemainingTime(${evaluation.id})', 1000 );
+	
+	<c:if test="${nbUnansweredQuestions ne null}">
+		textLeftQuestions = "<spring:message code="text.left.questions"/>";
+		textLeftQuestionsPrecisions = "<spring:message code="text.left.questions.precisions"/>";
+		confirmTestValidation(${nbUnansweredQuestions});
+	</c:if>
 });
 </script>
