@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="esc" uri="/WEB-INF/escapeJsTaglib.tld"%>
+<%@ taglib prefix="q" uri="/WEB-INF/questionTaglib.tld"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -72,11 +73,10 @@
 		</div>
 		
 		<div class="container" style="margin-top: 10px">
-			<c:url value="/admin/profile/delete" var="deleteUrl">
-				<c:param name="profile" value="${profil.id}"/>
-				<c:param name="origin" value="candidate"/>
+			<c:url value="/admin/test/delete" var="deleteUrl">
+				<c:param name="id" value="${testSheet.id}"/>
 			</c:url>
-			<a href="#" onclick="deleteProfil(${profil.id}, '${profil.prenom}', '${profil.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.candidate"/>'); return false;" class="action delete no-float">
+			<a href="#" onclick="deleteTestSheet ( '${testSheet.id}' , '${testSheet.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
 				<spring:message code="link.label.candidate.detail.delete"/>
 			</a>
 		</div>
@@ -100,9 +100,12 @@
 		        </div>
 		        
 		        <div>
-			        <form:label path="niveau"><spring:message code="text.admin.questions.page.niveau" />*</form:label>     
-			        <form:input id="questionNiveau" path="niveau" maxlength="100"/>
-			        <form:errors path="niveau" cssClass="error"/>
+			        <form:label path="niveau"><spring:message code="text.admin.questions.page.niveau" />*</form:label> 
+			        <form:select path="niveau" id="questionNiveau">
+			        	<c:forEach items="${questionForm.levels}" var="level">
+							<form:option value="${level}" label="${level}" />
+			        	</c:forEach>
+			        </form:select>
 		        </div>
 		        
 		        <div class="last-element">
@@ -122,38 +125,41 @@
 			<c:set var="count" value="1"/>
 			<c:forEach items="${testSheet.questions}" var="question">
 				<div class="detail-list-item">
-					<p class="actions">
+					<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
 						<a href="#" class="actions-down"></a>
 						<span class="sub-actions">
 							
 							<c:url value="/admin/question/delete" var="deleteUrl">
-								<c:param name="id" value="${question.id}"/>
+								<c:param name="question" value="${question.id}"/>
+								<c:param name="test" value="${testSheet.id}"/>
 							</c:url>
-							<a href="#" onclick="deleteQuestion (${question.id} , '${question.intitule}' , '${deleteUrl}') ; return false ;" class="action delete">
+							<a href="#" onclick="deleteQuestion ('${question.intitule}' , '${deleteUrl}') ; return false ;" class="action delete">
 							<spring:message code="link.label.common.delete"/></a> 
 							
 							<a href="#" onClick="editQuestion ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit">
 							<spring:message code="link.label.question.edit" /></a>
 							   
 							<c:url value="/admin/question/detail" var="detailUrl">
-								<c:param name="id" value="${currentTest.id}"/>
+								<c:param name="id" value="${question.id}"/>
 							</c:url>
 							<a href="${detailUrl}" class="action detail">
 							<spring:message code="link.label.question.detail"/></a>							
 						</span>
 					</p>
 					
-					<span class="question-count">${count}<br/><br/><br/><br/></span>
+					<span class="question-count">${count}</span>
 					
-					<span class="important"><a class="detail-link" href="${detailUrl}">${question.intitule}</a></span> (niveau: <span class="important">${question.niveau}</span>)<br/> 
-					<c:set var="plural" value=" " />
-					<c:set var="list" value="true" />
-					<c:if test="${fn:length(question.propositionsReponses) gt 1}">
-						<c:set var="plural" value="s" />
-					</c:if>
-					<span class="important">${fn:length(question.propositionsReponses)}</span> <spring:message code="text.admin.questions.page.reponses" arguments="${plural}"/>
-					<br/><br/>
-					${question.contenu}
+					<p style="margin-left: 40px">
+						<span class="important"><a class="detail-link" href="${detailUrl}">${question.intitule}</a></span> (niveau: <span class="important">${question.niveau}</span>)<br/> 
+						<c:set var="plural" value=" " />
+						<c:set var="list" value="true" />
+						<c:if test="${fn:length(question.propositionsReponses) gt 1}">
+							<c:set var="plural" value="s" />
+						</c:if>
+						<span class="important">${fn:length(question.propositionsReponses)}</span> <spring:message code="text.admin.questions.page.reponses" arguments="${plural}"/>
+						<br/><br/>
+						<q:format input="${question.contenu}" mode="display" />
+					</p>
 					
 				</div>	
 				<c:set var="count" value="${count + 1}"/>			
@@ -186,6 +192,7 @@ $(document).ready(function() {
 	textAddQuestion = "<spring:message code="text.side.form.title.questions.add"/>";
 	textEditQuestion = "<spring:message code="text.side.form.title.questions.edit"/>";
 	dialogTextDeleteQuestion = "<spring:message code="dialog.text.delete.questions"/>";
+	dialogTextDeleteTest = "<spring:message code="dialog.text.delete.tests"/>";
 	
 	<c:if test="${displayEditForm}">
 		$("#identity").slideUp(function() {

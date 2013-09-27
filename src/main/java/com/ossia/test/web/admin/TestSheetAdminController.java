@@ -31,6 +31,8 @@ import com.ossia.test.web.sort.SortingInfo;
 @RequestMapping("/admin")
 public class TestSheetAdminController extends AbstractAdminController {
 	
+	// TODO empecher la suppression d'un test si celui ci est en cours de pasage
+	// TODO empecher l'assignation d'un test si celui comporte un equestion sans au moins 2 propositions de réponses (dont au moins une correcte)
 	private final Log log = LogFactory.getLog(getClass()) ; 
 	
 	private final static String SESSION_TEST_LIST_SORT = "test.list.sort";
@@ -112,10 +114,9 @@ public class TestSheetAdminController extends AbstractAdminController {
 	}
 	
 	@RequestMapping(value = "/test/delete", method = RequestMethod.GET)
-	public String deleteTest(@RequestParam(value = "id") String idRequestParam, HttpServletRequest request, ModelMap model ) {
+	public String deleteTest(@RequestParam(value = "id") Integer testId, HttpServletRequest request, ModelMap model ) {
 		
-		Integer identifier = Integer.parseInt(idRequestParam) ;  
-		TestSheet testSheetToDelete = testSheetService.getTestSheetById( identifier ) ; 
+		TestSheet testSheetToDelete = testSheetService.getTestSheetById( testId ) ; 
 		testSheetService.deleteTestSheet(testSheetToDelete) ; 
 		model.put("testSheet", new TestSheet()) ; 
 		
@@ -142,14 +143,20 @@ public class TestSheetAdminController extends AbstractAdminController {
 	 */
 	
 	@RequestMapping(value = "/question/detail", method = RequestMethod.GET)
-	public String displayQuestionDetail(@RequestParam(value = "id") String idRequestParam , ModelMap model) {
-		
+	public String displayQuestionDetail(@RequestParam(value = "id") String idRequestParam , HttpServletRequest request, ModelMap model) {
+		// TODO ajouter une popup d'aide à la saisie des questions et des réponses pour le formattage du code
 		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		Question question = testSheetService.getQuestionById(identifier) ;
 		
-		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
-		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question)) ; 
-		model.put("question", question) ; 
+		model.put("propositionForm", new CreateUpdatePropositionReponseForm(question) ) ; 
+		model.put("propositions", question.getPropositionsReponses()) ; 
+		model.put("question", question) ;
+		
+		model.put("selectedTab", TAB_TEST);
+		
+		model.put("questionForm", new CreateUpdateQuestionForm (question.getTest()) ) ; 
+		
+		setLastActionInModel(model, request);
 		
 		return "question-detail" ; 
 	}
@@ -161,9 +168,15 @@ public class TestSheetAdminController extends AbstractAdminController {
 			model.put("selectedTab", TAB_TEST);
 			if (origin.equals("test")) {
 				model.put("testSheet",  testSheetService.getTestSheetById(questionForm.getTestId()));
+			} else {
+				Question question = testSheetService.getQuestionById(questionForm.getId());
+				model.put("question", question) ;
+				model.put("propositionForm", new CreateUpdatePropositionReponseForm(question)) ; 
+				model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question)) ;
+				model.put("displayEditQuestionForm", true);
 			}
 			model.put("displayAddQuestionForm", true);
-			return "test-detail";
+			return origin + "-detail";
 		}
 		
 		TestSheet test = testSheetService.getTestSheetById(questionForm.getTestId()) ;
@@ -175,7 +188,7 @@ public class TestSheetAdminController extends AbstractAdminController {
 			messageCodeForLastAction = "text.notify.add.question";
 		} else {
 			Question existingQuestion = testSheetService.getQuestionById(questionForm.getId()) ; 
-			question = testSheetService.updateQuestion(questionForm.updateQuestion (existingQuestion) ) ; 
+			question = testSheetService.updateQuestion(test, questionForm.updateQuestion (existingQuestion), admin) ; 
 			messageCodeForLastAction = "text.notify.edit.question";
 		}
 		
@@ -185,17 +198,26 @@ public class TestSheetAdminController extends AbstractAdminController {
 		
 		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
 		model.put("questions", liste ) ; 
-		model.put("testSheet", test ) ; 
+		model.put("testSheet", test ) ;
 		
-		return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
+		if (origin.equals("test")) {
+			return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
+		} else {
+			return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
+		}		
 	}
 	
 	@RequestMapping(value = "/question/delete", method = RequestMethod.GET)
-	public String deleteQuestionFromTest(@RequestParam(value = "id") Integer questionId, HttpServletRequest request, ModelMap model ) {
+	public String deleteQuestionFromTest(@RequestParam(value = "question") Integer questionId, @RequestParam(value = "test") Integer testId, HttpServletRequest request, ModelMap model ) {
 		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Question questionToDelete = testSheetService.getQuestionById(questionId); 
 		
-		TestSheet test = questionToDelete.getTest() ; 
+		TestSheet test = questionToDelete.getTest(); 
+		
+		if (test.getId() != testId) { // Trying to delete a question that does not belong to the given test
+			return "redirect:/admin/test/detail" + "?id="+testId;			
+		}
+		
 		testSheetService.deleteQuestionFromTestSheet(test, questionToDelete, admin) ;  
 		
 		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.question", questionToDelete.getIntitule(), test.getIntitule()));
@@ -207,45 +229,61 @@ public class TestSheetAdminController extends AbstractAdminController {
 	 */
 
 	@RequestMapping(value = "/proposition/createUpdate", method = RequestMethod.POST)
-	public String addOrEditPropositionReponseToQuestion (@Valid CreateUpdatePropositionReponseForm pr , HttpServletRequest arg0 , BindingResult result , ModelMap model) {
+	public String addOrEditPropositionReponseToQuestion (@Valid @ModelAttribute(value = "propositionForm") CreateUpdatePropositionReponseForm propform,  BindingResult result, HttpServletRequest request, ModelMap model) {
 		
 		if (result.hasErrors()) {
+			Question question = testSheetService.getQuestionById(propform.getQuestionId());
+			model.put("propositions", question.getPropositionsReponses()) ; 
+			model.put("question", question) ;
+			model.put("selectedTab", TAB_TEST);
+			model.put("questionForm", new CreateUpdateQuestionForm (question.getTest()));
+			model.put("displayPropositionForm",  true);
 			return "question-detail";
 		}
 		
-		Question question = testSheetService.getQuestionById(pr.getQuestionId()) ; 
+		Question question = testSheetService.getQuestionById(propform.getQuestionId()) ; 
 		
-		if (pr.getId() == null || pr.getId() == 0) {
-			PropositionReponse prToCreate = pr.convertToNewPropositionReponseDomain(question) ; 
-			testSheetService.createPropositionReponse(prToCreate) ; 
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String messageCodeForLastAction = null;
+		
+		if (propform.getId() == null || propform.getId() == 0) {
+			PropositionReponse prToCreate = propform.convertToNewPropositionReponseDomain(question) ; 
+			testSheetService.createPropositionReponse(prToCreate, admin) ; 
+			messageCodeForLastAction = "text.notify.add.proposition";
 		} else {
-			PropositionReponse prToUpdate = testSheetService.getPropositionReponseById(pr.getId()) ; 
-			prToUpdate = pr.updatePropositionReponseModel(prToUpdate) ; 
-			testSheetService.updatePropositionReponse(prToUpdate) ; 
+			PropositionReponse prToUpdate = testSheetService.getPropositionReponseById(propform.getId()) ; 
+			prToUpdate = propform.updatePropositionReponseModel(prToUpdate) ; 
+			testSheetService.updatePropositionReponse(prToUpdate, admin) ; 
+			messageCodeForLastAction = "text.notify.edit.proposition";
 		}
+		
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, question.getIntitule()));
+		
 		
 		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
-		model.put("question", question) ; 
+		model.put("question", question) ;
 		
 		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
 	}
 	
 	@RequestMapping(value = "/proposition/delete", method = RequestMethod.GET)
-	public String deletePropositionReponseFromQuestion ( @RequestParam(value = "id", required = false) String idproposition , HttpServletRequest arg0 , ModelMap model ) {
+	public String deletePropositionReponseFromQuestion (@RequestParam(value = "proposition") Integer propositionId, @RequestParam(value = "question") Integer questionId, HttpServletRequest request, ModelMap model) {
+				
+		PropositionReponse pr = testSheetService.getPropositionReponseById (propositionId) ; 
+		Question question = pr.getQuestion();
+		if (question.getId() != questionId) { // Trying to delete a proposition that does not belong to the given question
+			return "redirect:/admin/question/detail" + "?id=" + questionId; 			
+		}
 		
-		log.debug( arg0.getParameter("id") ) ; 
-		Integer idProposition  = Integer.parseInt(idproposition) ;  
-		
-		PropositionReponse pr = testSheetService.getPropositionReponseById (idProposition) ; 
-		Question question = pr.getQuestion() ; 
-		testSheetService.deletePropositionReponseFromQuestion(pr.getQuestion(), pr) ; 
+		question = testSheetService.deletePropositionReponseFromQuestion(pr.getQuestion(), pr) ; 
 		
 		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
-		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
-		model.put("question", question) ; 
+		model.put("propositions", question.getPropositionsReponses()); 
+		model.put("question", question); 
 		
-		return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.proposition", question.getIntitule()));		
+		return "redirect:/admin/question/detail" + "?id=" + question.getId() ; 
 	}
 	
 	private SortingInfo completeTestSortingInfo (SortingInfo sortingInfo, String sortingField, String sortingDirection) {

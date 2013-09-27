@@ -37,21 +37,21 @@ public interface TestSheetService {
 
 	List<Question> getAllQuestionsFromTest(TestSheet test);
 
-	Question updateQuestion(Question question);
+	Question updateQuestion (TestSheet test, Question question, Profil admin);
 	
 	void deleteQuestionFromTestSheet (TestSheet test , Question aSupprimer, Profil admin) ; 
 
 	/*
 	 * PROPOSITION_REPONSE
 	 */
-	PropositionReponse createPropositionReponse (PropositionReponse pr) ; 
+	PropositionReponse createPropositionReponse (PropositionReponse pr, Profil admin) ; 
 	
 	PropositionReponse getPropositionReponseById(Integer idProposition);
 	
 	List <PropositionReponse> getAllPropositionReponseFromQuestion (Question question) ; 
 	
-	PropositionReponse updatePropositionReponse (PropositionReponse pr) ; 
+	PropositionReponse updatePropositionReponse (PropositionReponse pr, Profil admin) ; 
 	
-	void deletePropositionReponseFromQuestion (Question question , PropositionReponse pr ) ; 
+	Question deletePropositionReponseFromQuestion (Question question , PropositionReponse pr ) ; 
 	
 }

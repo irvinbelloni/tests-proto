@@ -115,8 +115,19 @@ public class TestSheetServiceImpl implements TestSheetService {
 	}
 	
 	@Transactional 
-	public Question updateQuestion(Question question) {
+	public Question updateQuestion(TestSheet test, Question question, Profil admin) {		
+		question.setContenu(encodeTextareaContent(question.getContenu()));
 		questionRepository.update(question);
+				
+		// Tracing the update
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.EDIT_QUESTION.getCode());
+		histo.setTestSheet(test);				
+		test.getHistorique().add(histo);
+		
+		testSheetRepository.update(test);
+		
 		return questionRepository.getById(question.getId()) ; 
 	}
 	
@@ -134,7 +145,11 @@ public class TestSheetServiceImpl implements TestSheetService {
 	}
 	
 	@Transactional
-	public PropositionReponse createPropositionReponse (PropositionReponse pr){
+	public PropositionReponse createPropositionReponse (PropositionReponse pr, Profil admin){
+		pr.setValeur(encodeTextareaContent(pr.getValeur()));
+		
+		// TODO ? Tracing the creation	
+		
 		Integer id = propositionReponseRepository.create(pr) ;
 		return propositionReponseRepository.getById(id) ; 
 	}
@@ -150,19 +165,32 @@ public class TestSheetServiceImpl implements TestSheetService {
 	} 
 	
 	@Transactional
-	public PropositionReponse updatePropositionReponse (PropositionReponse pr) {
+	public PropositionReponse updatePropositionReponse (PropositionReponse pr, Profil admin) {
+		pr.setValeur(encodeTextareaContent(pr.getValeur()));
+		
+		// TODO ? Tracing the modiifcation	
+		
 		propositionReponseRepository.update(pr) ; 
 		return propositionReponseRepository.getById(pr.getId()) ;
 	}
 	
 	@Transactional
-	public void deletePropositionReponseFromQuestion (Question question , PropositionReponse pr ) {
+	public Question deletePropositionReponseFromQuestion (Question question , PropositionReponse pr) {
+		
+		for(PropositionReponse propositionReponse : question.getPropositionsReponses()) {
+			if (propositionReponse.getId() == pr.getId()) {
+				question.getPropositionsReponses().remove(propositionReponse);
+				break;
+			}
+		}
+		questionRepository.update(question);
 		propositionReponseRepository.delete(pr);
+		return question;
 	}
 	
 	private String encodeTextareaContent(String content) {
 		String encodedContent = content.replace("\"", "[DB]");
-		encodedContent = encodedContent.replace("   ", "[TAB]");
+		encodedContent = encodedContent.replace("    ", "[TAB]");
 		encodedContent = encodedContent.replace("\r\n", "[NL]");
 		encodedContent = encodedContent.replace("\n\r", "[NL]");
 		encodedContent = encodedContent.replace("\r", "[NL]");

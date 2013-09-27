@@ -3,7 +3,7 @@
 	float: right;
 	font-size: 12px;
 	font-weight: normal;
-	margin: 3px 0 0 0;
+	margin: 3px 0 0 20px;
 }
 
 .identity {
@@ -23,11 +23,19 @@
 	height: 1px;
 }
 
-.identity span {
+#question-id {
+	font-weight: bold;
+}
+
+.identity span, #question-id span {
 	float: left;
 	font-size: 12px;
 	font-weight: normal;
 	width: 40%;
+}
+
+#question-id span {
+	width: 20%;
 }
 
 .identity span.error {
@@ -50,13 +58,18 @@
 	margin: 0 25% 0 28%;
 }
 
+.central-left {
+	margin: 0 25% 0 0;
+}
+
 #test-detail .central {
 	margin: 0 23% 0 23%;
 }
 
-.central .detail-list-item {
+.central .detail-list-item, .central-left .detail-list-item {
 	border-bottom: 1px dotted #d5d5d5;
 	padding: 10px 0;
+	min-height: 30px;
 }
 
 .central div span {
@@ -71,7 +84,7 @@
 	color: #9f698d;
 }
 
-#questions span.question-count {
+#questions span.question-count, #propositions span.question-count {
 	float : left;
 	font-size: 16px;
 	font-weight: bold;
@@ -83,7 +96,7 @@
 	float: none;
 }
 
-#questions span.important {
+#questions span.important, #propositions span.important {
 	float: none;
 	font-weight: bold;
 }
@@ -117,7 +130,7 @@
 	margin-right: 0;
 }
 
-#detail-edit, #profil-detail-assign-test, #question-edit {
+#detail-edit, #profil-detail-assign-test, #question-edit, #proposition-edit {
 	display: none;
 }
 
@@ -158,4 +171,12 @@
 .historic span {
 	font-size:10px;
 	font-weight: normal;
+}
+
+.correct {
+	color: #090;
+}
+
+.incorrect {
+	color: #900;
 }

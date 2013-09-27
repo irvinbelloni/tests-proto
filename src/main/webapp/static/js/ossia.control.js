@@ -4,10 +4,13 @@ var textAddAdministrator = "";
 var textAddCandidate = "";
 var textTestTimeOver = "";
 var textTestTimeOverPrecision = "";
+var textAddPropositionReponse = "";
+var textEditPropositionReponse = "";
 
 var dialogTextDeleteProfil = "";
 var dialogTextDeleteTest = "";
 var dialogTextDeleteQuestion = "";
+var dialogTextDeletePropositionReponse = "";
 
 var remainingTime;
 var timeoutRT;
@@ -392,7 +395,8 @@ function deleteTestSheet (id, intitule, url) {
 	$(function() {
 		$("#dialog-confirm").dialog({
 			resizable : false,
-			height : 210,
+			title: "Supprimer un test",
+			height : 230,
 			modal : true,
 			buttons : {
 				"Supprimer" : function() {
@@ -423,7 +427,7 @@ function editTestSheet (id, intitule, duree, type) {
 	});	
 }
 
-function deleteQuestion (id, intitule, url) {
+function deleteQuestion (intitule, url) {
 	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
 	dialogHtml += dialogTextDeleteQuestion.replace("%QUESTION%", intitule );
 	$("#dialog-confirm p").html(dialogHtml);
@@ -432,6 +436,7 @@ function deleteQuestion (id, intitule, url) {
 	$(function() {
 		$("#dialog-confirm").dialog({
 			resizable : false,
+			title: "Supprimer une question",
 			height : 210,
 			modal : true,
 			buttons : {
@@ -456,8 +461,36 @@ function addQuestion () {
 		$("#questionContenu").html("");
 		$("#question-edit h2").html(textAddQuestion);
 		$("span.error").hide();
+		$(".back-to-add-form").html("Annuler l'ajout");
 		$(".back-to-add-form").show();				
 		$("#question-edit").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+function addProposition () {
+
+	cancelEditQuestionDetail();
+	
+	$("#propositions").slideUp(function() {
+		$("#proposition-submit-button").val("Ajouter");  
+		$("#propositionId").val("");
+		$("#propositionValeur").val("");
+		
+		$("#proposition-edit h2").html(textAddPropositionReponse);
+		$("span.error").hide();
+		$(".back-to-add-form").html("Annuler l'ajout");
+		$(".back-to-add-form").show();				
+		$("#proposition-edit").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+function cancelProposition() {
+	$("#proposition-edit").slideUp(function() {		
+		$("#propositions").slideDown(function() {
 			adjustFooterHeight();
 		});
 	});	
@@ -473,17 +506,40 @@ function editQuestion (id, intitule, niveau , contenu) {
 		$("#questionContenu").val(decodeTextAreaContent(contenu));
 		$("#question-edit h2").html(textEditQuestion);
 		$("span.error").hide();
-				
+		$(".back-to-add-form").html("Annuler la modification");
+		$(".back-to-add-form").show();
 		$("#question-edit").slideDown(function() {
 			adjustFooterHeight();
 		});
 	});	
 }
 
+function editQuestionDetail (id, intitule, niveau , contenu) {
+	cancelProposition();
+	$("#question-id").slideUp(function() {
+		$("#questionId").val(id);
+		$("#questionIntitule").val(intitule);
+		$("#questionNiveau").val(niveau);		
+		$("#questionContenu").val(decodeTextAreaContent(contenu));
+		$("span.error").hide();
+		$(".back-to-add-form").show();
+		$("#question-edit").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
 
-function deletePropositionReponse (id, intitule, url) {
+function cancelEditQuestionDetail () {
+	$("#question-edit").slideUp(function() {
+		$("#question-id").slideDown(function() {
+			adjustFooterHeight();
+		});
+	});	
+}
+
+function deletePropositionReponse (url) {
 	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
-	dialogHtml += dialogTextDeletePropositionReponse.replace("%PROPOSITION%", intitule );
+	dialogHtml += dialogTextDeletePropositionReponse;
 	$("#dialog-confirm p").html(dialogHtml);
 			
 	$(function() {
@@ -503,33 +559,33 @@ function deletePropositionReponse (id, intitule, url) {
 	});	
 }
 
-function editPropositionReponse (id, valeur, propositionCorrecte) {
-
-	$(".side-form").slideUp(function() {
-		$(".submit-button").val("Modifier Proposition");  
+function editProposition (id, correct, valeur) {
+	cancelEditQuestionDetail();
+	$("#propositions").slideUp(function() {
+		$("#proposition-submit-button").val("Modifier");  
 		$("#propositionId").val(id);
-		$("#propositionValeur").val(valeur);
+		$("#propositionValeur").val(decodeTextAreaContent(valeur));
 		
-		if (propositionCorrecte == 'true') {
+		if (correct) {
 			$("input[type='radio'][name='propositionCorrecte'][value='true']").attr('checked', true);
 			$("input[type='radio'][name='propositionCorrecte'][value='false']").removeProp('checked');
-		} else if (propositionCorrecte == 'false') {
+		} else {
 			$("input[type='radio'][name='propositionCorrecte'][value='false']").attr('checked', true);
 			$("input[type='radio'][name='propositionCorrecte'][value='true']").removeProp('checked');
 		}
 		
-		$(".side-form h2").html(textEditPropositionReponse);
+		$("#proposition-edit h2").html(textEditPropositionReponse);
 		$("span.error").hide();
-		$(".edit-field").show();
-		
-		$(".side-form").slideDown(function() {
+		$(".back-to-add-form").html("Annuler la modification");
+		$(".back-to-add-form").show();
+		$("#proposition-edit").slideDown(function() {
 			adjustFooterHeight();
 		});
 	});	
 }
 
 function decodeTextAreaContent(content) {
-	content = content.replace(/\[TAB\]/g, "   ");
+	content = content.replace(/\[TAB\]/g, "    ");
 	content = content.replace(/\[NL\]/g, "\r\n");
 	content = content.replace(/\[DB\]/g, "\"");	
 	return content;

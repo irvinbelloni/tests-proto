@@ -16,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OrderBy;
+
 @Entity
 @Table(name = "T_QUESTIONS")
 public class Question implements Serializable {
@@ -39,6 +41,7 @@ public class Question implements Serializable {
     private TestSheet test;
     
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER , mappedBy = "question")
+    @OrderBy(clause = "id ASC")
     private Set<PropositionReponse> propositionsReponses ; 
     
     public Question() {
