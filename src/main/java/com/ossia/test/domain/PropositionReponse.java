@@ -31,7 +31,7 @@ public class PropositionReponse implements Serializable {
 	private String valeur ; 
 	
 	@NotNull
-    private Boolean propositionCorrecte ;
+    private boolean propositionCorrecte ;
 
 	public PropositionReponse() {
 		this.id = 0 ; 
@@ -74,11 +74,7 @@ public class PropositionReponse implements Serializable {
 		this.valeur = valeur;
 	}
 
-	public Boolean getPropositionCorrecte() {
-		return propositionCorrecte;
-	}
-
-	public void setPropositionCorrecte(Boolean propositionCorrecte) {
+	public void setPropositionCorrecte(boolean propositionCorrecte) {
 		this.propositionCorrecte = propositionCorrecte;
 	}
 

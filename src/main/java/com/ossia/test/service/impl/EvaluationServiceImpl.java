@@ -162,7 +162,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) {
 		Boolean resultat = null ; 
 		for (PropositionReponse propositionReponse : reponses) {
-			if (propositionReponse.getPropositionCorrecte()) {
+			if (propositionReponse.isPropositionCorrecte()) {
 				resultat = Boolean.TRUE ; 
 			}
 			else {

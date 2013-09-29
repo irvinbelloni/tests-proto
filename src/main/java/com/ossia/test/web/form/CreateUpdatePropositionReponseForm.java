@@ -1,7 +1,5 @@
 package com.ossia.test.web.form;
 
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.ossia.test.domain.PropositionReponse;
@@ -16,8 +14,7 @@ public class CreateUpdatePropositionReponseForm {
 	@NotEmpty
 	private String valeur ; 
 	
-	@NotNull
-    private Boolean propositionCorrecte ;
+	private Boolean propositionCorrecte ;
 	
 	public CreateUpdatePropositionReponseForm() {
 		super();
@@ -27,7 +24,8 @@ public class CreateUpdatePropositionReponseForm {
 	public CreateUpdatePropositionReponseForm(Question question) {
 		super();
 		this.id = 0 ;
-		this.questionId = question.getId() ; 
+		this.questionId = question.getId() ;
+		propositionCorrecte = false;
 	}
 	
 	public PropositionReponse updatePropositionReponseModel (PropositionReponse pr) {

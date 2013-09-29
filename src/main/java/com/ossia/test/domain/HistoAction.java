@@ -10,7 +10,8 @@ public enum HistoAction {
 	DEACTIVATE("DEACT"),
 	DELETE_QUESTION("DELQU"),
 	DESASSIGNATION_TEST("DESTE"),
-	EDIT("EDIT");	
+	EDIT("EDIT"),
+	EDIT_QUESTION("EDITQ");	
 	
 	private String code;
 	

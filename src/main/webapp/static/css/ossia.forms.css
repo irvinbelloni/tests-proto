@@ -91,7 +91,7 @@ form.login input {
 	width: 63%;
 }
 
-.center-form-detail input[type=text] {
+.center-form-detail input[type=text], .center-form-detail select {
 	width: 76%;
 }
 
@@ -101,7 +101,7 @@ form.login input {
 	width: 76%;
 }
 
-.center-form-detail select {
+#assign-test-form select {
 	width: 100%;
 }
 

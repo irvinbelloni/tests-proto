@@ -97,9 +97,10 @@
 		<spring:message code="text.admin.tests.page.liste.nulle" />
 	</c:if>
 	
+	<c:set var="count" value="0"/>
 	<c:forEach var="currentTest" items="${tests}">
 		<div class="list-item">
-			<p class="actions">
+			<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
 				<a href="#" class="actions-down"></a>
 				<span class="sub-actions">
 					
@@ -136,6 +137,7 @@
 			</p>
 			<div class="clear-left"></div>
 		</div>
+		<c:set var="count" value="${count + 1}"/>
 	</c:forEach>
 </div>
 

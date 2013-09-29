@@ -20,16 +20,7 @@ public final class EscapeJsTaglib extends TagSupport {
         try {
             //Get the writer object for output.
             JspWriter out = pageContext.getOut();
-            String outString = input.replace("'",  "\\\'");
-            
-            if (lines) {
-	            outString = outString.replace("\"",  "[DB]");
-	            outString = outString.replace("\r\n",  "[BR]");
-	            outString = outString.replace("\r",  "[BR]");
-	            outString = outString.replace("\n",  "[BR]");
-            } else {
-            	outString = outString.replace("\"",  "\\\'");
-            }
+            String outString = input.replace("'",  "\\\'");            
             out.print(outString);
  
         } catch (IOException e) {

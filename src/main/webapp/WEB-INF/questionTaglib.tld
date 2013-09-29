@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>q</shortname>
+	<tag>
+		<name>format</name>
+		<tagclass>com.ossia.test.web.taglib.FormatQuestionTaglib</tagclass>
+		<attribute>
+			<name>input</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<elexprvalue>true</elexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>mode</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<elexprvalue>true</elexprvalue>
+		</attribute>
+	</tag>
+</taglib> 
