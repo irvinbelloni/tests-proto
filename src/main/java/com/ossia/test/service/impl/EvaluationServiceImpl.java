@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Evaluation;
+import com.ossia.test.domain.EvaluationStatus;
 import com.ossia.test.domain.HistoAction;
 import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.Profil;
@@ -21,7 +22,6 @@ import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
-import com.ossia.test.domain.TestStatus;
 import com.ossia.test.repository.EvaluationRepository;
 import com.ossia.test.repository.ProfilRepository;
 import com.ossia.test.repository.QuestionRepository;
@@ -143,12 +143,12 @@ public class EvaluationServiceImpl implements EvaluationService {
 		// Checking if the test is not already assigned
 		for(Evaluation evaluationLoop : candidate.getEvaluations()) {
 			if (evaluationLoop.getTest().getId() == testId && !evaluationLoop.isTestTaken()) {
-				evaluation.setStatus(TestStatus.ALREADY_ASSIGNED.getCode());
+				evaluation.setStatus(EvaluationStatus.ALREADY_ASSIGNED.getCode());
 				return evaluation;
 			}
 		}		
 		
-		evaluation.setStatus(TestStatus.ASSIGNED.getCode());
+		evaluation.setStatus(EvaluationStatus.ASSIGNED.getCode());
 		testSheet.getEvaluations().add(evaluation);				
 		candidate.getEvaluations().add(evaluation);		
 		profilRepository.update(candidate);
@@ -232,14 +232,14 @@ public class EvaluationServiceImpl implements EvaluationService {
 	@Override
 	public void markTestAsStarted(Evaluation evaluation) {
 		evaluation.setStartTime(new Date());
-		evaluation.setStatus(TestStatus.IN_PROGRESS.getCode());
+		evaluation.setStatus(EvaluationStatus.IN_PROGRESS.getCode());
 		
 		evaluationRepository.update(evaluation);
 	}
 
 	@Override
 	public boolean isTimeOver(Evaluation evaluation) {
-		if (evaluation.getStatus() != TestStatus.IN_PROGRESS.getCode()) { // The test must be in progress
+		if (evaluation.getStatus() != EvaluationStatus.IN_PROGRESS.getCode()) { // The test must be in progress
 			return true;
 		}	
 		
@@ -322,7 +322,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 		
 		evaluation.setEndTime(new Date());
-		evaluation.setStatus(TestStatus.DONE.getCode());
+		evaluation.setStatus(EvaluationStatus.DONE.getCode());
 		
 		evaluationRepository.update(evaluation);		
 	}	

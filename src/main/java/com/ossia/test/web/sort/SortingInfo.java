@@ -10,6 +10,7 @@ public class SortingInfo {
 	public final static String SORT_INTITULE = "intitule";
 	public final static String SORT_TYPE = "type";
 	public final static String SORT_DUREE = "duree";
+	public final static String SORT_STATUS = "status";
 		
 	public final static String ASC = "asc";
 	public final static String DESC = "desc";

@@ -15,19 +15,18 @@ import com.ossia.test.repository.QuestionRepository;
 @Repository
 public class QuestionRepositoryImpl extends AbstractRepositoryImpl<Question, Integer> implements QuestionRepository {
 
+	@SuppressWarnings("unchecked")
 	public List<Question> getAllQuestionsByTestId(Integer id) {
 		Query query = getHibernateCurrentSession().createQuery("from Question questions where questions.test.id=:id")
-				.setInteger("id", id);
-		
-		List<Question> liste = (List<Question>) query.list()  ;
-		return liste ; 
+				.setInteger("id", id);		
+		return (List<Question>) query.list();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Question> getQuestionsByTestAndNiveau(TestSheet test , Niveau level) {
 	    Criteria crit = getHibernateCurrentSession().createCriteria(Question.class); 
 	    crit.add(Restrictions.eq("niveau", level))  ; 
 	    crit.add(Restrictions.eq("test", test))  ;
-	    List<Question> liste = crit.list();  
-	    return liste ; 
+	    return (List<Question>) crit.list();
 	}
 }

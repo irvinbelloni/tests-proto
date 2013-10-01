@@ -27,6 +27,12 @@ public interface TestSheetService {
 	TestSheet updateTestSheet(TestSheet testSheet, Profil admin);
 	
 	void deleteTestSheet(TestSheet testSheetToDelete);
+	
+	void validateTestSheet(TestSheet testSheet, Profil admin);
+	
+	TestSheet duplicateTestSheet(TestSheet testSheet, Profil admin);
+	
+	void archiveTestSheet(TestSheet testSheet, Profil admin);
 
 	/*
 	 * QUESTION

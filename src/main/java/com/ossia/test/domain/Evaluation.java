@@ -65,17 +65,17 @@ public class Evaluation implements Serializable {
 	
 	@Transient
 	public boolean isTestTaken(){
-		return this.status == TestStatus.DONE.getCode();
+		return this.status == EvaluationStatus.DONE.getCode();
 	}
 	
 	@Transient
 	public boolean isTestInProgress(){
-		return this.status == TestStatus.IN_PROGRESS.getCode();
+		return this.status == EvaluationStatus.IN_PROGRESS.getCode();
 	}	
 
 	@Transient
 	public boolean isTestAssigned(){
-		return this.status == TestStatus.ASSIGNED.getCode();
+		return this.status == EvaluationStatus.ASSIGNED.getCode();
  	}
 	
 	@Transient

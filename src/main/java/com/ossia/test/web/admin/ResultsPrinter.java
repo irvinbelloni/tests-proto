@@ -18,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +40,6 @@ import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Response;
-import com.ossia.test.domain.TestSheet;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.TestSheetService;
 

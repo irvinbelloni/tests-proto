@@ -82,7 +82,7 @@ public class Profil implements UserDetails {
 	/**
 	 * Form action: ADD or EDIT
 	 */
-	@Transient // TODO A Supprimer, on peut utiliser l'id de l'objet (cf testSheet)
+	@Transient
 	private String mode;
 
 	public Profil() {

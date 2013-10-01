@@ -1,6 +1,8 @@
 package com.ossia.test.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.TestHisto;
 import com.ossia.test.domain.TestSheet;
+import com.ossia.test.domain.TestStatus;
 import com.ossia.test.repository.PropositionReponseRepository;
 import com.ossia.test.repository.QuestionRepository;
 import com.ossia.test.repository.TestSheetRepository;
@@ -33,6 +36,7 @@ public class TestSheetServiceImpl implements TestSheetService {
 
 	@Transactional
 	public TestSheet createTestSheet(TestSheet testSheetACreer, Profil admin) {
+		testSheetACreer.setStatus(TestStatus.DRAFT);
 		
 		// Tracing the creation
 		TestHisto histo = new TestHisto();
@@ -68,7 +72,7 @@ public class TestSheetServiceImpl implements TestSheetService {
 	
 	@Transactional
 	public TestSheet updateTestSheet(TestSheet testSheet, Profil admin) {
-		// Tracing the creation
+		// Tracing the modification
 		TestHisto histo = new TestHisto();
 		histo.setAdmin(admin);
 		histo.setAction(HistoAction.EDIT.getCode());
@@ -83,6 +87,94 @@ public class TestSheetServiceImpl implements TestSheetService {
 	@Transactional
 	public void deleteTestSheet(TestSheet testSheetToDelete) {
 		testSheetRepository.delete(testSheetToDelete);
+	}	
+
+	@Override @Transactional
+	public void validateTestSheet(TestSheet testSheet, Profil admin) {
+		if (!testSheet.isValidable() || !testSheet.isDraft()) { // Test non validable or not in draft state
+			return;
+		}
+		
+		testSheet.setStatus(TestStatus.VALIDATED);
+		
+		// Tracing the validation
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.VALIDATE_TEST.getCode());
+		histo.setTestSheet(testSheet);
+		
+		testSheet.getHistorique().add(histo);
+		
+		testSheetRepository.update(testSheet);		
+	}
+	
+	@Override @Transactional
+	public void archiveTestSheet(TestSheet testSheet, Profil admin) {
+		if (!testSheet.isValidated()) { // Test un-archivable
+			return;
+		}
+		
+		testSheet.setStatus(TestStatus.ARCHIVED);
+		
+		// Tracing the validation
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.ARCHIVE_TEST.getCode());
+		histo.setTestSheet(testSheet);
+		
+		testSheet.getHistorique().add(histo);
+		
+		testSheetRepository.update(testSheet);		
+	}
+	
+	@Override @Transactional
+	public TestSheet duplicateTestSheet(TestSheet testSheet, Profil admin) {
+		if (testSheet.isDraft()) {
+			return testSheet;
+		}
+		
+		// Tracing the duplication
+		TestHisto histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.DUPLICATE_TEST.getCode());
+		histo.setTestSheet(testSheet);
+		testSheet.getHistorique().add(histo);		
+		testSheetRepository.update(testSheet);	
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		TestSheet newTestSheet = new TestSheet();
+		newTestSheet.setDuree(testSheet.getDuree());
+		newTestSheet.setIntitule(testSheet.getIntitule() + " - " + simpleDateFormat.format(new Date()));
+		newTestSheet.setType(testSheet.getType());
+		newTestSheet.setStatus(TestStatus.DRAFT);
+		
+		for(Question question : testSheet.getQuestions()) {
+			Question newQuestion = new Question();
+			newQuestion.setContenu(question.getContenu());
+			newQuestion.setIntitule(question.getIntitule());
+			newQuestion.setNiveau(question.getNiveau());
+			newQuestion.setTest(newTestSheet);
+			
+			for (PropositionReponse proposition : question.getPropositionsReponses()) {
+				PropositionReponse newProposition = new PropositionReponse();
+				newProposition.setValeur(proposition.getValeur());
+				newProposition.setPropositionCorrecte(proposition.isPropositionCorrecte());
+				newProposition.setQuestion(newQuestion);
+				newQuestion.getPropositionsReponses().add(newProposition);
+			}			
+			newTestSheet.getQuestions().add(newQuestion);
+		}
+		
+		// Tracing the duplication
+		histo = new TestHisto();
+		histo.setAdmin(admin);
+		histo.setAction(HistoAction.ADD_DUPLICATION.getCode());
+		histo.setTestSheet(newTestSheet);		
+		newTestSheet.getHistorique().add(histo);
+		
+		Integer id = testSheetRepository.create(newTestSheet);		
+		return getTestSheetById(id);
+		
 	}
 
 	@Transactional
@@ -146,10 +238,7 @@ public class TestSheetServiceImpl implements TestSheetService {
 	
 	@Transactional
 	public PropositionReponse createPropositionReponse (PropositionReponse pr, Profil admin){
-		pr.setValeur(encodeTextareaContent(pr.getValeur()));
-		
-		// TODO ? Tracing the creation	
-		
+		pr.setValeur(encodeTextareaContent(pr.getValeur()));				
 		Integer id = propositionReponseRepository.create(pr) ;
 		return propositionReponseRepository.getById(id) ; 
 	}
@@ -167,9 +256,6 @@ public class TestSheetServiceImpl implements TestSheetService {
 	@Transactional
 	public PropositionReponse updatePropositionReponse (PropositionReponse pr, Profil admin) {
 		pr.setValeur(encodeTextareaContent(pr.getValeur()));
-		
-		// TODO ? Tracing the modiifcation	
-		
 		propositionReponseRepository.update(pr) ; 
 		return propositionReponseRepository.getById(pr.getId()) ;
 	}
