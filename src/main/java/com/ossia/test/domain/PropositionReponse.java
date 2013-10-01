@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -28,6 +29,7 @@ public class PropositionReponse implements Serializable {
 	private Question question ; 
 	
 	@NotEmpty
+	@Length(max=100000)
 	private String valeur ; 
 	
 	@NotNull

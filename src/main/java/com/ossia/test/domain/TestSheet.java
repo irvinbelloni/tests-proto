@@ -34,6 +34,8 @@ public class TestSheet implements Serializable {
 
 	@NotEmpty
 	private String intitule;
+	
+	private String additionalInfo;
 
 	@NotNull @NumberFormat(style = Style.NUMBER)
     @Min(1)
@@ -123,5 +125,13 @@ public class TestSheet implements Serializable {
 
 	public void setHistorique(List<TestHisto> historique) {
 		this.historique = historique;
+	}
+
+	public String getAdditionalInfo() {
+		return additionalInfo;
+	}
+
+	public void setAdditionalInfo(String additionalInfo) {
+		this.additionalInfo = additionalInfo;
 	}
 }

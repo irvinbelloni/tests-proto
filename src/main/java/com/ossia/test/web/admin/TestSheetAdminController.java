@@ -126,18 +126,6 @@ public class TestSheetAdminController extends AbstractAdminController {
 		return "redirect:" + "/admin/test/home" ; 
 	}
 
-	@RequestMapping(value = "/test/print", method = RequestMethod.GET)
-	public String printTest(@RequestParam(value = "id") String idRequestParam , ModelMap model ) {
-		
-//		Integer identifier = Integer.parseInt(idRequestParam) ;  
-//		TestSheet testSheetToPrint = testSheetService.getTestSheetById( identifier ) ; 
-		
-		// TODO TDS - Complete implementation 
-		
-		model.put("testSheet", new TestSheet()) ; 
-		return "redirect:" + "/admin/test/home" ;
-	}
-	
 	/*
 	 * GESTION DES QUESTIONS 
 	 */
