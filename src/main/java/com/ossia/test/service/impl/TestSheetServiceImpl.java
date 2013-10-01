@@ -191,6 +191,7 @@ public class TestSheetServiceImpl implements TestSheetService {
 	private String encodeTextareaContent(String content) {
 		String encodedContent = content.replace("\"", "[DB]");
 		encodedContent = encodedContent.replace("    ", "[TAB]");
+		encodedContent = encodedContent.replace("\t", "[TAB]");
 		encodedContent = encodedContent.replace("\r\n", "[NL]");
 		encodedContent = encodedContent.replace("\n\r", "[NL]");
 		encodedContent = encodedContent.replace("\r", "[NL]");

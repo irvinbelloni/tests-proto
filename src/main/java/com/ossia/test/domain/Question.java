@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.OrderBy;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "T_QUESTIONS")
@@ -30,12 +31,18 @@ public class Question implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+	@Length(max=100000)
 	private String intitule;
 	
 	@Enumerated(EnumType.STRING)
 	private Niveau niveau;
 	
+	@Length(max=100000)
 	private String contenu;
+	
+	private String sousDomaine ; 
+	
+	private String correctionHints ; 
     
 	@ManyToOne @JoinColumn(name = "test_id")
     private TestSheet test;
@@ -53,6 +60,14 @@ public class Question implements Serializable {
 		this.intitule = intitule;
 		this.niveau = niveau;
 		this.contenu = contenu;
+	}
+	
+	public Question(String sousDomaine , String intitule, String contenu, Niveau niveau) {
+		super();
+		this.intitule = intitule;
+		this.contenu = contenu;
+		this.sousDomaine = sousDomaine ; 
+		this.niveau = niveau;
 	}
 
 	public Question(TestSheet testSheet) {
@@ -115,5 +130,21 @@ public class Question implements Serializable {
 
 	public void setPropositionsReponses(Set<PropositionReponse> propositionsReponses) {
 		this.propositionsReponses = propositionsReponses;
+	}
+
+	public String getSousDomaine() {
+		return sousDomaine;
+	}
+
+	public void setSousDomaine(String sousDomaine) {
+		this.sousDomaine = sousDomaine;
+	}
+
+	public String getCorrectionHints() {
+		return correctionHints;
+	}
+
+	public void setCorrectionHints(String correctionHints) {
+		this.correctionHints = correctionHints;
 	}
 }
