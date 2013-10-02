@@ -29,7 +29,9 @@ import com.ossia.test.repository.ResponseRepository;
 import com.ossia.test.repository.TestSheetRepository;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
+import com.ossia.test.web.form.FilterResultsForm;
 import com.ossia.test.web.form.QuestionForm;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Service
 @Transactional
@@ -78,7 +80,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 	
 	@Transactional(readOnly = true)
 	public List<Evaluation> getAllActiveResultats() {
-		return  evaluationRepository.getAll() ;
+		return evaluationRepository.getAll();
 	}
 
 	public void deleteEvaluation(Evaluation toDelete) {
@@ -159,6 +161,22 @@ public class EvaluationServiceImpl implements EvaluationService {
 		return evaluation;
 	}	
 	
+	public List<Evaluation> getSortedAndFilteredResults (SortingInfo sortingInfo, FilterResultsForm filterForm) {
+		int testId = 0;
+		int candidateId = 0;
+		try {
+			testId = Integer.parseInt(filterForm.getTestName());
+		} catch (NumberFormatException nfe) {
+			testId = 0;
+		}
+		try {
+			candidateId = Integer.parseInt(filterForm.getCandidateName());
+		} catch (NumberFormatException nfe) {
+			candidateId = 0;
+		}
+		return evaluationRepository.getSortedAndFilteredEvaluations(sortingInfo.getSortingField(), sortingInfo.getSortingDirection(), testId, filterForm.getTestType(), candidateId, filterForm.getPassingDateFrom(), filterForm.getPassingDateTo());
+	}
+	
 	public Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) {
 		Boolean resultat = null ; 
 		for (PropositionReponse propositionReponse : reponses) {
@@ -177,15 +195,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public String determinerNoteGlobale(Evaluation evalParamEntree) {
 		Integer nombreQuestions = evalParamEntree.getResponses().size() ;
 		Integer nombreReponsesVraies = 0 ; 
-		Integer nombreReponsesFausses = 0 ;
-		
+				
 		for (Response response : evalParamEntree.getResponses()) {
-			Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
-			
-			if (verifyConformityResponse(reponseChoisie)) {
+			if (response.isCorrect()) {
 				nombreReponsesVraies ++ ; 
-			} else {
-				nombreReponsesFausses ++ ; 
 			}
 		}
 		return nombreReponsesVraies + "/" + nombreQuestions ;
@@ -195,23 +208,16 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau level) {
 		List<Question> listeQuestionsParNiveau = questionRepository.getQuestionsByTestAndNiveau(evalParamEntree.getTest(), level) ;
 		Integer nombreQuestions = listeQuestionsParNiveau.size() ;
-		Integer nombreReponsesVraies = 0 ; 
-		Integer nombreReponsesFausses = 0 ;
+		Integer nombreReponsesVraies = 0 ;
 		
-		if (nombreQuestions == 0 ) {
-			for (Question question : listeQuestionsParNiveau) {
-				Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
-				if (response != null) {
-					Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
-					
-					if (verifyConformityResponse(reponseChoisie)) {
-						nombreReponsesVraies ++ ; 
-					} else {
-						nombreReponsesFausses ++ ; 
-					}
-				} else {
-					break ; 
-				}
+		for (Question question : listeQuestionsParNiveau) {
+			Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
+			if (response != null) {
+				if (response.isCorrect()) {
+					nombreReponsesVraies ++ ; 
+				} 
+			} else {
+				break ; 
 			}
 		}
 		return nombreReponsesVraies + "/" + nombreQuestions ;

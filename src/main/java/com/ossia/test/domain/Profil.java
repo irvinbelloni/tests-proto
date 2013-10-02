@@ -136,6 +136,10 @@ public class Profil implements UserDetails {
 	private String generatePassFromNom () {
 		return Normalizer.normalize(getNom().toLowerCase().trim(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	}
+	
+	public String getNomComplet() {
+		return prenom + " " + nom;
+	}
 
 	/* Authorization fields */
 	public String getPass() {

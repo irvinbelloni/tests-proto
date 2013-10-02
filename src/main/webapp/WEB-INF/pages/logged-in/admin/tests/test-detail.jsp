@@ -11,7 +11,7 @@
 <div class="wide-block" id="test-detail">
 	<h1>
 		<a href="<c:url value="/admin/test/home"/>"><spring:message code="link.label.back.to.test.list"/></a>
-		<span>${testSheet.intitule}</span> (<spring:message code="content.title.test.detail"/> ${testSheet.type}) 
+		<span>${testSheet.intitule}</span> 
 	</h1>
 	
 	<div class="identity">
@@ -22,6 +22,8 @@
 			<span>Durée</span> ${testSheet.duree} <spring:message code="text.admin.tests.page.minutes"/>
 			<br/><br/>
 			<span>Nb questions</span> ${testSheet.questionSize}
+			<br/><br/>
+			<spring:message code="text.test.status.${testSheet.status}" />
 			<div class="clear-both"></div>
 		</div>
 		
@@ -33,6 +35,7 @@
 			</c:url>				
 			<form:form method="post" action="${editUrl}" commandName="testSheet" id="test-form">
 				<form:hidden path="id" />
+				<form:hidden path="status"/>
 			
 				<div>
 					<label for="intitule"><spring:message code="form.test.intitule"/>*</label>
@@ -60,26 +63,79 @@
 	</div>
 	
 	<div class="control">
-		<div class="container">
-			<a href="#" onclick="addQuestion(); return false;" class="action add no-float">
-				<spring:message code="link.label.test.detail.add.question"/>
-			</a>
-		</div>
+		<c:if test="${testSheet.status eq 'VALIDATED'}">
+			<div class="container">
+				<a href="#" onclick="editTestDetail(); return false;" class="action edit no-float">
+					<spring:message code="link.label.test.detail.edit" />
+				</a>
+			</div>
+			
+			<div class="container" style="margin-top: 10px">
+				<c:url value="/admin/test/duplicate" var="duplicateUrl">
+					<c:param name="test" value="${testSheet.id}"/>
+				</c:url>
+				<a href="#" onclick="duplicateTest('${testSheet.intitule}', '${duplicateUrl}'); return false;" class="action duplicate no-float">
+					<spring:message code="link.label.test.duplicate" />
+				</a>
+				
+				<c:url value="/admin/test/archive" var="archiveUrl">
+					<c:param name="test" value="${testSheet.id}"/>
+					<c:param name="origin" value="detail" />
+				</c:url>
+				<a href="#" onclick="archiveTest('${testSheet.intitule}', '${archiveUrl}'); return false;" class="action archive no-float">
+					<spring:message code="link.label.test.archive" />
+				</a>
+			</div>			
+		</c:if>	
 		
-		<div class="container" style="margin-top: 10px">
-			<a href="#" onclick="editTestDetail(); return false;" class="action edit no-float">
-				<spring:message code="link.label.test.detail.edit" />
-			</a>
-		</div>
+		<c:if test="${testSheet.status eq 'ARCHIVED'}">
+			<div class="container">
+				<c:url value="/admin/test/duplicate" var="duplicateUrl">
+					<c:param name="test" value="${testSheet.id}"/>
+				</c:url>
+				<a href="#" onclick="duplicateTest('${testSheet.intitule}', '${duplicateUrl}'); return false;" class="action duplicate no-float">
+					<spring:message code="link.label.test.duplicate" />
+				</a>
+			</div>			
+		</c:if>		
 		
-		<div class="container" style="margin-top: 10px">
-			<c:url value="/admin/test/delete" var="deleteUrl">
-				<c:param name="id" value="${testSheet.id}"/>
-			</c:url>
-			<a href="#" onclick="deleteTestSheet ( '${testSheet.id}' , '${testSheet.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
-				<spring:message code="link.label.candidate.detail.delete"/>
-			</a>
-		</div>
+		<c:if test="${testSheet.status eq 'DRAFT'}">
+			<div class="container">
+				<a href="#" onclick="addQuestion(); return false;" class="action add no-float">
+					<spring:message code="link.label.test.detail.add.question"/>
+				</a>
+			</div>
+					
+			<div class="container" style="margin-top: 10px">
+				<a href="#" onclick="editTestDetail(); return false;" class="action edit no-float">
+					<spring:message code="link.label.test.detail.edit" />
+				</a>
+			</div>
+			<div class="container" style="margin-top: 10px">
+				<c:if test="${testSheet.validable}">
+					<c:url value="/admin/test/validate" var="validateUrl">
+						<c:param name="test" value="${testSheet.id}"/>
+						<c:param name="origin" value="detail"/>
+					</c:url>
+					<a href="#" onclick="validateTestSheet ('${currentTest.intitule}' , '${validateUrl}' ) ; return false;" class="action validate no-float">
+					<spring:message code="link.label.common.validate"/></a>
+				</c:if>
+				
+				<c:if test="${!testSheet.validable}">
+					<a href="#" onclick="displayWarningNotValidableTest(); return false;" class="action deactivated validate no-float">
+					<spring:message code="link.label.common.validate"/></a>
+				</c:if>
+			</div>
+		
+			<div class="container" style="margin-top: 10px">
+				<c:url value="/admin/test/delete" var="deleteUrl">
+					<c:param name="id" value="${testSheet.id}"/>
+				</c:url>
+				<a href="#" onclick="deleteTestSheet ( '${testSheet.id}' , '${testSheet.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
+					<spring:message code="link.label.candidate.detail.delete"/>
+				</a>
+			</div>
+		</c:if>
 	</div>
 	
 	<div class="central">
@@ -109,7 +165,8 @@
 		        </div>
 		        
 		        <div class="last-element">
-			        <form:label path="contenu"><spring:message code="text.admin.questions.page.contenu" />*</form:label>     
+			        <form:label path="contenu"><spring:message code="text.admin.questions.page.contenu" />*</form:label>
+			        <a href="#" class="help"><span><spring:message code="text.help.question.input" /></span></a>    
 			        <form:textarea id="questionContenu" path="contenu" cols="20" />
 			        <form:errors path="contenu" cssClass="error"/><br/>
 		        </div>
@@ -129,15 +186,17 @@
 						<a href="#" class="actions-down"></a>
 						<span class="sub-actions">
 							
-							<c:url value="/admin/question/delete" var="deleteUrl">
-								<c:param name="question" value="${question.id}"/>
-								<c:param name="test" value="${testSheet.id}"/>
-							</c:url>
-							<a href="#" onclick="deleteQuestion ('${question.intitule}' , '${deleteUrl}') ; return false ;" class="action delete">
-							<spring:message code="link.label.common.delete"/></a> 
-							
-							<a href="#" onClick="editQuestion ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit">
-							<spring:message code="link.label.question.edit" /></a>
+							<c:if test="${testSheet.status eq 'DRAFT'}">
+								<c:url value="/admin/question/delete" var="deleteUrl">
+									<c:param name="question" value="${question.id}"/>
+									<c:param name="test" value="${testSheet.id}"/>
+								</c:url>
+								<a href="#" onclick="deleteQuestion ('${question.intitule}' , '${deleteUrl}') ; return false ;" class="action delete">
+								<spring:message code="link.label.common.delete"/></a> 
+								
+								<a href="#" onClick="editQuestion ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit">
+								<spring:message code="link.label.question.edit" /></a>
+							</c:if>
 							   
 							<c:url value="/admin/question/detail" var="detailUrl">
 								<c:param name="id" value="${question.id}"/>
@@ -164,11 +223,7 @@
 				</div>	
 				<c:set var="count" value="${count + 1}"/>			
 			</c:forEach>
-		</div>
-		
-		
-		
-		
+		</div>		
 	</div>
 	
 	<div class="clear-both"></div>
@@ -193,6 +248,10 @@ $(document).ready(function() {
 	textEditQuestion = "<spring:message code="text.side.form.title.questions.edit"/>";
 	dialogTextDeleteQuestion = "<spring:message code="dialog.text.delete.questions"/>";
 	dialogTextDeleteTest = "<spring:message code="dialog.text.delete.tests"/>";
+	dialogTextValidateTest = "<spring:message code="dialog.text.validate.test"/>";
+	textTestWarningNotValidable = "<spring:message code="text.test.warning.not.validable"/>";
+	dialogTextDuplicateTest = "<spring:message code="dialog.text.duplicate.test"/>";
+	dialogTextArchiveTest = "<spring:message code="dialog.text.archive.test"/>";
 	
 	<c:if test="${displayEditForm}">
 		$("#identity").slideUp(function() {

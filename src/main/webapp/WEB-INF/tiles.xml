@@ -56,6 +56,11 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/resultats/home.jsp" />
     </definition>
     
+    <definition name="resultat-detail" extends="logged-in-layout">
+    	<put-attribute name="title" value="Résultat détaillé" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/resultats/detail.jsp" />
+    </definition>
+    
     <definition name="administrators" extends="logged-in-layout">
     	<put-attribute name="title" value="Liste des administrateurs" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/administrators/list.jsp" />

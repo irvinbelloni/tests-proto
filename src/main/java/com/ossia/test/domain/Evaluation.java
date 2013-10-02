@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OrderBy;
+
 @Entity
 @Table(name = "T_EVALUATIONS")
 public class Evaluation implements Serializable {
@@ -36,7 +38,7 @@ public class Evaluation implements Serializable {
 	@NotNull
 	private Profil profil;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "evaluation")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "evaluation") @OrderBy(clause = "question.id ASC")
 	private Set<Response> responses;
 
 	private Integer status;
@@ -88,6 +90,27 @@ public class Evaluation implements Serializable {
 		}
 		
 		return nbUnansweredQuestions;
+	}
+	
+	@Transient
+	public int getNbGoodAnswers(){
+		int nbGoodAnswers = 0;
+		for (Response response : responses) {
+			if (response.isCorrect()) {
+				nbGoodAnswers ++;
+			}
+		}		
+		return nbGoodAnswers;
+	}
+	
+	/**
+	 * Gets the time needed by the candidate to pass the test.
+	 * @return Time needed in seconds
+	 */
+	@Transient
+	public int getDuration() {
+		int duration = (int) (this.endTime.getTime() - this.startTime.getTime());
+		return duration / 1000;
 	}
 
 	public Integer getId() {

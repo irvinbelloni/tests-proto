@@ -92,6 +92,10 @@ p.main {
 	width: 40%;
 }
 
+#result-list p.main {
+	line-height: 16px;
+}
+
 p.main a {
 	font-size: 18px;
 	text-decoration: none;
@@ -105,6 +109,11 @@ p.main span {
 	font-size: 12px;
 	font-weight: normal;
 	padding: 0 0 0 1px;
+}
+
+p.main .submain {
+	font-size: 14px;
+	font-weight: bold;
 }
 
 p.detail {
@@ -132,6 +141,11 @@ a.action {
 	width: 200px;
 }
 
+a.deactivated {
+	opacity:0.6;
+	filter:alpha(opacity=60);
+}
+
 a.action:hover {
 	text-decoration: underline;
 }
@@ -146,6 +160,11 @@ a.activate {
 	background-position: top right;
 }
 
+a.archive { 
+	background: url(../images/archive-icon.png) no-repeat;
+	background-position: top right;
+}
+
 a.delete {
 	background: url(../images/delete-icon.png) no-repeat;
 	background-position: top right;
@@ -156,13 +175,28 @@ a.detail {
 	background-position: top right;
 }
 
+a.duplicate { 
+	background: url(../images/duplicate-icon.png) no-repeat;
+	background-position: top right;
+}
+
 a.edit {
 	background: url(../images/edit-icon.png) no-repeat;
 	background-position: top right;
 }
 
+a.export {
+	background: url(../images/export-icon.png) no-repeat;
+	background-position: top right;
+}
+
 a.print {
 	background: url(../images/print.png) no-repeat;
+	background-position: top right;
+}
+
+a.validate {
+	background: url(../images/validate-icon.png) no-repeat;
 	background-position: top right;
 }
 

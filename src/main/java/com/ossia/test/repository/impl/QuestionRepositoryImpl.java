@@ -2,9 +2,7 @@ package com.ossia.test.repository.impl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.ossia.test.domain.Niveau;
@@ -23,10 +21,10 @@ public class QuestionRepositoryImpl extends AbstractRepositoryImpl<Question, Int
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Question> getQuestionsByTestAndNiveau(TestSheet test , Niveau level) {
-	    Criteria crit = getHibernateCurrentSession().createCriteria(Question.class); 
-	    crit.add(Restrictions.eq("niveau", level))  ; 
-	    crit.add(Restrictions.eq("test", test))  ;
-	    return (List<Question>) crit.list();
+	public List<Question> getQuestionsByTestAndNiveau(TestSheet test , Niveau level) {	    
+	    Query query = getHibernateCurrentSession().createQuery("FROM Question question WHERE question.test.id = :testId AND niveau = :niveau");
+	    query.setInteger("testId", test.getId());	
+	    query.setString("niveau", level.getValue());
+		return (List<Question>) query.list();
 	}
 }

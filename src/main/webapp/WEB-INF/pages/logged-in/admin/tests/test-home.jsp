@@ -15,6 +15,7 @@
 	<form:form  action="${createUpdateUrl}" commandName="testSheetForm" method="POST">
 
 		<form:hidden path="id" id="testSheetId"/>
+		<form:hidden path="status"/>
 		<div>
 			<form:label path="intitule">
 				<spring:message code="text.admin.tests.page.intitule" />
@@ -88,9 +89,22 @@
 				<c:param name="sort" value="duree"/>
 				<c:param name="direction" value="${dir}"/>
 			</c:url>
-			<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.duree"/></a>			
+			<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.duree"/></a>&nbsp;&nbsp;-&nbsp;
+			
+			<c:set var="sortOn" value="" />
+			<c:set var="dir" value="asc" />
+			<c:if test="${sortingInfo.sortingField eq 'status'}">
+				<c:set var="sortOn" value="sort-on" />
+				<c:if test="${sortingInfo.sortingDirection eq 'asc'}">
+					<c:set var="dir" value="desc" />
+				</c:if>
+			</c:if>
+			<c:url value="/admin/test/home" var="sortUrl">
+				<c:param name="sort" value="status"/>
+				<c:param name="direction" value="${dir}"/>
+			</c:url>
+			<a class="${sortOn}" href="${sortUrl}"><spring:message code="text.sort.by.status"/></a>		
 		</span>
-		<spring:message code="text.admin.tests.page.liste" />
 	</h2>
 	
 	<c:if test="${fn:length(tests) eq 0}">
@@ -103,15 +117,51 @@
 			<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
 				<a href="#" class="actions-down"></a>
 				<span class="sub-actions">
+					<c:if test="${currentTest.status eq 'DRAFT'}">
+						<c:url value="/admin/test/delete" var="deleteUrl">
+							<c:param name="id" value="${currentTest.id}"/>
+						</c:url>
+						<a href="#" onclick="deleteTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete">
+						<spring:message code="link.label.common.delete"/></a>
+						
+						<c:if test="${currentTest.validable}">
+							<c:url value="/admin/test/validate" var="validateUrl">
+								<c:param name="test" value="${currentTest.id}"/>
+								<c:param name="origin" value="home" />
+							</c:url>
+							<a href="#" onclick="validateTestSheet ('${currentTest.intitule}' , '${validateUrl}' ) ; return false;" class="action validate">
+							<spring:message code="link.label.common.validate"/></a>
+						</c:if>
+						
+						<c:if test="${!currentTest.validable}">
+							<a href="#" onclick="displayWarningNotValidableTest(); return false;" class="action deactivated validate">
+							<spring:message code="link.label.common.validate"/></a>
+						</c:if>
+					</c:if>
 					
-					<c:url value="/admin/test/delete" var="deleteUrl">
-						<c:param name="id" value="${currentTest.id}"/>
-					</c:url>
-					<a href="#" onclick="deleteTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete">
-					<spring:message code="link.label.common.delete"/></a> 
+					<c:if test="${currentTest.status ne 'ARCHIVED'}">					
+						<a href="#" onclick="editTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${currentTest.duree}' , '${currentTest.type}', '${currentTest.status}' ) ; return false;" class="action edit">
+						<spring:message code="link.label.common.edit" /></a>
+					</c:if>
+					   
+					<c:if test="${currentTest.status ne 'DRAFT'}"> 
+						<c:url value="/admin/test/duplicate" var="duplicateUrl">
+							<c:param name="test" value="${currentTest.id}"/>
+						</c:url>
+						<a href="#" onclick="duplicateTest('${currentTest.intitule}', '${duplicateUrl}'); return false;" class="action duplicate">
+							<spring:message code="link.label.test.duplicate" />
+						</a>
+					</c:if>
 					
-					<a href="#" onclick="editTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${currentTest.duree}' , '${currentTest.type}' ) ; return false;" class="action edit">
-					<spring:message code="link.label.common.edit" /></a>
+					<c:if test="${currentTest.status eq 'VALIDATED'}"> 
+						<c:url value="/admin/test/archive" var="archiveUrl">
+							<c:param name="test" value="${currentTest.id}"/>
+							<c:param name="origin" value="home" />
+						</c:url>
+						<a href="#" onclick="archiveTest('${currentTest.intitule}', '${archiveUrl}'); return false;" class="action archive">
+							<spring:message code="link.label.test.archive" />
+						</a>
+					</c:if>					   
 					   
 					<c:url value="/admin/test/detail" var="detailUrl">
 						<c:param name="id" value="${currentTest.id}"/>
@@ -129,6 +179,8 @@
 			</p>
 			<p class="main">
 				<a href="${detailUrl}">${currentTest.intitule}</a>
+				<br/><br/>
+				<span><spring:message code="text.test.status.${currentTest.status}" /></span>
 			</p>
 			<p class="detail">
 				<span class="label"><spring:message code="text.admin.tests.page.type" />: </span> ${currentTest.type}<br/> 
@@ -143,15 +195,15 @@
 
 <div class="clear-both"></div>
 
-<div id="dialog-confirm" title="<spring:message code="dialog.title.delete.tests"/>">
-	<p></p>
-</div>
-
 <script>
 $(document).ready(function() {
 	textAddTest = "<spring:message code="text.side.form.title.tests.add"/>";
 	textEditTest = "<spring:message code="text.side.form.title.tests.edit"/>";
 	dialogTextDeleteTest = "<spring:message code="dialog.text.delete.tests"/>";
+	textTestWarningNotValidable = "<spring:message code="text.test.warning.not.validable"/>";
+	dialogTextValidateTest = "<spring:message code="dialog.text.validate.test"/>";
+	dialogTextDuplicateTest = "<spring:message code="dialog.text.duplicate.test"/>";
+	dialogTextArchiveTest = "<spring:message code="dialog.text.archive.test"/>";
 	
 	if ($("#testSheetDuree").val() == 0) {
 		$("#testSheetDuree").val("");

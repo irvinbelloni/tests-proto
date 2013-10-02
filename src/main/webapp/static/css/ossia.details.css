@@ -23,7 +23,7 @@
 	height: 1px;
 }
 
-#question-id {
+#question-id, #test-result {
 	font-weight: bold;
 }
 
@@ -36,6 +36,10 @@
 
 #question-id span {
 	width: 20%;
+}
+
+#test-result span {
+	font-weight: normal;
 }
 
 .identity span.error {
@@ -68,7 +72,7 @@
 
 .central .detail-list-item, .central-left .detail-list-item {
 	border-bottom: 1px dotted #d5d5d5;
-	padding: 10px 0;
+	padding: 10px 0 0 0;;
 	min-height: 30px;
 }
 
@@ -179,4 +183,73 @@
 
 .incorrect {
 	color: #900;
+}
+
+a.help {
+	background: url(../images/help-icon.png);	
+	display: block;
+	height: 30px;
+	margin: 40px 0 0 0;
+	position: absolute;
+	width: 30px;
+}
+
+a.help span {
+	background: #fff;
+	border: 2px solid #9f698d;
+	display: none;
+	padding: 20px;
+	position: absolute;
+	width: 700px;
+	z-index: 1000000;
+}
+
+a.help:hover span {
+	display: block;
+}
+
+.result-propositions {
+	margin-top: 5px;
+	width: 100%;
+}
+
+.result-propositions td {
+	background: #fff;
+	padding: 5px 0;
+}
+
+.result-propositions td.answer {
+	width: 84%;
+	padding: 5px;
+}
+
+.result-propositions td.count {
+	font-size:14px;
+	text-align: center;
+	width: 4%;
+}
+
+.result-propositions td.user-pick {
+	text-align: center;
+	width: 6%;
+}
+
+.result-propositions td.propCorrect {
+	text-align: center;
+	width: 6%;
+}
+
+#result-menu {
+	background: #f8f8f8;
+	margin-top: 10px;
+	position: fixed;
+}
+
+#result-menu a {
+	font-weight: normal;
+	text-decoration: none;
+}
+
+#result-menu a:hover {
+	text-decoration: underline;
 }

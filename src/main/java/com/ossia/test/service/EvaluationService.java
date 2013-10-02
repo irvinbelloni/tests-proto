@@ -10,7 +10,9 @@ import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
+import com.ossia.test.web.form.FilterResultsForm;
 import com.ossia.test.web.form.QuestionForm;
+import com.ossia.test.web.sort.SortingInfo;
 
 public interface EvaluationService {
 
@@ -56,6 +58,8 @@ public interface EvaluationService {
 	 * @param evaluation
 	 */
 	void markTestAsStarted (Evaluation evaluation);
+	
+	List<Evaluation> getSortedAndFilteredResults (SortingInfo sortingInfo, FilterResultsForm filterForm);
 
 	/*
 	 * RESPONSES
@@ -81,14 +85,15 @@ public interface EvaluationService {
 	 * CALCULS 
 	 */
 	
-	Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) ;
+	Boolean verifyConformityResponse (Set<PropositionReponse> reponses );
 	
 	String determinerNoteGlobale(Evaluation evalParamEntree);
 	
 	String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau object);
 
-	List<PropositionReponse> determinerPropositionsCorrectesByReponse(
-			Response response);
+	List<PropositionReponse> determinerPropositionsCorrectesByReponse(Response response);
+	
+	
 	
 	
 }

@@ -5,6 +5,7 @@
 	<sec:authorize access="hasRole('ROLE_ADMIN')">
 		<a href="<c:url value="/admin/test/home" />">Tests</a>&nbsp;&nbsp;
 		<a href="<c:url value="/admin/candidates" />">Candidats</a>&nbsp;&nbsp;
+		<a href="<c:url value="/admin/resultats" />">R&eacute;sultats</a>&nbsp;&nbsp;
 		<a href="<c:url value="/admin/administrators" />">Administrateurs</a>
 		<br/>
 		<br/>	

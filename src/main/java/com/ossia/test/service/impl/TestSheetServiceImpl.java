@@ -1,6 +1,7 @@
 package com.ossia.test.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -88,6 +89,20 @@ public class TestSheetServiceImpl implements TestSheetService {
 	public void deleteTestSheet(TestSheet testSheetToDelete) {
 		testSheetRepository.delete(testSheetToDelete);
 	}	
+	
+	public List<String> getAllTestTypes() {
+		SortingInfo sortingInfo = new SortingInfo();
+		sortingInfo.setSortingDirection(SortingInfo.ASC);
+		sortingInfo.setSortingField(SortingInfo.SORT_TYPE);
+		List<TestSheet> tests = getSortedTestSheets(sortingInfo);
+		List<String> testTypes = new ArrayList<String>();
+		for (TestSheet test: tests) {
+			if (!testTypes.contains(test.getType())) {
+				testTypes.add(test.getType());
+			}
+		}
+		return testTypes;
+	}
 
 	@Override @Transactional
 	public void validateTestSheet(TestSheet testSheet, Profil admin) {

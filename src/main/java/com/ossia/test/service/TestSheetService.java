@@ -33,6 +33,8 @@ public interface TestSheetService {
 	TestSheet duplicateTestSheet(TestSheet testSheet, Profil admin);
 	
 	void archiveTestSheet(TestSheet testSheet, Profil admin);
+	
+	List<String> getAllTestTypes();
 
 	/*
 	 * QUESTION
