@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,22 +39,22 @@ public class TestSheet implements Serializable {
 	
 	private String additionalInfo;
 
-	@NotNull @NumberFormat(style = Style.NUMBER)
-    @Min(1)
-    @Max(300)
+	@NotNull @NumberFormat(style = Style.NUMBER) @Min(1) @Max(300)
 	private int duree;
 
 	@NotEmpty
 	private String type;
+	
+	@Enumerated(EnumType.STRING) @NotNull
+	private TestStatus status = TestStatus.DRAFT;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "test")
 	private Set<Evaluation> evaluations;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy = "test")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy = "test") @OrderBy(clause = "id ASC")
 	private List<Question> questions;
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "test")
-	@OrderBy(clause = "timestamp DESC")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "test") @OrderBy(clause = "timestamp DESC")
 	private List<TestHisto> historique;
 
 	public TestSheet() {
@@ -63,9 +65,48 @@ public class TestSheet implements Serializable {
 		if (questions != null) {
 			return questions.size() ; 
 		}
-		else {
-			return 0 ; 
+		return 0;
+	}
+	
+	/**
+	 * Checks if a test is validable
+	 * A test is validable if it has at least one question. Everyone of its questions must has at least
+	 * 2 propositions and at least one of them is correct 
+	 * @return true if the test is validable, false otherwise
+	 */
+	public boolean isValidable() {
+		if (getQuestionSize() == 0) {
+			return false;
 		}
+		
+		for (Question question : questions) {
+			if (question.getPropositionSize() < 2) {
+				return false;
+			}
+			boolean noPropositionIsCorrect = true;
+			for (PropositionReponse proposition : question.getPropositionsReponses()) {
+				if (proposition.isPropositionCorrecte()) {
+					noPropositionIsCorrect = false;
+					break;
+				}
+			}
+			if (noPropositionIsCorrect) {
+				return false;
+			}
+		}		
+		return true;
+	}
+	
+	public boolean isDraft() {
+		return status.equals(TestStatus.DRAFT);
+	}
+	
+	public boolean isValidated() {
+		return status.equals(TestStatus.VALIDATED);
+	}
+	
+	public boolean isArchived() {
+		return status.equals(TestStatus.ARCHIVED);
 	}
 
 	public Integer getId() {
@@ -97,6 +138,9 @@ public class TestSheet implements Serializable {
 	}
 
 	public List<Question> getQuestions() {
+		if (questions == null) {
+			questions = new ArrayList<Question>();
+		}
 		return questions;
 	}
 
@@ -127,6 +171,14 @@ public class TestSheet implements Serializable {
 		this.historique = historique;
 	}
 
+	public TestStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TestStatus status) {
+		this.status = status;
+	}
+	
 	public String getAdditionalInfo() {
 		return additionalInfo;
 	}

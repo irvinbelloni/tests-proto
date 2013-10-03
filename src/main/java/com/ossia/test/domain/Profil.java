@@ -55,11 +55,10 @@ public class Profil implements UserDetails {
 	@NotEmpty @Pattern(regexp = "^\\s*$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:[a-zA-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$", message = "{form.error.email.invalid}")
 	private String email;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil") @OrderBy(clause = "startTime DESC")
 	private Set<Evaluation> evaluations;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
-	@OrderBy(clause = "timestamp DESC")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil") @OrderBy(clause = "timestamp DESC")
 	private List<ProfilHisto> historique;
 	
 	@NotEmpty
@@ -82,7 +81,7 @@ public class Profil implements UserDetails {
 	/**
 	 * Form action: ADD or EDIT
 	 */
-	@Transient // TODO A Supprimer, on peut utiliser l'id de l'objet (cf testSheet)
+	@Transient
 	private String mode;
 
 	public Profil() {
@@ -135,6 +134,10 @@ public class Profil implements UserDetails {
 	
 	private String generatePassFromNom () {
 		return Normalizer.normalize(getNom().toLowerCase().trim(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+	}
+	
+	public String getNomComplet() {
+		return prenom + " " + nom;
 	}
 
 	/* Authorization fields */

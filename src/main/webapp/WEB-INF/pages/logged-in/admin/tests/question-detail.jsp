@@ -4,39 +4,59 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="q" uri="/WEB-INF/questionTaglib.tld"%>
-<%@ page language="java" pageEncoding="UTF-8"
-	contentType="text/html; charset=utf-8"%>
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=utf-8"%>
 
 <div class="wide-block" id="question-detail">
 	<h1>
 		<a href="<c:url value="/admin/test/home"/>"><spring:message code="link.label.back.to.test.list"/></a>
 		<a href="<c:url value="/admin/test/detail?id=${question.test.id}"/>"><spring:message code="link.label.back.to.test.detail"/></a>
-		<span>${question.test.intitule}</span> (<spring:message code="content.title.test.detail"/> ${question.test.type}) >
-		<span>${question.intitule}</span>
+		<span>${question.test.intitule}</span> &gt;	<span>${question.intitule}</span>
 	</h1>
 	
 	<div class="control">
-		<div class="container">
-			<a href="#" onclick="addProposition(); return false;" class="action add no-float">
-				<spring:message code="link.label.question.detail.add.proposition"/>
-			</a>
-		</div>
-		
-		<div class="container" style="margin-top: 10px">
-			<a href="#" onClick="editQuestionDetail ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit no-float">
-				<spring:message code="link.label.question.edit" />
-			</a>
-		</div>
-		
-		<div class="container" style="margin-top: 10px">
-			<c:url value="/admin/question/delete" var="deleteUrl">
-				<c:param name="test" value="${question.test.id}"/>
-				<c:param name="question" value="${question.id}"/>
-			</c:url>
-			<a href="#" onclick="deleteQuestion ('${question.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
-				<spring:message code="link.label.candidate.detail.delete"/>
-			</a>
-		</div>
+		<c:if test="${question.test.status eq 'DRAFT'}">
+			<div class="container">
+				<a href="#" onclick="addProposition(); return false;" class="action add no-float">
+					<spring:message code="link.label.question.detail.add.proposition"/>
+				</a>
+			</div>
+			
+			<div class="container" style="margin-top: 10px">
+				<a href="#" onClick="editQuestionDetail ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit no-float">
+					<spring:message code="link.label.question.edit" />
+				</a>
+			</div>
+			
+			<div class="container" style="margin-top: 10px">
+				<c:url value="/admin/question/delete" var="deleteUrl">
+					<c:param name="test" value="${question.test.id}"/>
+					<c:param name="question" value="${question.id}"/>
+				</c:url>
+				<a href="#" onclick="deleteQuestion ('<esc:escapeJs input="${question.intitule}"/>' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
+					<spring:message code="link.label.candidate.detail.delete"/>
+				</a>
+			</div>
+		</c:if>
+		<c:if test="${question.test.status ne 'DRAFT'}">
+			<div class="container">
+				<c:url value="/admin/test/duplicate" var="duplicateUrl">
+					<c:param name="test" value="${question.test.id}"/>
+				</c:url>
+				<a href="#" onclick="duplicateTest('${question.test.intitule}', '${duplicateUrl}'); return false;" class="action duplicate no-float">
+					<spring:message code="link.label.test.duplicate" />
+				</a>
+				
+				<c:if test="${question.test.status eq 'VALIDATED'}">
+					<c:url value="/admin/test/archive" var="archiveUrl">
+						<c:param name="test" value="${question.test.id}"/>
+						<c:param name="origin" value="detail" />
+					</c:url>
+					<a href="#" onclick="archiveTest('${question.test.intitule}', '${archiveUrl}'); return false;" class="action archive no-float">
+						<spring:message code="link.label.test.archive" />
+					</a>
+				</c:if>
+			</div>
+		</c:if>
 	</div>
 	
 	<div class="central-left">
@@ -54,7 +74,7 @@
 			<h2><spring:message code="text.admin.questions.page.edit" /></h2>
 	
 			<c:url value="/admin/question/createUpdate" var="createUpdateUrl">
-				<c:param name="origin" value="question"/>
+				<c:param name="origin" value="detail"/>
 			</c:url>
 			<form:form action="${createUpdateUrl}" commandName="questionForm" method="POST" >
 		        <form:hidden id="questionId" path="id"/>
@@ -76,7 +96,8 @@
 		        </div>
 		        
 		        <div class="last-element">
-			        <form:label path="contenu"><spring:message code="text.admin.questions.page.contenu" />*</form:label>     
+			        <form:label path="contenu"><spring:message code="text.admin.questions.page.contenu" />*</form:label>
+			        <a href="#" class="help"><span><spring:message code="text.help.question.input" /></span></a>    
 			        <form:textarea id="questionContenu" path="contenu" cols="20" />
 			        <form:errors path="contenu" cssClass="error"/><br/>
 		        </div>
@@ -93,21 +114,23 @@
 			<c:set var="count" value="1"/>
 			<c:forEach items="${question.propositionsReponses}" var="proposition">
 				<div class="detail-list-item">
-					<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
-						<a href="#" class="actions-down"></a>
-						<span class="sub-actions">
-							
-							<c:url value="/admin/proposition/delete" var="deleteUrl">
-								<c:param name="proposition" value="${proposition.id}"/>
-								<c:param name="question" value="${question.id}"/>
-							</c:url>
-							<a href="#" onclick="deletePropositionReponse ('${deleteUrl}') ; return false ;" class="action delete">
-							<spring:message code="link.label.common.delete"/></a> 
-							
-							<a href="#" onClick="editProposition (${proposition.id} , ${proposition.propositionCorrecte} , '<esc:escapeJs input="${proposition.valeur}"/>'); return false ; " class="action edit">
-							<spring:message code="link.label.proposition.edit" /></a>						
-						</span>
-					</p>
+					<c:if test="${question.test.status eq 'DRAFT'}">
+						<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
+							<a href="#" class="actions-down"></a>
+							<span class="sub-actions">
+								
+								<c:url value="/admin/proposition/delete" var="deleteUrl">
+									<c:param name="proposition" value="${proposition.id}"/>
+									<c:param name="question" value="${question.id}"/>
+								</c:url>
+								<a href="#" onclick="deletePropositionReponse ('${deleteUrl}') ; return false ;" class="action delete">
+								<spring:message code="link.label.common.delete"/></a> 
+								
+								<a href="#" onClick="editProposition (${proposition.id} , ${proposition.propositionCorrecte} , '<esc:escapeJs input="${proposition.valeur}"/>'); return false ; " class="action edit">
+								<spring:message code="link.label.proposition.edit" /></a>						
+							</span>
+						</p>
+					</c:if>
 					
 					<span class="question-count">${count}</span>
 										
@@ -143,6 +166,7 @@
 				
 				<div class="last-element">		
 			        <form:label path="valeur"><spring:message code="text.admin.propositionReponses.page.valeur" />*</form:label>
+			        <a href="#" class="help"><span><spring:message code="text.help.question.input" /></span></a> 
 			        <form:textarea id="propositionValeur" path="valeur" cols="20" />
 			        <form:errors path="valeur" cssClass="error"/>
 		        </div>
@@ -163,6 +187,8 @@ $(document).ready(function() {
 	textEditPropositionReponse = "<spring:message code="text.admin.questions.page.edit.proposition"/>";
 	dialogTextDeletePropositionReponse = "<spring:message code="dialog.text.delete.propositionReponses"/>";
 	dialogTextDeleteQuestion = "<spring:message code="dialog.text.delete.questions"/>";
+	dialogTextDuplicateTest = "<spring:message code="dialog.text.duplicate.test"/>";
+	dialogTextArchiveTest = "<spring:message code="dialog.text.archive.test"/>";
 	
 	<c:if test="${displayEditQuestionForm}">
 	$("#question-id").slideUp(function() {

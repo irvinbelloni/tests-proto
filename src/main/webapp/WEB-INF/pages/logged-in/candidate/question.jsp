@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="q" uri="/WEB-INF/questionTaglib.tld"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class="wide-block">
@@ -10,7 +11,7 @@
 	</h1>
 	
 	<div class="question">
-		${question.contenu}
+		<q:format input="${question.contenu}" mode="display" />
 	</div>
 	
 	<c:url value="/tests/validate-question" var="submitUrl"/>
@@ -32,7 +33,7 @@
 							</c:if>
 						</c:forEach>
 						<td class="checkbox"><input id="propositions${i}" name="propositions" type="checkbox" value="${reponse.id}" ${checked}/></td>
-						<td><label for="propositions${i}">${reponse.valeur}</label></td>
+						<td><label for="propositions${i}"><q:format input="${reponse.valeur}" mode="display" /></label></td>
 					</tr>
 					<c:choose>
 					    <c:when test="${trClass eq 'odd'}">

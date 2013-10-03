@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ossia.test.domain.Evaluation;
+import com.ossia.test.domain.EvaluationStatus;
 import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.TestSheet;
-import com.ossia.test.domain.TestStatus;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
 import com.ossia.test.service.TestSheetService;
@@ -104,6 +104,23 @@ public class ProfilAdminController extends AbstractAdminController {
 		model.put("profilForm",  profil);
 		model.put("selectedTab", TAB_CANDIDATE);
 		return "candidate";
+	}
+	
+	@RequestMapping(value = "/candidate/result", method = RequestMethod.GET)
+	public String displayCandidateResult(@RequestParam(value = "candidate", required = true) Integer candidateId, @RequestParam(value = "evaluation", required = false) Integer evalId, ModelMap model, HttpServletRequest request) {
+		Profil candidate = profilService.getProfilById(candidateId);
+		if (candidate == null) {
+			return "redirect:/errors/404";
+		}
+		Evaluation evaluation = evaluationService.getEvaluationById(evalId);
+		if (evaluation == null || evaluation.getProfil().getId() != candidateId) {
+			return "redirect:/errors/404";
+		}
+			
+		model.put("profil",  candidate);
+		model.put("result",  evaluation);
+		model.put("selectedTab", TAB_CANDIDATE);
+		return "candidate-result";
 	}
 	
 	/**
@@ -268,7 +285,7 @@ public class ProfilAdminController extends AbstractAdminController {
 		if (evaluation == null) {
 			String errorAction = buildNotifyMessage("text.notify.assign.test.to.candidate.error");
 			request.getSession().setAttribute(SESSION_ERROR_ACTION, errorAction);		
-		} else if (evaluation.getStatus() == TestStatus.ALREADY_ASSIGNED.getCode()) {
+		} else if (evaluation.getStatus() == EvaluationStatus.ALREADY_ASSIGNED.getCode()) {
 			String warningAction = buildNotifyMessage("text.notify.assign.test.to.candidate.already.assigned", evaluation.getTest().getIntitule(), evaluation.getProfil().getPrenom(), evaluation.getProfil().getNom());
 			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);			
 		} else {

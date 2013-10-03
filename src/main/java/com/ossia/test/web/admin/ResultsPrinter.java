@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -18,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,12 +41,11 @@ import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Response;
-import com.ossia.test.domain.TestSheet;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.TestSheetService;
 
 @Controller
-@RequestMapping(value="/print")
+@RequestMapping(value="/admin/print")
 public class ResultsPrinter implements ResultsPrinterInterface {
 
 	private final Log log = LogFactory.getLog(getClass());
@@ -250,9 +249,10 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		
 		String noteGlobale = evaluationService.determinerNoteGlobale (evalParamEntree) ;
 		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_NOTE_GLOBALE , noteGlobale ) ; 
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_DUREE_TEST , evalParamEntree.getTest().getDuree()+"" ) ; 
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , evalParamEntree.getStartTime().toString() ) ;  
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_FIN_TEST , evalParamEntree.getEndTime().toString()) ;
+		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_DUREE_TEST , evalParamEntree.getTest().getDuree()+"mn" ) ; 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YY HH:mm");
+		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , sdf.format(evalParamEntree.getStartTime())) ;  
+		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_FIN_TEST , sdf.format(evalParamEntree.getEndTime())) ;
 		chapter.add(new Paragraph("\n")) ; 
 
 		for (Niveau object : Niveau.values()) {
@@ -274,12 +274,15 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 			addPhraseAsNormal( chapter , ITEXT_DOCUMENT_CHAPTER_TITRE , response.getQuestion().getIntitule() ) ;
 			addPhraseAsNormal( chapter , ITEXT_DOCUMENT_CHAPTER_NIVEAU , response.getQuestion().getNiveau().getValue() ) ;
 			
-			addPhraseAsCode  ( chapter ,  response.getQuestion().getContenu() ) ; 
+			addPhraseAsCode  ( chapter ,  formatQuestionOrProposition(response.getQuestion().getContenu()) ) ; 
 			chapter.add(new Paragraph("\n")) ; 
 			
 			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_STATEMENT , response.getQuestion().getPropositionsReponses()) ;
-			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_CORRECTION , evaluationService.determinerPropositionsCorrectesByReponse(response) ) ;
+			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_REPONSE , evaluationService.determinerPropositionsCorrectesByReponse(response) ) ;
 			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_CANDIDAT , response.getReponsesChoisies()) ;
+			if (response.getQuestion().getCorrectionHints() != null) {
+				addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_CORRECTION , response.getQuestion().getCorrectionHints()) ;
+			}
 			
 			i++ ; 
 		}
@@ -297,13 +300,38 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		liste.setAlignindent(true) ; 
 		liste.setAutoindent(true) ; 
 		for (PropositionReponse propositionReponse : collection) {
-			liste.add(new ListItem (new Phrase (propositionReponse.getValeur()))) ;
+			liste.add(new ListItem (new Phrase (formatQuestionOrProposition(propositionReponse.getValeur())))) ;
 		}
 		chapter.add(liste) ; 
+		chapter.add(new Paragraph("\n")) ;
+	}
+	
+	public void addListLikeParagraphs (Chapter chapter, String param , String correction) {
+		chapter.add( new Paragraph(contentProperties.getProperty(param) , FONT_TITLE4 )) ;
+		chapter.add(new Paragraph("\n")) ; 
+		
+		
+		chapter.add(new Chunk(correction)) ; 
 		chapter.add(new Paragraph("\n")) ;
 	}
 
 	private void closeDocument(Document document) {
 		document.close();
+	}
+	
+	private String formatQuestionOrProposition (String input) {
+		String output = input.replace("[DB]",  "\"");
+		output = output.replace("[code style=java]", "");
+		output = output.replace("[code style=csharp]", "");
+		output = output.replace("[code style=xml]", "");
+		output = output.replace("[code style=php]", "");
+		output = output.replace("[code style=cpp]", "");
+		output = output.replace("[code style=sql]", "");
+		output = output.replace("[/code]", "");
+		output = output.replace("[NL][NL]", "\r\n");
+		output = output.replace("[NL]", "\r\n");
+		output = output.replace("[TAB]", "\t\t\t");
+		
+		return output;  	
 	}
 }

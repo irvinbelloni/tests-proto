@@ -6,11 +6,15 @@ var textTestTimeOver = "";
 var textTestTimeOverPrecision = "";
 var textAddPropositionReponse = "";
 var textEditPropositionReponse = "";
+var textTestWarningNotValidable = "";
 
 var dialogTextDeleteProfil = "";
 var dialogTextDeleteTest = "";
 var dialogTextDeleteQuestion = "";
 var dialogTextDeletePropositionReponse = "";
+var dialogTextValidateTest = "";
+var dialogTextDuplicateTest = "";
+var dialogTextArchiveTest = "";
 
 var remainingTime;
 var timeoutRT;
@@ -43,6 +47,30 @@ $(document).ready(function() {
 	
 	$(".left-list").css("minHeight", parseInt ($(".side-form").height() + 20));
 });
+
+function displayWarningNotValidableTest() {
+	displayWarning (textTestWarningNotValidable, "Test non validable", 200);
+}
+
+function displayWarning (text, title, height) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
+	dialogHtml += text;
+		
+	$("#dialog-confirm p").html(dialogHtml);
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			height : height,
+			title: title,
+			modal : true,
+			buttons : {
+				"Ok" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
 
 function displayRemainingTime(testId) {
 	remainingTime --;
@@ -131,11 +159,6 @@ function deleteProfil(profilId, firstname, name, url, title) {
 		});
 	});	
 }
-
-function noBack(){
-	window.history.forward();
-} 
-
 
 function confirmTestValidation(nbUnansweredQuestions) {
 	var popupHtml = "<div id=\"time-over\"><span>" + textLeftQuestions + "</span><br/><br/>" + textLeftQuestionsPrecisions;
@@ -264,6 +287,7 @@ function backToAddTest () {
 		$("#testSheetId").val("");
 		$("#testSheetIntitule").val("");
 		$("#testSheetDuree").val("");
+		$("#status").val("DRAFT");
 		$("#testSheetType").val("");
 		$(".side-form h2").html(textAddTest);
 		$("span.error").hide();
@@ -388,7 +412,7 @@ function removeDiacritics (str) {
    }
 
 function deleteTestSheet (id, intitule, url) {
-	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 80px 0;\"></span>";
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 200px 0;\"></span>";
 	dialogHtml += dialogTextDeleteTest.replace("%TEST%", intitule );
 	$("#dialog-confirm p").html(dialogHtml);
 			
@@ -396,7 +420,7 @@ function deleteTestSheet (id, intitule, url) {
 		$("#dialog-confirm").dialog({
 			resizable : false,
 			title: "Supprimer un test",
-			height : 230,
+			height : 260,
 			modal : true,
 			buttons : {
 				"Supprimer" : function() {
@@ -410,10 +434,80 @@ function deleteTestSheet (id, intitule, url) {
 	});	
 }
 
-function editTestSheet (id, intitule, duree, type) {
+function validateTestSheet (intitule, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 150px 0;\"></span>";
+	dialogHtml += dialogTextValidateTest.replace("%TEST%", intitule );
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			title: "Valider un test",
+			height : 265,
+			modal : true,
+			buttons : {
+				"Valider le test" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
+
+function duplicateTest(intitule, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 150px 0;\"></span>";
+	dialogHtml += dialogTextDuplicateTest.replace("%TEST%", intitule );
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			title: "Dupliquer un test",
+			height : 200,
+			modal : true,
+			buttons : {
+				"Dupliquer le test" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
+
+function archiveTest(intitule, url) {
+	var dialogHtml = "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin: 0 7px 150px 0;\"></span>";
+	dialogHtml += dialogTextArchiveTest.replace("%TEST%", intitule );
+	$("#dialog-confirm p").html(dialogHtml);
+			
+	$(function() {
+		$("#dialog-confirm").dialog({
+			resizable : false,
+			title: "Archiver un test",
+			height : 200,
+			modal : true,
+			buttons : {
+				"Archiver le test" : function() {
+					window.location = url;
+				},
+				"Annuler" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});	
+}
+
+function editTestSheet (id, intitule, duree, type, status) {
 	$(".side-form").slideUp(function() {
 		$("input.submit-button").val("Modifier Test");  
 		$("#testSheetId").val(id);
+		$("#status").val(status);
 		$("#testSheetIntitule").val(intitule);
 		$("#testSheetDuree").val(duree);
 		$("#testSheetType").val(type);
@@ -457,7 +551,7 @@ function addQuestion () {
 		$("#question-submit-button").val("Ajouter");  
 		$("#questionId").val("");
 		$("#questionIntitule").val("");
-		$("#questionNiveau").val("");
+		$("#questionNiveau").val("JUNIOR");
 		$("#questionContenu").html("");
 		$("#question-edit h2").html(textAddQuestion);
 		$("span.error").hide();
@@ -481,7 +575,8 @@ function addProposition () {
 		$("#proposition-edit h2").html(textAddPropositionReponse);
 		$("span.error").hide();
 		$(".back-to-add-form").html("Annuler l'ajout");
-		$(".back-to-add-form").show();				
+		$(".back-to-add-form").show();
+		$("html, body").animate({ scrollTop: $(document).height() }, 1000);		
 		$("#proposition-edit").slideDown(function() {
 			adjustFooterHeight();
 		});
@@ -547,6 +642,7 @@ function deletePropositionReponse (url) {
 			resizable : false,
 			height : 180,
 			modal : true,
+			title: "Supprimer une proposition",
 			buttons : {
 				"Supprimer" : function() {
 					window.location = url;
@@ -591,3 +687,18 @@ function decodeTextAreaContent(content) {
 	return content;
 }
 
+function emptyFilters() {
+	$("#testName").val("");
+	$("#testType").val("");
+	$("#candidateName").val("");
+	$("#passingDateFrom").val("");
+	$("#passingDateTo").val("");
+	$("#filter-form").submit();
+}
+
+function goToByScroll(id, offset){
+    // Remove "link" from the ID
+  //id = id.replace("link", "");
+    // Scroll
+  $('html,body').animate({ scrollTop: $("#"+id).offset().top - offset}, 'slow');
+}

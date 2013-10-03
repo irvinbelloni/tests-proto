@@ -1,6 +1,7 @@
 package com.ossia.test.domain;//
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -79,9 +80,17 @@ public class Question implements Serializable {
 		if (propositionsReponses == null) {
 			return 0 ; 
 		}
-		else {
-			return propositionsReponses.size() ;  
-		}
+		return propositionsReponses.size() ;
+	}
+	
+	public int nbCorrectPropositions() {
+		int nbCorrectPropositions = 0;
+		for (PropositionReponse proposition : propositionsReponses) {
+			if (proposition.isPropositionCorrecte()) {
+				nbCorrectPropositions ++;
+			}
+		}		
+		return nbCorrectPropositions;
 	}
 
 	public Integer getId() {
@@ -125,6 +134,9 @@ public class Question implements Serializable {
 	}
 
 	public Set<PropositionReponse> getPropositionsReponses() {
+		if (propositionsReponses == null) {
+			propositionsReponses = new HashSet<PropositionReponse>();
+		}
 		return propositionsReponses;
 	}
 

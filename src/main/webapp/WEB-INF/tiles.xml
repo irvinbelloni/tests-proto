@@ -56,6 +56,11 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/resultats/home.jsp" />
     </definition>
     
+    <definition name="resultat-detail" extends="logged-in-layout">
+    	<put-attribute name="title" value="Résultat détaillé" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/resultats/detail.jsp" />
+    </definition>
+    
     <definition name="administrators" extends="logged-in-layout">
     	<put-attribute name="title" value="Liste des administrateurs" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/administrators/list.jsp" />
@@ -69,6 +74,11 @@
     <definition name="candidate" extends="logged-in-layout">
     	<put-attribute name="title" value="Fiche d'un candidat" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/detail.jsp" />
+    </definition>
+    
+    <definition name="candidate-result" extends="logged-in-layout">
+    	<put-attribute name="title" value="Résultat d'un candidat" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/result.jsp" />
     </definition>
     
     <definition name="error404" extends="logged-in-layout">

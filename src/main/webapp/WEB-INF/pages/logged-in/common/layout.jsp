@@ -9,6 +9,7 @@
 				
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.2.0.3.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery-ui.1.10.3.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/jquery.sticky.js"></script>
 		
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/noty/jquery.noty.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/noty/layouts/top.js"></script>
@@ -20,6 +21,10 @@
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushJava.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushSql.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushXml.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushPhp.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushCSharp.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushCpp.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/syntax-highlighter/shBrushCss.js"></script>
 		
 		<script type="text/javascript" src="${pageContext.request.contextPath}/static/js/ossia.control.js"></script>		
 		

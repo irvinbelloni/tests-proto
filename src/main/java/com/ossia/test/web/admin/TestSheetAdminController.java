@@ -31,8 +31,7 @@ import com.ossia.test.web.sort.SortingInfo;
 @RequestMapping("/admin")
 public class TestSheetAdminController extends AbstractAdminController {
 	
-	// TODO empecher la suppression d'un test si celui ci est en cours de pasage
-	// TODO empecher l'assignation d'un test si celui comporte un equestion sans au moins 2 propositions de réponses (dont au moins une correcte)
+	@SuppressWarnings("unused")
 	private final Log log = LogFactory.getLog(getClass()) ; 
 	
 	private final static String SESSION_TEST_LIST_SORT = "test.list.sort";
@@ -117,13 +116,69 @@ public class TestSheetAdminController extends AbstractAdminController {
 	public String deleteTest(@RequestParam(value = "id") Integer testId, HttpServletRequest request, ModelMap model ) {
 		
 		TestSheet testSheetToDelete = testSheetService.getTestSheetById( testId ) ; 
-		testSheetService.deleteTestSheet(testSheetToDelete) ; 
-		model.put("testSheet", new TestSheet()) ; 
-		
-		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.test", testSheetToDelete.getIntitule()));
-		
-		
+		if (testSheetToDelete.isDraft()) {
+			testSheetService.deleteTestSheet(testSheetToDelete) ; 
+			model.put("testSheet", new TestSheet()) ; 
+			
+			request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.delete.test", testSheetToDelete.getIntitule()));
+		} else {
+			String warningAction = buildNotifyMessage("text.notify.delete.test.not.in.draft", testSheetToDelete.getIntitule());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);
+		}		
 		return "redirect:" + "/admin/test/home" ; 
+	}
+	
+	@RequestMapping(value = "/test/validate", method = RequestMethod.GET)
+	public String validateTest(@RequestParam(value = "test") Integer testId, @RequestParam(value = "origin") String origin, HttpServletRequest request, ModelMap model ) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		TestSheet test = testSheetService.getTestSheetById(testId) ; 
+		if (test.isValidable() && test.isDraft()) {
+			testSheetService.validateTestSheet(test, admin);			
+			request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.validate.test", test.getIntitule()));
+		} else {
+			String warningAction = buildNotifyMessage("text.notify.validate.test.not.in.draft", test.getIntitule());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);
+		}		
+		
+		String redirectUrl = "/admin/test/" + origin;
+		if (origin.equals("detail")) {
+			redirectUrl += "?id=" + test.getId();
+		}
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/test/duplicate", method = RequestMethod.GET)
+	public String validateTest(@RequestParam(value = "test") Integer testId, HttpServletRequest request, ModelMap model ) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		TestSheet test = testSheetService.getTestSheetById(testId); 
+		if (test.isDraft()) {
+			String warningAction = buildNotifyMessage("text.notify.duplicate.test.in.draft", test.getIntitule());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);
+			return "redirect:/admin/test/detail?id=" + test.getId();
+		} 
+			
+		TestSheet newTest = testSheetService.duplicateTestSheet(test, admin);			
+		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.duplicate.test", test.getIntitule(), newTest.getIntitule()));
+		return "redirect:/admin/test/detail?id=" + newTest.getId();		
+	}
+	
+	@RequestMapping(value = "/test/archive", method = RequestMethod.GET)
+	public String archiveTest(@RequestParam(value = "test") Integer testId, @RequestParam(value = "origin") String origin, HttpServletRequest request, ModelMap model ) {
+		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		TestSheet test = testSheetService.getTestSheetById(testId) ; 
+		if (test.isValidated()) {
+			testSheetService.archiveTestSheet(test, admin);		
+			request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage("text.notify.archive.test", test.getIntitule()));
+		} else {
+			String warningAction = buildNotifyMessage("text.notify.archive.test.not.validated", test.getIntitule());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);
+		}		
+		
+		String redirectUrl = "/admin/test/" + origin;
+		if (origin.equals("detail")) {
+			redirectUrl += "?id=" + test.getId();
+		}
+		return "redirect:" + redirectUrl;
 	}
 
 	/*
@@ -132,7 +187,6 @@ public class TestSheetAdminController extends AbstractAdminController {
 	
 	@RequestMapping(value = "/question/detail", method = RequestMethod.GET)
 	public String displayQuestionDetail(@RequestParam(value = "id") String idRequestParam , HttpServletRequest request, ModelMap model) {
-		// TODO ajouter une popup d'aide à la saisie des questions et des réponses pour le formattage du code
 		Integer identifier = Integer.parseInt(idRequestParam) ;  
 		Question question = testSheetService.getQuestionById(identifier) ;
 		
@@ -169,30 +223,30 @@ public class TestSheetAdminController extends AbstractAdminController {
 		
 		TestSheet test = testSheetService.getTestSheetById(questionForm.getTestId()) ;
 		
-		String messageCodeForLastAction = null;
 		Question question = null;
-		if (questionForm.getId() == null || questionForm.getId() == 0) {
-			question = testSheetService.addQuestionToTest(test, questionForm.convertToNewTestDomain(test), admin);
-			messageCodeForLastAction = "text.notify.add.question";
+		if (test.isDraft()) {
+			String messageCodeForLastAction = null;			
+			if (questionForm.getId() == null || questionForm.getId() == 0) {
+				question = testSheetService.addQuestionToTest(test, questionForm.convertToNewTestDomain(test), admin);
+				messageCodeForLastAction = "text.notify.add.question";
+			} else {
+				Question existingQuestion = testSheetService.getQuestionById(questionForm.getId()) ; 
+				question = testSheetService.updateQuestion(test, questionForm.updateQuestion (existingQuestion), admin) ; 
+				messageCodeForLastAction = "text.notify.edit.question";
+			}			
+			request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, question.getIntitule(), question.getTest().getIntitule()));
 		} else {
-			Question existingQuestion = testSheetService.getQuestionById(questionForm.getId()) ; 
-			question = testSheetService.updateQuestion(test, questionForm.updateQuestion (existingQuestion), admin) ; 
-			messageCodeForLastAction = "text.notify.edit.question";
+			String warningAction = buildNotifyMessage("text.notify.add.edit.question.in.draft", test.getIntitule());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);
+			question = new Question();
+			question.setId(questionForm.getId());
 		}
 		
-		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, question.getIntitule(), question.getTest().getIntitule()));
-		
-		model.put("questionForm", new CreateUpdateQuestionForm( test ) ) ; 
-		
-		Collection<Question> liste = testSheetService.getAllQuestionsFromTest(test) ;
-		model.put("questions", liste ) ; 
-		model.put("testSheet", test ) ;
-		
-		if (origin.equals("test")) {
-			return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
+		if (origin.equals("detail") || questionForm.getId() == null || questionForm.getId() == 0) {
+			return "redirect:/admin/question/detail" + "?id="+question.getId(); 
 		} else {
-			return "redirect:/admin/question/detail" + "?id="+question.getId() ; 
-		}		
+			return "redirect:/admin/test/detail" + "?id="+test.getId() ; 
+		}	
 	}
 	
 	@RequestMapping(value = "/question/delete", method = RequestMethod.GET)
@@ -202,7 +256,7 @@ public class TestSheetAdminController extends AbstractAdminController {
 		
 		TestSheet test = questionToDelete.getTest(); 
 		
-		if (test.getId() != testId) { // Trying to delete a question that does not belong to the given test
+		if (test.getId() != testId || !test.isDraft()) { // Trying to delete a question that does not belong to the given test, or the test is not in draft status
 			return "redirect:/admin/test/detail" + "?id="+testId;			
 		}
 		
@@ -231,22 +285,26 @@ public class TestSheetAdminController extends AbstractAdminController {
 		
 		Question question = testSheetService.getQuestionById(propform.getQuestionId()) ; 
 		
-		Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String messageCodeForLastAction = null;
-		
-		if (propform.getId() == null || propform.getId() == 0) {
-			PropositionReponse prToCreate = propform.convertToNewPropositionReponseDomain(question) ; 
-			testSheetService.createPropositionReponse(prToCreate, admin) ; 
-			messageCodeForLastAction = "text.notify.add.proposition";
+		if (question.getTest().isDraft()) {		
+			Profil admin = (Profil)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			String messageCodeForLastAction = null;
+			
+			if (propform.getId() == null || propform.getId() == 0) {
+				PropositionReponse prToCreate = propform.convertToNewPropositionReponseDomain(question) ; 
+				testSheetService.createPropositionReponse(prToCreate, admin) ; 
+				messageCodeForLastAction = "text.notify.add.proposition";
+			} else {
+				PropositionReponse prToUpdate = testSheetService.getPropositionReponseById(propform.getId()) ; 
+				prToUpdate = propform.updatePropositionReponseModel(prToUpdate) ; 
+				testSheetService.updatePropositionReponse(prToUpdate, admin) ; 
+				messageCodeForLastAction = "text.notify.edit.proposition";
+			}
+			
+			request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, question.getIntitule()));
 		} else {
-			PropositionReponse prToUpdate = testSheetService.getPropositionReponseById(propform.getId()) ; 
-			prToUpdate = propform.updatePropositionReponseModel(prToUpdate) ; 
-			testSheetService.updatePropositionReponse(prToUpdate, admin) ; 
-			messageCodeForLastAction = "text.notify.edit.proposition";
+			String warningAction = buildNotifyMessage("text.notify.add.edit.proposition.in.draft", question.getTest().getIntitule());
+			request.getSession().setAttribute(SESSION_WARNING_ACTION, warningAction);			
 		}
-		
-		request.getSession().setAttribute(SESSION_LAST_ACTION, buildNotifyMessage(messageCodeForLastAction, question.getIntitule()));
-		
 		
 		model.put("proposition", new CreateUpdatePropositionReponseForm(question) ) ; 
 		model.put("propositions", testSheetService.getAllPropositionReponseFromQuestion(question) ) ; 
@@ -260,7 +318,7 @@ public class TestSheetAdminController extends AbstractAdminController {
 				
 		PropositionReponse pr = testSheetService.getPropositionReponseById (propositionId) ; 
 		Question question = pr.getQuestion();
-		if (question.getId() != questionId) { // Trying to delete a proposition that does not belong to the given question
+		if (question.getId() != questionId || !question.getTest().isDraft()) { // Trying to delete a proposition that does not belong to the given question
 			return "redirect:/admin/question/detail" + "?id=" + questionId; 			
 		}
 		
@@ -281,7 +339,7 @@ public class TestSheetAdminController extends AbstractAdminController {
 			sortingInfo.setSortingField(SortingInfo.SORT_INTITULE);
 		}
 		if (sortingField != null) {
-			if (SortingInfo.SORT_INTITULE.equals(sortingField) || SortingInfo.SORT_DUREE.equals(sortingField) || SortingInfo.SORT_TYPE.equals(sortingField)) {
+			if (SortingInfo.SORT_INTITULE.equals(sortingField) || SortingInfo.SORT_DUREE.equals(sortingField) || SortingInfo.SORT_TYPE.equals(sortingField) || SortingInfo.SORT_STATUS.equals(sortingField)) {
 				sortingInfo.setSortingField(sortingField);
 			}
 		}
@@ -302,5 +360,4 @@ public class TestSheetAdminController extends AbstractAdminController {
 		}
 		return testSheetService.getSortedTestSheets(sortingInfo);
 	}
-	
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ossia.test.domain.Evaluation;
+import com.ossia.test.domain.EvaluationStatus;
 import com.ossia.test.domain.HistoAction;
 import com.ossia.test.domain.Niveau;
 import com.ossia.test.domain.Profil;
@@ -21,7 +22,6 @@ import com.ossia.test.domain.PropositionReponse;
 import com.ossia.test.domain.Question;
 import com.ossia.test.domain.Response;
 import com.ossia.test.domain.TestSheet;
-import com.ossia.test.domain.TestStatus;
 import com.ossia.test.repository.EvaluationRepository;
 import com.ossia.test.repository.ProfilRepository;
 import com.ossia.test.repository.QuestionRepository;
@@ -29,7 +29,9 @@ import com.ossia.test.repository.ResponseRepository;
 import com.ossia.test.repository.TestSheetRepository;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
+import com.ossia.test.web.form.FilterResultsForm;
 import com.ossia.test.web.form.QuestionForm;
+import com.ossia.test.web.sort.SortingInfo;
 
 @Service
 @Transactional
@@ -78,7 +80,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 	
 	@Transactional(readOnly = true)
 	public List<Evaluation> getAllActiveResultats() {
-		return  evaluationRepository.getAll() ;
+		return evaluationRepository.getAll();
 	}
 
 	public void deleteEvaluation(Evaluation toDelete) {
@@ -143,12 +145,12 @@ public class EvaluationServiceImpl implements EvaluationService {
 		// Checking if the test is not already assigned
 		for(Evaluation evaluationLoop : candidate.getEvaluations()) {
 			if (evaluationLoop.getTest().getId() == testId && !evaluationLoop.isTestTaken()) {
-				evaluation.setStatus(TestStatus.ALREADY_ASSIGNED.getCode());
+				evaluation.setStatus(EvaluationStatus.ALREADY_ASSIGNED.getCode());
 				return evaluation;
 			}
 		}		
 		
-		evaluation.setStatus(TestStatus.ASSIGNED.getCode());
+		evaluation.setStatus(EvaluationStatus.ASSIGNED.getCode());
 		testSheet.getEvaluations().add(evaluation);				
 		candidate.getEvaluations().add(evaluation);		
 		profilRepository.update(candidate);
@@ -158,6 +160,22 @@ public class EvaluationServiceImpl implements EvaluationService {
 		
 		return evaluation;
 	}	
+	
+	public List<Evaluation> getSortedAndFilteredResults (SortingInfo sortingInfo, FilterResultsForm filterForm) {
+		int testId = 0;
+		int candidateId = 0;
+		try {
+			testId = Integer.parseInt(filterForm.getTestName());
+		} catch (NumberFormatException nfe) {
+			testId = 0;
+		}
+		try {
+			candidateId = Integer.parseInt(filterForm.getCandidateName());
+		} catch (NumberFormatException nfe) {
+			candidateId = 0;
+		}
+		return evaluationRepository.getSortedAndFilteredEvaluations(sortingInfo.getSortingField(), sortingInfo.getSortingDirection(), testId, filterForm.getTestType(), candidateId, filterForm.getPassingDateFrom(), filterForm.getPassingDateTo());
+	}
 	
 	public Boolean verifyConformityResponse (Set<PropositionReponse> reponses ) {
 		Boolean resultat = null ; 
@@ -177,15 +195,10 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public String determinerNoteGlobale(Evaluation evalParamEntree) {
 		Integer nombreQuestions = evalParamEntree.getResponses().size() ;
 		Integer nombreReponsesVraies = 0 ; 
-		Integer nombreReponsesFausses = 0 ;
-		
+				
 		for (Response response : evalParamEntree.getResponses()) {
-			Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
-			
-			if (verifyConformityResponse(reponseChoisie)) {
+			if (response.isCorrect()) {
 				nombreReponsesVraies ++ ; 
-			} else {
-				nombreReponsesFausses ++ ; 
 			}
 		}
 		return nombreReponsesVraies + "/" + nombreQuestions ;
@@ -195,23 +208,16 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public String determinerNoteParNiveau(Evaluation evalParamEntree, Niveau level) {
 		List<Question> listeQuestionsParNiveau = questionRepository.getQuestionsByTestAndNiveau(evalParamEntree.getTest(), level) ;
 		Integer nombreQuestions = listeQuestionsParNiveau.size() ;
-		Integer nombreReponsesVraies = 0 ; 
-		Integer nombreReponsesFausses = 0 ;
+		Integer nombreReponsesVraies = 0 ;
 		
-		if (nombreQuestions == 0 ) {
-			for (Question question : listeQuestionsParNiveau) {
-				Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
-				if (response != null) {
-					Set<PropositionReponse> reponseChoisie = response.getReponsesChoisies() ; 
-					
-					if (verifyConformityResponse(reponseChoisie)) {
-						nombreReponsesVraies ++ ; 
-					} else {
-						nombreReponsesFausses ++ ; 
-					}
-				} else {
-					break ; 
-				}
+		for (Question question : listeQuestionsParNiveau) {
+			Response response = responseRepository.getResponseByEvaluationAndQuestion (evalParamEntree , question) ; 
+			if (response != null) {
+				if (response.isCorrect()) {
+					nombreReponsesVraies ++ ; 
+				} 
+			} else {
+				break ; 
 			}
 		}
 		return nombreReponsesVraies + "/" + nombreQuestions ;
@@ -232,14 +238,14 @@ public class EvaluationServiceImpl implements EvaluationService {
 	@Override
 	public void markTestAsStarted(Evaluation evaluation) {
 		evaluation.setStartTime(new Date());
-		evaluation.setStatus(TestStatus.IN_PROGRESS.getCode());
+		evaluation.setStatus(EvaluationStatus.IN_PROGRESS.getCode());
 		
 		evaluationRepository.update(evaluation);
 	}
 
 	@Override
 	public boolean isTimeOver(Evaluation evaluation) {
-		if (evaluation.getStatus() != TestStatus.IN_PROGRESS.getCode()) { // The test must be in progress
+		if (evaluation.getStatus() != EvaluationStatus.IN_PROGRESS.getCode()) { // The test must be in progress
 			return true;
 		}	
 		
@@ -322,7 +328,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 		}
 		
 		evaluation.setEndTime(new Date());
-		evaluation.setStatus(TestStatus.DONE.getCode());
+		evaluation.setStatus(EvaluationStatus.DONE.getCode());
 		
 		evaluationRepository.update(evaluation);		
 	}	

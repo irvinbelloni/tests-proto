@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OrderBy;
+
 @Entity
 @Table(name = "T_EVALUATIONS")
 public class Evaluation implements Serializable {
@@ -36,7 +38,7 @@ public class Evaluation implements Serializable {
 	@NotNull
 	private Profil profil;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "evaluation")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "evaluation") @OrderBy(clause = "question.id ASC")
 	private Set<Response> responses;
 
 	private Integer status;
@@ -65,17 +67,17 @@ public class Evaluation implements Serializable {
 	
 	@Transient
 	public boolean isTestTaken(){
-		return this.status == TestStatus.DONE.getCode();
+		return this.status == EvaluationStatus.DONE.getCode();
 	}
 	
 	@Transient
 	public boolean isTestInProgress(){
-		return this.status == TestStatus.IN_PROGRESS.getCode();
+		return this.status == EvaluationStatus.IN_PROGRESS.getCode();
 	}	
 
 	@Transient
 	public boolean isTestAssigned(){
-		return this.status == TestStatus.ASSIGNED.getCode();
+		return this.status == EvaluationStatus.ASSIGNED.getCode();
  	}
 	
 	@Transient
@@ -88,6 +90,27 @@ public class Evaluation implements Serializable {
 		}
 		
 		return nbUnansweredQuestions;
+	}
+	
+	@Transient
+	public int getNbGoodAnswers(){
+		int nbGoodAnswers = 0;
+		for (Response response : responses) {
+			if (response.isCorrect()) {
+				nbGoodAnswers ++;
+			}
+		}		
+		return nbGoodAnswers;
+	}
+	
+	/**
+	 * Gets the time needed by the candidate to pass the test.
+	 * @return Time needed in seconds
+	 */
+	@Transient
+	public int getDuration() {
+		int duration = (int) (this.endTime.getTime() - this.startTime.getTime());
+		return duration / 1000;
 	}
 
 	public Integer getId() {

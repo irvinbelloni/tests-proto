@@ -29,9 +29,9 @@ public class FormatQuestionTaglib extends TagSupport {
             if (mode.equals(MODE_INPUT)) {
             	outString = input.replace("[DB]",  "\"");
             	outString = outString.replace("[NL]", "\r\n");
-            	outString = outString.replace("[TAB]", "    ");
+            	outString = outString.replace("[TAB]", "   ");
             } else {
-            	outString = formatInput(input);
+            	outString = FormatQuestion.formatInput(input);
             }
             out.print(outString);
  
@@ -41,44 +41,7 @@ public class FormatQuestionTaglib extends TagSupport {
         return SKIP_BODY;
     }
     
-    private String formatInput (String input) {
-    	String beforeString = null;
-    	String codeString = null;
-    	String afterString = null;
-    	String outString = null;
-    	
-    	int indexCodeStart = input.indexOf("[code style=");
-    	if (input.length() == 0 || indexCodeStart == -1) { // No code tag, simple formatting
-    		outString = input.replace("[DB]",  "\"");
-        	outString = outString.replace("[NL]", "<br/>");
-        	outString = outString.replace("[TAB]", "&nbsp;&nbsp;&nbsp;&nbsp;");
-        	return outString;
-    	}
-    	
-    	beforeString = input.substring(0,  indexCodeStart);
-    	int indexCodeEnd = input.indexOf("[/code]");
-    	if (indexCodeEnd != -1) {
-    		indexCodeEnd += 7;
-    		codeString = input.substring(indexCodeStart, indexCodeEnd);    		
-    		afterString = input.substring(indexCodeEnd);
-    	} else {
-    		codeString = input.substring(indexCodeStart) + "[NL][/code]";
-    		afterString = "";
-    	}
-    	
-    	outString = formatInput(beforeString);
-    	
-    	codeString = codeString.replace("[DB]",  "\"");
-    	codeString = codeString.replace("[NL]", "\r\n");
-		codeString = codeString.replace("[TAB]", "&nbsp;&nbsp;&nbsp;&nbsp;");
-		codeString = codeString.replace("[code style=java]", "<script type=\"syntaxhighlighter\" class=\"brush:java\">\r\n<![CDATA[");
-		codeString = codeString.replace("[/code]", "]]>\r\n</script>");
-		outString += codeString;    	
-    	
-    	outString += formatInput(afterString);
-    		
-    	return outString;
-    }
+    
     
     public String getInput() {
         return input;

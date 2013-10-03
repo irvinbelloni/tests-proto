@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -47,6 +48,20 @@ public class Response implements Serializable {
 	public Response(Question question) {
 		super();
 		this.question = question;
+	}
+	
+	@Transient
+	public boolean isCorrect() {
+		for (PropositionReponse proposition : reponsesChoisies) {
+			if (!proposition.isPropositionCorrecte()) {
+				return false;
+			}
+		}
+		if (reponsesChoisies.size() == question.nbCorrectPropositions()) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	public Integer getId() {

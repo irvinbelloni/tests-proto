@@ -11,12 +11,10 @@ import com.ossia.test.repository.PropositionReponseRepository;
 @Repository
 public class PropositionReponseRepositoryImpl extends AbstractRepositoryImpl<PropositionReponse, Integer> implements PropositionReponseRepository {
 
+	@SuppressWarnings("unchecked")
 	public List<PropositionReponse> getAllPropositionReponseByQuestionId(Integer id) {
 		
-		Query query = getHibernateCurrentSession().createQuery("from PropositionReponse pr where pr.question.id=:id")
-				.setInteger("id", id);
-		
-		List<PropositionReponse> liste = (List<PropositionReponse>) query.list() ; 
-		return liste ; 
+		Query query = getHibernateCurrentSession().createQuery("from PropositionReponse pr where pr.question.id=:id").setInteger("id", id);
+		return (List<PropositionReponse>) query.list();
 	}
 }
