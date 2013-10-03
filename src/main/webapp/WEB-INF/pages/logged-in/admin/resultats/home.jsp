@@ -127,7 +127,7 @@
 						<c:url value="/admin/print/evaluation" var="printUrl">
 							<c:param name="id" value="${resultat.id}"/>
 						</c:url>
-						<a href="${printUrl}" class="action export"><spring:message code="link.label.common.export.pdf"/></a>						
+						<a href="${printUrl}" target="_blank" class="action export"><spring:message code="link.label.common.export.pdf"/></a>						
 					</span>
 				</p>
 				<p class="main">

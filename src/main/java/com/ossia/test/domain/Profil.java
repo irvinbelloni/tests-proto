@@ -55,11 +55,10 @@ public class Profil implements UserDetails {
 	@NotEmpty @Pattern(regexp = "^\\s*$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.(?:[a-zA-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$", message = "{form.error.email.invalid}")
 	private String email;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil") @OrderBy(clause = "startTime DESC")
 	private Set<Evaluation> evaluations;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil")
-	@OrderBy(clause = "timestamp DESC")
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY , mappedBy = "profil") @OrderBy(clause = "timestamp DESC")
 	private List<ProfilHisto> historique;
 	
 	@NotEmpty

@@ -696,9 +696,9 @@ function emptyFilters() {
 	$("#filter-form").submit();
 }
 
-function goToByScroll(id){
+function goToByScroll(id, offset){
     // Remove "link" from the ID
   //id = id.replace("link", "");
     // Scroll
-  $('html,body').animate({ scrollTop: $("#"+id).offset().top - 10}, 'slow');
+  $('html,body').animate({ scrollTop: $("#"+id).offset().top - offset}, 'slow');
 }

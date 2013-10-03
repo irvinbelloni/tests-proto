@@ -76,6 +76,11 @@
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/detail.jsp" />
     </definition>
     
+    <definition name="candidate-result" extends="logged-in-layout">
+    	<put-attribute name="title" value="Résultat d'un candidat" />
+        <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/candidates/result.jsp" />
+    </definition>
+    
     <definition name="error404" extends="logged-in-layout">
     	<put-attribute name="title" value="Erreur 404, page non trouvÃ©e" />
         <put-attribute name="body" value="/WEB-INF/pages/logged-in/admin/errors/404.jsp" />

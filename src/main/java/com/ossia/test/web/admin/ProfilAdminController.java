@@ -106,6 +106,23 @@ public class ProfilAdminController extends AbstractAdminController {
 		return "candidate";
 	}
 	
+	@RequestMapping(value = "/candidate/result", method = RequestMethod.GET)
+	public String displayCandidateResult(@RequestParam(value = "candidate", required = true) Integer candidateId, @RequestParam(value = "evaluation", required = false) Integer evalId, ModelMap model, HttpServletRequest request) {
+		Profil candidate = profilService.getProfilById(candidateId);
+		if (candidate == null) {
+			return "redirect:/errors/404";
+		}
+		Evaluation evaluation = evaluationService.getEvaluationById(evalId);
+		if (evaluation == null || evaluation.getProfil().getId() != candidateId) {
+			return "redirect:/errors/404";
+		}
+			
+		model.put("profil",  candidate);
+		model.put("result",  evaluation);
+		model.put("selectedTab", TAB_CANDIDATE);
+		return "candidate-result";
+	}
+	
 	/**
 	 * Activates or deactivates a profile
 	 * @param profileId Id of the user

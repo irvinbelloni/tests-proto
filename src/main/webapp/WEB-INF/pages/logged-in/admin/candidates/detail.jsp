@@ -7,9 +7,8 @@
 <div class="wide-block">
 	<h1>
 		<a href="<c:url value="/admin/candidates"/>"><spring:message code="link.label.back.to.candidate.list"/></a>
-		<span>${profil.prenom} ${profil.nom}</span> (<spring:message code="content.title.candidate.detail"/>) 
+		<span>${profil.prenom} ${profil.nom}</span>
 	</h1>
-	
 	<div class="identity">
 		<div class="container" id="identity">
 			<h2><spring:message code="content.title.candidate.detail.identity"/></h2>
@@ -159,9 +158,15 @@
 			<h2><spring:message code="content.title.candidate.detail.taken.tests"/></h2>
 			<c:forEach items="${profil.evaluations}" var="eval">
 				<c:if test="${eval.status eq 3}">
-					<p>
-						${eval.test.intitule}
-					</p>
+					<div class="detail-list-item">
+						<c:url value="/admin/candidate/result" var="resultUrl">
+							<c:param name="candidate" value="${profil.id}"/>
+							<c:param name="evaluation" value="${eval.id}"/>
+						</c:url>
+						<span>(<a href="${resultUrl}"><spring:message code="link.label.resultat.detail"/></a>)</span>
+						<b>${eval.test.intitule}</b><br/>
+						Test passé le <fmt:formatDate value="${eval.startTime}" pattern="dd/MM/yy"/> &agrave; <fmt:formatDate value="${eval.startTime}" pattern="HH:mm"/>
+					</div>
 				</c:if>
 			</c:forEach>
 		</div>

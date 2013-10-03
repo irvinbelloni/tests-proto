@@ -64,7 +64,7 @@
 	
 	<div class="control">
 		<c:if test="${testSheet.status eq 'VALIDATED'}">
-			<div class="container">
+			<div class="container" id="main-actions">
 				<a href="#" onclick="editTestDetail(); return false;" class="action edit no-float">
 					<spring:message code="link.label.test.detail.edit" />
 				</a>
@@ -136,6 +136,22 @@
 				</a>
 			</div>
 		</c:if>
+		
+		<div class="container" id="result-menu">
+			<h2><spring:message code="text.admin.navigation"/></h2>
+			<c:set var="count" value="1"/>
+			<c:forEach items="${testSheet.questions}" var="question">
+				<a href="#" onclick="goToByScroll('question-${count}', 0); return false;">
+					<c:if test="${question.intitule ne ''}">
+						Q.${count} - ${question.intitule}
+					</c:if>
+					<c:if test="${question.intitule eq ''}">
+						<spring:message code="text.test.question" /> ${count}
+					</c:if>
+				</a><br/>
+				<c:set var="count" value="${count + 1}"/>
+			</c:forEach>
+		</div> 
 	</div>
 	
 	<div class="central">
@@ -181,7 +197,7 @@
 			<h2><spring:message code="content.title.test.detail.questions"/></h2>
 			<c:set var="count" value="1"/>
 			<c:forEach items="${testSheet.questions}" var="question">
-				<div class="detail-list-item">
+				<div class="detail-list-item" id="question-${count}">
 					<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
 						<a href="#" class="actions-down"></a>
 						<span class="sub-actions">
@@ -267,5 +283,8 @@ $(document).ready(function() {
 		$("#question-edit").slideDown();
 	</c:if>
 	<jsp:include page="../notify-action.jsp"/>
+	
+	$("#result-menu").sticky({topSpacing:0});
+	$("#result-menu").css("width", $("#main-actions").css("width") );
 });
 </script>	
