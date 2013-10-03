@@ -7,10 +7,23 @@
 		<intercept-url pattern="/*.html" access="permitAll" />
 		<intercept-url pattern="/static/**" access="permitAll" />
 		<intercept-url pattern="/login" access="permitAll" />
-		<intercept-url pattern="/logout" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
-		<intercept-url pattern="/errors/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
-		<intercept-url pattern="/tests/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" />
-	    <intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/logout" access="hasAnyRole('ROLE_CANDIDATE', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/errors/**" access="hasAnyRole('ROLE_CANDIDATE', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/tests/**" access="hasAnyRole('ROLE_CANDIDATE', 'ROLE_ADMINISTRATOR')" />
+		
+		<intercept-url pattern="/admin/resultats/**" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/admin/resultat/detail" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/admin/print/evaluation" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		
+		<intercept-url pattern="/admin/test/home" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/admin/test/detail" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/admin/question/detail" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		
+		<intercept-url pattern="/admin/candidates" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/admin/candidate/**" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		<intercept-url pattern="/admin/home" access="hasAnyRole('ROLE_CONSULTANT', 'ROLE_ADMINISTRATOR')" />
+		
+	    <intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMINISTRATOR')" />
 	    <intercept-url pattern="/**" access="denyAll" />
 	    		
 	    <form-login login-page="/login" authentication-failure-url="/login?error=failed" authentication-success-handler-ref="successfullLoginHandler" />

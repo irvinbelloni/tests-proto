@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="q" uri="/WEB-INF/questionTaglib.tld"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=utf-8"%>
 
 <div class="wide-block" id="question-detail">
@@ -13,53 +14,55 @@
 		<span>${question.test.intitule}</span> &gt;	<span>${question.intitule}</span>
 	</h1>
 	
-	<div class="control">
-		<c:if test="${question.test.status eq 'DRAFT'}">
-			<div class="container">
-				<a href="#" onclick="addProposition(); return false;" class="action add no-float">
-					<spring:message code="link.label.question.detail.add.proposition"/>
-				</a>
-			</div>
-			
-			<div class="container" style="margin-top: 10px">
-				<a href="#" onClick="editQuestionDetail ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit no-float">
-					<spring:message code="link.label.question.edit" />
-				</a>
-			</div>
-			
-			<div class="container" style="margin-top: 10px">
-				<c:url value="/admin/question/delete" var="deleteUrl">
-					<c:param name="test" value="${question.test.id}"/>
-					<c:param name="question" value="${question.id}"/>
-				</c:url>
-				<a href="#" onclick="deleteQuestion ('<esc:escapeJs input="${question.intitule}"/>' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
-					<spring:message code="link.label.candidate.detail.delete"/>
-				</a>
-			</div>
-		</c:if>
-		<c:if test="${question.test.status ne 'DRAFT'}">
-			<div class="container">
-				<c:url value="/admin/test/duplicate" var="duplicateUrl">
-					<c:param name="test" value="${question.test.id}"/>
-				</c:url>
-				<a href="#" onclick="duplicateTest('${question.test.intitule}', '${duplicateUrl}'); return false;" class="action duplicate no-float">
-					<spring:message code="link.label.test.duplicate" />
-				</a>
-				
-				<c:if test="${question.test.status eq 'VALIDATED'}">
-					<c:url value="/admin/test/archive" var="archiveUrl">
-						<c:param name="test" value="${question.test.id}"/>
-						<c:param name="origin" value="detail" />
-					</c:url>
-					<a href="#" onclick="archiveTest('${question.test.intitule}', '${archiveUrl}'); return false;" class="action archive no-float">
-						<spring:message code="link.label.test.archive" />
+	<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+		<div class="control">
+			<c:if test="${question.test.status eq 'DRAFT'}">
+				<div class="container">
+					<a href="#" onclick="addProposition(); return false;" class="action add no-float">
+						<spring:message code="link.label.question.detail.add.proposition"/>
 					</a>
-				</c:if>
-			</div>
-		</c:if>
-	</div>
+				</div>
+				
+				<div class="container" style="margin-top: 10px">
+					<a href="#" onClick="editQuestionDetail ( ${question.id} , '<esc:escapeJs input="${question.intitule}"/>' , '${question.niveau}' , '<esc:escapeJs input="${question.contenu}" lines="true" />'); return false ; " class="action edit no-float">
+						<spring:message code="link.label.question.edit" />
+					</a>
+				</div>
+				
+				<div class="container" style="margin-top: 10px">
+					<c:url value="/admin/question/delete" var="deleteUrl">
+						<c:param name="test" value="${question.test.id}"/>
+						<c:param name="question" value="${question.id}"/>
+					</c:url>
+					<a href="#" onclick="deleteQuestion ('<esc:escapeJs input="${question.intitule}"/>' , '${deleteUrl}' ) ; return false;" class="action delete no-float">
+						<spring:message code="link.label.candidate.detail.delete"/>
+					</a>
+				</div>
+			</c:if>
+			<c:if test="${question.test.status ne 'DRAFT'}">
+				<div class="container">
+					<c:url value="/admin/test/duplicate" var="duplicateUrl">
+						<c:param name="test" value="${question.test.id}"/>
+					</c:url>
+					<a href="#" onclick="duplicateTest('${question.test.intitule}', '${duplicateUrl}'); return false;" class="action duplicate no-float">
+						<spring:message code="link.label.test.duplicate" />
+					</a>
+					
+					<c:if test="${question.test.status eq 'VALIDATED'}">
+						<c:url value="/admin/test/archive" var="archiveUrl">
+							<c:param name="test" value="${question.test.id}"/>
+							<c:param name="origin" value="detail" />
+						</c:url>
+						<a href="#" onclick="archiveTest('${question.test.intitule}', '${archiveUrl}'); return false;" class="action archive no-float">
+							<spring:message code="link.label.test.archive" />
+						</a>
+					</c:if>
+				</div>
+			</c:if>
+		</div>
+	</sec:authorize>
 	
-	<div class="central-left">
+	<div class="central-left" <sec:authorize access="hasRole('ROLE_CONSULTANT')">style="margin-right:0"</sec:authorize>>
 		<div id="question-id" class="container">
 			<h2><spring:message code="text.admin.question.page.identity" /></h2>
 			${question.intitule}<br/>

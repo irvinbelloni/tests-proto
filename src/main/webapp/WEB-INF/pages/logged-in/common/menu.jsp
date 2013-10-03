@@ -6,7 +6,7 @@
 	<jsp:include page="user-info.jsp"/>
 	
 	<ul>
-		<sec:authorize access="hasRole('ROLE_ADMIN')">
+		<sec:authorize access="hasAnyRole('ROLE_ADMINISTRATOR', 'ROLE_CONSULTANT')">
 			<%-- Home tab --%>
 			<c:set var="selectedClass" value="" />
 			<c:if test="${selectedTab eq 'home'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
@@ -27,13 +27,15 @@
 			<c:if test="${selectedTab eq 'resultat'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
 			<li class="${selectedClass}"><a href="<c:url value="/admin/resultats"/>"><spring:message code="menu.label.resultats" /></a></li>
 			
-			<%-- Administrators tab --%>
-			<c:set var="selectedClass" value="" />
-			<c:if test="${selectedTab eq 'administrator'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
-			<li class="${selectedClass}"><a href="<c:url value="/admin/administrators"/>"><spring:message code="menu.label.administrators" /></a></li>
+			<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+				<%-- Administrators tab --%>
+				<c:set var="selectedClass" value="" />
+				<c:if test="${selectedTab eq 'administrator'}"><c:set var="selectedClass" value="selected-tab" /></c:if>
+				<li class="${selectedClass}"><a href="<c:url value="/admin/administrators"/>"><spring:message code="menu.label.administrators" /></a></li>
+			</sec:authorize>
 		</sec:authorize>
 		
-		<sec:authorize access="hasRole('ROLE_USER')">
+		<sec:authorize access="hasRole('ROLE_CANDIDATE')">
 			<%-- Home tab --%>
 			<c:set var="selectedClass" value="" />
 			<c:if test="${selectedTab eq 'home'}"><c:set var="selectedClass" value="selected-tab" /></c:if>

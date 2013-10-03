@@ -2,50 +2,53 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"
 	contentType="text/html; charset=utf-8"%>
 
-<div class="side-form">
-
-	<h2><spring:message code="text.admin.tests.page.ajout" /></h2>
+<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+	<div class="side-form">
 	
-	<c:url value="/admin/test/createUpdate" var="createUpdateUrl">
-		<c:param name="origin" value="home"/>
-	</c:url>
-	<form:form  action="${createUpdateUrl}" commandName="testSheetForm" method="POST">
+		<h2><spring:message code="text.admin.tests.page.ajout" /></h2>
+		
+		<c:url value="/admin/test/createUpdate" var="createUpdateUrl">
+			<c:param name="origin" value="home"/>
+		</c:url>
+		<form:form  action="${createUpdateUrl}" commandName="testSheetForm" method="POST">
+	
+			<form:hidden path="id" id="testSheetId"/>
+			<form:hidden path="status"/>
+			<div>
+				<form:label path="intitule">
+					<spring:message code="text.admin.tests.page.intitule" />
+				</form:label>
+				<form:input id="testSheetIntitule" path="intitule" size="10" maxlength="255" />
+				<form:errors path="intitule" cssClass="error" />
+			</div>	
+	
+			<div>	
+				<form:label path="duree">
+					<spring:message code="text.admin.tests.page.duree" />
+				</form:label>
+				<form:input id="testSheetDuree" path="duree" size="3" maxlength="3" />
+				<form:errors path="duree" cssClass="error" />
+			</div>
+	
+			<div class="last-element">		
+				<form:label path="type">
+					<spring:message code="text.admin.tests.page.type" />
+				</form:label>
+				<form:input id="testSheetType" path="type" size="10" maxlength="25" />
+				<form:errors path="type" cssClass="error" />
+			</div>	
+	
+			<a class="back-to-add-form" href="#" onclick="backToAddTest(); return false;"><spring:message code="link.label.cancel.quick.update" /></a>
+			<input type="submit" value="<spring:message code="form.test.add"/>" id="submit-button" class="submit-button small" />
+		</form:form>
+	</div>
+</sec:authorize>
 
-		<form:hidden path="id" id="testSheetId"/>
-		<form:hidden path="status"/>
-		<div>
-			<form:label path="intitule">
-				<spring:message code="text.admin.tests.page.intitule" />
-			</form:label>
-			<form:input id="testSheetIntitule" path="intitule" size="10" maxlength="255" />
-			<form:errors path="intitule" cssClass="error" />
-		</div>	
-
-		<div>	
-			<form:label path="duree">
-				<spring:message code="text.admin.tests.page.duree" />
-			</form:label>
-			<form:input id="testSheetDuree" path="duree" size="3" maxlength="3" />
-			<form:errors path="duree" cssClass="error" />
-		</div>
-
-		<div class="last-element">		
-			<form:label path="type">
-				<spring:message code="text.admin.tests.page.type" />
-			</form:label>
-			<form:input id="testSheetType" path="type" size="10" maxlength="25" />
-			<form:errors path="type" cssClass="error" />
-		</div>	
-
-		<a class="back-to-add-form" href="#" onclick="backToAddTest(); return false;"><spring:message code="link.label.cancel.quick.update" /></a>
-		<input type="submit" value="<spring:message code="form.test.add"/>" id="submit-button" class="submit-button small" />
-	</form:form>
-</div>
-
-<div class="left-list">
+<div class="left-list" <sec:authorize access="hasRole('ROLE_CONSULTANT')">style="margin-right:0"</sec:authorize>>
 	<h2>
 		<span>
 			<spring:message code="text.sort.by"/>:&nbsp;&nbsp;
@@ -117,52 +120,54 @@
 			<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
 				<a href="#" class="actions-down"></a>
 				<span class="sub-actions">
-					<c:if test="${currentTest.status eq 'DRAFT'}">
-						<c:url value="/admin/test/delete" var="deleteUrl">
-							<c:param name="id" value="${currentTest.id}"/>
-						</c:url>
-						<a href="#" onclick="deleteTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete">
-						<spring:message code="link.label.common.delete"/></a>
+					<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+						<c:if test="${currentTest.status eq 'DRAFT'}">
+							<c:url value="/admin/test/delete" var="deleteUrl">
+								<c:param name="id" value="${currentTest.id}"/>
+							</c:url>
+							<a href="#" onclick="deleteTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${deleteUrl}' ) ; return false;" class="action delete">
+							<spring:message code="link.label.common.delete"/></a>
+							
+							<c:if test="${currentTest.validable}">
+								<c:url value="/admin/test/validate" var="validateUrl">
+									<c:param name="test" value="${currentTest.id}"/>
+									<c:param name="origin" value="home" />
+								</c:url>
+								<a href="#" onclick="validateTestSheet ('${currentTest.intitule}' , '${validateUrl}' ) ; return false;" class="action validate">
+								<spring:message code="link.label.common.validate"/></a>
+							</c:if>
+							
+							<c:if test="${!currentTest.validable}">
+								<a href="#" onclick="displayWarningNotValidableTest(); return false;" class="action deactivated validate">
+								<spring:message code="link.label.common.validate"/></a>
+							</c:if>
+						</c:if>
 						
-						<c:if test="${currentTest.validable}">
-							<c:url value="/admin/test/validate" var="validateUrl">
+						<c:if test="${currentTest.status ne 'ARCHIVED'}">					
+							<a href="#" onclick="editTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${currentTest.duree}' , '${currentTest.type}', '${currentTest.status}' ) ; return false;" class="action edit">
+							<spring:message code="link.label.common.edit" /></a>
+						</c:if>
+						   
+						<c:if test="${currentTest.status ne 'DRAFT'}"> 
+							<c:url value="/admin/test/duplicate" var="duplicateUrl">
+								<c:param name="test" value="${currentTest.id}"/>
+							</c:url>
+							<a href="#" onclick="duplicateTest('${currentTest.intitule}', '${duplicateUrl}'); return false;" class="action duplicate">
+								<spring:message code="link.label.test.duplicate" />
+							</a>
+						</c:if>
+						
+						<c:if test="${currentTest.status eq 'VALIDATED'}"> 
+							<c:url value="/admin/test/archive" var="archiveUrl">
 								<c:param name="test" value="${currentTest.id}"/>
 								<c:param name="origin" value="home" />
 							</c:url>
-							<a href="#" onclick="validateTestSheet ('${currentTest.intitule}' , '${validateUrl}' ) ; return false;" class="action validate">
-							<spring:message code="link.label.common.validate"/></a>
+							<a href="#" onclick="archiveTest('${currentTest.intitule}', '${archiveUrl}'); return false;" class="action archive">
+								<spring:message code="link.label.test.archive" />
+							</a>
 						</c:if>
-						
-						<c:if test="${!currentTest.validable}">
-							<a href="#" onclick="displayWarningNotValidableTest(); return false;" class="action deactivated validate">
-							<spring:message code="link.label.common.validate"/></a>
-						</c:if>
-					</c:if>
-					
-					<c:if test="${currentTest.status ne 'ARCHIVED'}">					
-						<a href="#" onclick="editTestSheet ( '${currentTest.id}' , '${currentTest.intitule}' , '${currentTest.duree}' , '${currentTest.type}', '${currentTest.status}' ) ; return false;" class="action edit">
-						<spring:message code="link.label.common.edit" /></a>
-					</c:if>
-					   
-					<c:if test="${currentTest.status ne 'DRAFT'}"> 
-						<c:url value="/admin/test/duplicate" var="duplicateUrl">
-							<c:param name="test" value="${currentTest.id}"/>
-						</c:url>
-						<a href="#" onclick="duplicateTest('${currentTest.intitule}', '${duplicateUrl}'); return false;" class="action duplicate">
-							<spring:message code="link.label.test.duplicate" />
-						</a>
-					</c:if>
-					
-					<c:if test="${currentTest.status eq 'VALIDATED'}"> 
-						<c:url value="/admin/test/archive" var="archiveUrl">
-							<c:param name="test" value="${currentTest.id}"/>
-							<c:param name="origin" value="home" />
-						</c:url>
-						<a href="#" onclick="archiveTest('${currentTest.intitule}', '${archiveUrl}'); return false;" class="action archive">
-							<spring:message code="link.label.test.archive" />
-						</a>
-					</c:if>					   
-					   
+					</sec:authorize>					   
+					  
 					<c:url value="/admin/test/detail" var="detailUrl">
 						<c:param name="id" value="${currentTest.id}"/>
 					</c:url>

@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class="wide-block">
@@ -15,14 +16,16 @@
 			<span>Prénom</span> ${profil.prenom}<br/>
 			<span>Nom</span> ${profil.nom}<br/>
 			<span>Adresse email</span> ${profil.email}
-			<br/><br/>
-			<span>Login</span> ${profil.login}<br/>
-			<span>Mot de passe</span> ${profil.pass}
-			<br/><br/>
-			<span style="width: auto">
-				<c:if test="${profil.enabled}"><spring:message code="text.candidat.activated"/></c:if>
-				<c:if test="${!profil.enabled}"><spring:message code="text.candidat.deactivated"/></c:if>
-			</span>
+			<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+				<br/><br/>
+				<span>Login</span> ${profil.login}<br/>
+				<span>Mot de passe</span> ${profil.pass}
+				<br/><br/>
+				<span style="width: auto">
+					<c:if test="${profil.enabled}"><spring:message code="text.candidat.activated"/></c:if>
+					<c:if test="${!profil.enabled}"><spring:message code="text.candidat.deactivated"/></c:if>
+				</span>
+			</sec:authorize>
 			<div class="clear-both"></div>
 		</div>
 		
@@ -66,10 +69,8 @@
 					<form:errors path="pass" class="error" />
 				</div>
 							
-				<div class="last-element">	
-					<label><spring:message code="form.user.active"/></label>
-					<form:radiobutton path="active" value="1"/><span class="radio"><spring:message code="text.yes" /></span> 
-					<form:radiobutton path="active" value="0"/><span class="radio"><spring:message code="text.no" /></span>
+				<div class="last-element">
+					<form:checkbox path="active"/><span class="radio"><spring:message code="form.user.active"/></span>
 					<div class="clear-both"></div>
 				</div>
 							
@@ -80,54 +81,58 @@
 		</div>
 	</div>
 	
-	<div class="control">
-		<div class="container">
-			<a href="#" onclick="assignTest(); return false;" class="action link no-float">
-				<spring:message code="link.label.candidate.detail.link.test"/>
-			</a>
+	<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+		<div class="control">
+			<div class="container">
+				<a href="#" onclick="assignTest(); return false;" class="action link no-float">
+					<spring:message code="link.label.candidate.detail.link.test"/>
+				</a>
+			</div>
+			
+			<div class="container" style="margin-top: 10px">
+				<a href="#" onclick="editProfilDetail(${profil.id}, '${profil.prenom}', '${profil.nom}', '${profil.email}', '${profil.login}', '${profil.pass}', '${profil.dateActivation}', '${profil.dateActivation}'); return false;" class="action edit no-float">
+					<spring:message code="link.label.candidate.detail.edit" />
+				</a>
+				<c:url value="/admin/profile/activate" var="activateUrl">
+					<c:param name="profile" value="${profil.id}"/>
+					<c:param name="origin" value="candidate"/>
+				</c:url>
+				<a href="${activateUrl}" class="action activate no-float">
+					<c:if test="${profil.enabled}"><spring:message code="link.label.candidate.detail.deactivate" /></c:if>
+					<c:if test="${!profil.enabled}"><spring:message code="link.label.candidate.detail.activate" /></c:if>
+				</a>
+			</div>
+			
+			<div class="container" style="margin-top:10px">
+				<c:url value="/admin/profile/delete" var="deleteUrl">
+					<c:param name="profile" value="${profil.id}"/>
+					<c:param name="origin" value="candidate"/>
+				</c:url>
+				<a href="#" onclick="deleteProfil(${profil.id}, '${profil.prenom}', '${profil.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.candidate"/>'); return false;" class="action delete no-float">
+					<spring:message code="link.label.candidate.detail.delete"/>
+				</a>
+			</div>
 		</div>
-		
-		<div class="container" style="margin-top: 10px">
-			<a href="#" onclick="editProfilDetail(${profil.id}, '${profil.prenom}', '${profil.nom}', '${profil.email}', '${profil.login}', '${profil.pass}', '${profil.dateActivation}', '${profil.dateActivation}'); return false;" class="action edit no-float">
-				<spring:message code="link.label.candidate.detail.edit" />
-			</a>
-			<c:url value="/admin/profile/activate" var="activateUrl">
-				<c:param name="profile" value="${profil.id}"/>
-				<c:param name="origin" value="candidate"/>
-			</c:url>
-			<a href="${activateUrl}" class="action activate no-float">
-				<c:if test="${profil.enabled}"><spring:message code="link.label.candidate.detail.deactivate" /></c:if>
-				<c:if test="${!profil.enabled}"><spring:message code="link.label.candidate.detail.activate" /></c:if>
-			</a>
-		</div>
-		
-		<div class="container" style="margin-top: 10px">
-			<c:url value="/admin/profile/delete" var="deleteUrl">
-				<c:param name="profile" value="${profil.id}"/>
-				<c:param name="origin" value="candidate"/>
-			</c:url>
-			<a href="#" onclick="deleteProfil(${profil.id}, '${profil.prenom}', '${profil.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.candidate"/>'); return false;" class="action delete no-float">
-				<spring:message code="link.label.candidate.detail.delete"/>
-			</a>
-		</div>
-	</div>
+	</sec:authorize>
 	
-	<div class="central">
+	<div class="central" <sec:authorize access="hasRole('ROLE_CONSULTANT')">style="margin-right:0"</sec:authorize>>
 		<div class="container" id="assigned-tests">
 			<h2><spring:message code="content.title.candidate.detail.assigned.tests"/></h2>
 			<c:forEach items="${profil.evaluations}" var="eval">
 				<c:if test="${eval.status ne 3}">
 					<div class="detail-list-item">
-						<c:url value="/admin/candidate" var="deleteEvalUrl">
-							<c:param name="candidate" value="${profil.id}"/>
-							<c:param name="evaluation" value="${eval.id}"/>
-						</c:url>
-						<c:if test="${eval.status eq 1}">
-							<span>(<a href="${deleteEvalUrl}"><spring:message code="link.label.delete"/></a>)</span>
-						</c:if>
+						<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+							<c:url value="/admin/candidate" var="deleteEvalUrl">
+								<c:param name="candidate" value="${profil.id}"/>
+								<c:param name="evaluation" value="${eval.id}"/>
+							</c:url>
+							<c:if test="${eval.status eq 1}">
+								<span>(<a href="${deleteEvalUrl}"><spring:message code="link.label.delete"/></a>)</span>
+							</c:if>
+						</sec:authorize>
 						<c:if test="${eval.status eq 2}">
 							<span>(<spring:message code="text.detail.test.in.progress"/>)</span>
-						</c:if>
+						</c:if>						
 						${eval.test.intitule}
 					</div>
 				</c:if>
@@ -175,12 +180,13 @@
 	<div class="clear-both"></div>
 </div>
 
-<div class="historic">
-	<c:forEach items="${profil.historique}" var="trace">
-		<p><span><fmt:formatDate value="${trace.timestamp}" pattern="dd/MM/yyyy HH:mm"/> - </span><spring:message code="text.histo.${trace.action}"/> ${trace.admin.prenom} ${trace.admin.nom}</p>
-	</c:forEach>
-	
-</div>
+<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+	<div class="historic">
+		<c:forEach items="${profil.historique}" var="trace">
+			<p><span><fmt:formatDate value="${trace.timestamp}" pattern="dd/MM/yyyy HH:mm"/> - </span><spring:message code="text.histo.${trace.action}"/> ${trace.admin.prenom} ${trace.admin.nom}</p>
+		</c:forEach>
+	</div>
+</sec:authorize>
 
 <script>
 $(document).ready(function() {	

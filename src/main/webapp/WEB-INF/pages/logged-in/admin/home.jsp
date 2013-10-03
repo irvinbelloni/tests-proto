@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div>
@@ -59,16 +60,18 @@
 		</div>
 	</div>
 	
-	<div class="home-block">
-		<c:set var="plural" value=" " />
-		<c:if test="${fn:length(administrators) gt 1}">
-			<c:set var="plural" value="s" />
-		</c:if>
-		<h2>${fn:length(administrators)} <spring:message code="text.admin.home.admins.count" arguments="${plural}"/></h2>
-		<div>
-			<a href="<c:url value="/admin/administrators"/>"><spring:message code="link.label.admin.home.administrators.see" /></a>
+	<sec:authorize access="hasRole('ROLE_ADMINISTRATOR')">
+		<div class="home-block">
+			<c:set var="plural" value=" " />
+			<c:if test="${fn:length(administrators) gt 1}">
+				<c:set var="plural" value="s" />
+			</c:if>
+			<h2>${fn:length(administrators)} <spring:message code="text.admin.home.admins.count" arguments="${plural}"/></h2>
+			<div>
+				<a href="<c:url value="/admin/administrators"/>"><spring:message code="link.label.admin.home.administrators.see" /></a>
+			</div>
 		</div>
-	</div>
+	</sec:authorize>
 	
 	<div class="clear-both"></div>
 </div>
