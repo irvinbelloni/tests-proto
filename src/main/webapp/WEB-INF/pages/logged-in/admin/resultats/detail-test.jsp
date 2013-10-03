@@ -21,7 +21,11 @@
 		<c:set var="count" value="1"/>
 		<a href="#" onclick="goToByScroll('test-result', 10); return false;"><spring:message code="text.admin.result.page.summary" /></a><br/>
 		<c:forEach items="${result.responses}" var="response">
-			<a href="#" onclick="goToByScroll('question-${count}', 10); return false;">
+			<c:set var="correctClass" value="incorrect"/>
+			<c:if test="${response.correct}">
+				<c:set var="correctClass" value="correct"/>
+			</c:if>
+			<a href="#" onclick="goToByScroll('question-${count}', 10); return false;" class="${correctClass}">
 				<c:if test="${response.question.intitule ne ''}">
 					Q.${count} - ${response.question.intitule}
 				</c:if>
