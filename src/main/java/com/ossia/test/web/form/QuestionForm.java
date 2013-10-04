@@ -12,6 +12,8 @@ public class QuestionForm {
 	
 	private boolean warnedCandidate = false;
 	
+	private int nextQuestionIndex;
+	
 	public QuestionForm() {
 		
 	}
@@ -60,5 +62,13 @@ public class QuestionForm {
 
 	public void setWarnedCandidate(boolean warnedCandidate) {
 		this.warnedCandidate = warnedCandidate;
+	}
+
+	public int getNextQuestionIndex() {
+		return nextQuestionIndex;
+	}
+
+	public void setNextQuestionIndex(int nextQuestionIndex) {
+		this.nextQuestionIndex = nextQuestionIndex;
 	}
 }

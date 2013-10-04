@@ -32,9 +32,12 @@ public class Profil implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
-	private static final Collection<GrantedAuthority> ADMIN = wrapAuthority(ROLE_ADMIN);
-	private static final Collection<GrantedAuthority> USER = wrapAuthority(new SimpleGrantedAuthority("ROLE_USER"));
+	public static final SimpleGrantedAuthority ROLE_ADMINISTRATOR = new SimpleGrantedAuthority("ROLE_ADMINISTRATOR");
+	public static final SimpleGrantedAuthority ROLE_CANDIDATE = new SimpleGrantedAuthority("ROLE_CANDIDATE");
+	public static final SimpleGrantedAuthority ROLE_CONSULTANT = new SimpleGrantedAuthority("ROLE_CONSULTANT");
+	private static final Collection<GrantedAuthority> ADMINISTRATOR = wrapAuthority(ROLE_ADMINISTRATOR);
+	private static final Collection<GrantedAuthority> CANDIDATE = wrapAuthority(ROLE_CANDIDATE);
+	private static final Collection<GrantedAuthority> CONSULTANT = wrapAuthority(ROLE_CONSULTANT);
 	
 	public static final String MODE_ADD = "add";
 	public static final String MODE_EDIT = "edit";
@@ -69,6 +72,9 @@ public class Profil implements UserDetails {
 
 	@NotNull
 	private boolean admin;
+	
+	@NotNull
+	private boolean consultant;
 	
 	/**
 	 * Flag used in the forms to precise if the user is active or not
@@ -232,10 +238,13 @@ public class Profil implements UserDetails {
 
 	@Override
 	public Collection<? extends org.springframework.security.core.GrantedAuthority> getAuthorities() {
-		if (admin) {
-			return ADMIN;
+		if (consultant) {
+			return CONSULTANT;
 		}
-		return USER;
+		if (admin) {
+			return ADMINISTRATOR;
+		}
+		return CANDIDATE;
 	}
 
 	@Override
@@ -283,5 +292,13 @@ public class Profil implements UserDetails {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public boolean isConsultant() {
+		return consultant;
+	}
+
+	public void setConsultant(boolean consultant) {
+		this.consultant = consultant;
 	}
 }

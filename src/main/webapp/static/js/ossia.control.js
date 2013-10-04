@@ -88,9 +88,6 @@ function displayRemainingTime(testId) {
 	$("#remaining-time").html(getRemainingTime());
 }
 
-function log(text) {
-	$("#log").html($("#log").html() + "<br/>" + text);
-}
 function getRemainingTime() {
 	var remTime = remainingTime;
 	var displayTime = "";
@@ -195,7 +192,7 @@ function backToDetailAssignedTests() {
 	});
 }
 
-function editProfil(profilId, firstname, name, email, login, pass, dateActivation) {
+function editProfil(profilId, firstname, name, email, login, pass, dateActivation, consultant) {
 	$(".side-form").slideUp(function() {
 		$("#mode").val("edit");
 		$("#id").val(profilId);
@@ -206,10 +203,13 @@ function editProfil(profilId, firstname, name, email, login, pass, dateActivatio
 		$("#pass").val(pass);
 		if (dateActivation.length > 0) {
 			$("#active1").prop("checked", true);
-			$("#active2").prop("checked", false);
 		} else {
 			$("#active1").prop("checked", false);
-			$("#active2").prop("checked", true);
+		}
+		if (consultant) {
+			$("#consultant1").prop("checked", true);
+		} else {
+			$("#consultant1").prop("checked", false);
 		}
 		$("#submit-button").val("Modifier");		
 		$(".side-form h2").html(textEditProfil);

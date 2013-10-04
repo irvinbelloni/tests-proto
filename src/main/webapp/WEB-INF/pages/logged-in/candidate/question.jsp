@@ -17,10 +17,11 @@
 	</div>
 	
 	<c:url value="/tests/validate-question" var="submitUrl"/>
-	<form:form commandName="questionForm" action="${submitUrl}" method="post" class="question-form">
+	<form:form commandName="questionForm" action="${submitUrl}" method="post" class="question-form" id="question-form">
 		<form:hidden path="evaluationId"/>
 		<form:hidden path="questionIndex"/>
 		<form:hidden path="questionId"/>
+		<form:hidden path="nextQuestionIndex"/>
 		<form:hidden path="warnedCandidate"/>
 		<div class="answer">	
 			<table>
@@ -83,7 +84,7 @@
 						<c:param name="test" value="${evaluation.id}"/>
 						<c:param name="question" value="${i}"/>
 					</c:url>
-					<a href="${questionUrl}" class="${buttonClass}">${i}</a>
+					<a href="#" class="navigation-question ${buttonClass}">${i}</a>
 					<c:set var="i" value="${i + 1}"/>
 				</c:forEach>
 			</div>
@@ -103,6 +104,10 @@ $(document).ready(function() {
 	
 	displayRemainingTime(${evaluation.id});
 	timeoutRT = setInterval('displayRemainingTime(${evaluation.id})', 1000 );
+	$(".navigation-question").click(function() {
+		$("#nextQuestionIndex").val($(this).html());
+		$("#question-form").submit();
+	});
 	
 	<c:if test="${nbUnansweredQuestions ne null}">
 		textLeftQuestions = "<spring:message code="text.left.questions"/>";

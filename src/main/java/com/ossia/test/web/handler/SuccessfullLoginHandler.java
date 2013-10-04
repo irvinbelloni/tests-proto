@@ -16,10 +16,10 @@ public class SuccessfullLoginHandler implements AuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 		Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        if (roles.contains("ROLE_ADMIN")){
-            response.sendRedirect(request.getContextPath() + "/admin/home");
+        if (roles.contains("ROLE_CANDIDATE")){
+        	response.sendRedirect(request.getContextPath() + "/tests/home");
             return;
         }
-        response.sendRedirect(request.getContextPath() + "/tests/home");
+        response.sendRedirect(request.getContextPath() + "/admin/home");        
 	}
 }

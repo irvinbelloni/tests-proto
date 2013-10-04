@@ -111,10 +111,16 @@ form.login input {
 	margin: 10px 5px 0 2px;	
 }
 
+.side-form input[type=checkbox], .side-form-detail input[type=checkbox] {
+	float: left;
+	height: 25px;
+	margin: 10px 5px 0 12px;
+}
+
 .side-form span.radio, .side-form-detail span.radio {
 	color: #fff;
 	float: left;
-	font-weight: bold;
+	font-weight: normal;
 	margin: 15px 15px 0 0;
 }
 

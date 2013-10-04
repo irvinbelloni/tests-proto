@@ -41,11 +41,10 @@ public class ProfilControler extends AbstractController {
 		// Checking if user is logged in. If he is, redirecting him to the dashboard page
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication(); 
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			if (auth.getAuthorities().contains("ROLE_ADMIN")) {
-				return "redirect:" + request.getContextPath() + "/admin/home";
-			} else {
+			if (auth.getAuthorities().contains("ROLE_CANDIDATE")) {
 				return "redirect:" + request.getContextPath() + "/test";
 			}
+			return "redirect:" + request.getContextPath() + "/admin/home";
 		}
 		if (error != null) {
 			model.put("error",  true);

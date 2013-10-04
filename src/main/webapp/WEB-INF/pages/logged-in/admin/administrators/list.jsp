@@ -39,18 +39,21 @@
 		</div>
 		
 		<div>
-			<label><spring:message code="form.user.password"/>*</label>
+			<label for="pass"><spring:message code="form.user.password"/>*</label>
 			<form:input path="pass" />
 			<form:errors path="pass" class="error" />
 		</div>
-					
-		<div class="last-element">	
-			<label><spring:message code="form.user.active"/></label>
-			<form:radiobutton path="active" value="1"/><span class="radio"><spring:message code="text.yes" /></span> 
-			<form:radiobutton path="active" value="0"/><span class="radio"><spring:message code="text.no" /></span>
+		
+		<div>
+			<form:checkbox path="consultant"/><span class="radio"><spring:message code="form.user.consultant"/></span>
 			<div class="clear-both"></div>
 		</div>
-					
+		
+		<div class="last-element">
+			<form:checkbox path="active"/><span class="radio"><spring:message code="form.user.active"/></span>
+			<div class="clear-both"></div>
+		</div>
+								
 		<a class="back-to-add-form" href="#" onclick="backToAddProfil(); return false;"><spring:message code="link.label.cancel.quick.update" /></a>
 		<input type="submit" class="submit-button small" id="submit-button" value="<spring:message code="form.user.add"/>" />
 	</form:form>
@@ -119,9 +122,10 @@
 		</span>
 	</h2>
 	
+	<c:set var="count" value="0"/>
 	<c:forEach items="${administrators}" var="administrator">	
 		<div class="list-item">
-			<p class="actions">
+			<p class="actions" style="z-index:<c:out value="${100 - count}"/>">
 				<a href="#" class="actions-down"></a>
 				<span class="sub-actions">
 					<c:url value="/admin/profile/delete" var="deleteUrl">
@@ -129,7 +133,7 @@
 						<c:param name="origin" value="administrators"/>
 					</c:url>
 					<a href="#" onclick="deleteProfil(${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${deleteUrl}', '<spring:message code="dialog.title.delete.administrator"/>'); return false;" class="action delete"><spring:message code="link.label.profil.delete"/></a>
-					<a href="#" onclick="editProfil(${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${administrator.email}', '${administrator.login}', '${administrator.pass}', '${candidate.dateActivation}', '${candidate.dateActivation}'); return false;" class="action edit">
+					<a href="#" onclick="editProfil(${administrator.id}, '${administrator.prenom}', '${administrator.nom}', '${administrator.email}', '${administrator.login}', '${administrator.pass}', '${administrator.dateActivation}', ${administrator.consultant}); return false;" class="action edit">
 						<spring:message code="link.label.profil.edit" />
 					</a>
 					<c:url value="/admin/profile/activate" var="activateUrl">
@@ -140,17 +144,11 @@
 						<c:if test="${administrator.enabled}"><spring:message code="link.label.administrator.desactivate" /></c:if>
 						<c:if test="${!administrator.enabled}"><spring:message code="link.label.administrator.activate" /></c:if>
 					</a>
-					<c:url value="/admin/administrator" var="detailUrl">
-						<c:param name="administrator" value="${administrator.id}"/>
-					</c:url>
-					<!-- a href="${detailUrl}" class="action detail"><spring:message code="link.label.administrator.detail"/></a -->
 				</span>		
 			</p>
 			<p class="main">
-				<!-- a href="${detailUrl}" -->
-					<c:if test="${sortingInfo.sortingField eq 'nom'}">${administrator.nom} ${administrator.prenom}</c:if>
-					<c:if test="${sortingInfo.sortingField ne 'nom'}">${administrator.prenom} ${administrator.nom}</c:if>
-				<!-- /a -->
+				<c:if test="${sortingInfo.sortingField eq 'nom'}">${administrator.nom} ${administrator.prenom}</c:if>
+				<c:if test="${sortingInfo.sortingField ne 'nom'}">${administrator.prenom} ${administrator.nom}</c:if>
 				<br/>
 				<span>${administrator.email}</span>
 			</p>
@@ -159,9 +157,15 @@
 				<span class="label"><spring:message code="text.list.active"/>:</span> 
 				<c:if test="${administrator.enabled}"><spring:message code="text.yes" /></c:if>
 				<c:if test="${!administrator.enabled}"><spring:message code="text.no" /></c:if>
+				<br/>
+				<span class="label"><spring:message code="text.list.consultant"/>:</span> 
+				<c:if test="${administrator.consultant}"><spring:message code="text.yes" /></c:if>
+				<c:if test="${!administrator.consultant}"><spring:message code="text.no" /></c:if>
+				
 			</p>
 			<div class="clear-left"></div>		
 		</div>
+		<c:set var="count" value="${count + 1}"/>
 	</c:forEach>
 </div>
 

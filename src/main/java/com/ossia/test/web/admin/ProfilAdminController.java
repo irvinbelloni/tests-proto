@@ -54,14 +54,13 @@ public class ProfilAdminController extends AbstractAdminController {
 		request.getSession().setAttribute(SESSION_ADMINISTRATOR_LIST_SORT, sortingInfo);
 		
 		setLastActionInModel(model, request);
-		
 		model.put("administrators", getProfilList(true, request));
 		model.put("sortingInfo", sortingInfo);
 		model.put("selectedTab", TAB_ADMINISTRATOR);
 		
 		return "administrators";
 	}
-	
+		
 	@RequestMapping(value = "/candidates", method = RequestMethod.GET)
 	public String displayCandidatesList(@RequestParam(value = "sort", required = false) String sortingField, @RequestParam(value = "direction", required = false) String sortingDirection, ModelMap model, HttpServletRequest request) {
 		model.put("profilForm", new Profil());
