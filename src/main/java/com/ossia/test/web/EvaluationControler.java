@@ -139,7 +139,7 @@ public class EvaluationControler extends AbstractController {
 		}
 		
 		// On to the next question ...
-		return "redirect:/tests/question?test=" + questionForm.getEvaluationId() + "&question=" + (questionForm.getQuestionIndex() + 1);
+		return "redirect:/tests/question?test=" + questionForm.getEvaluationId() + "&question=" + questionForm.getNextQuestionIndex();
 	}
 	
 	private QuestionForm buildQuestionForm(Evaluation evaluation, int questionIndex) {
@@ -148,6 +148,7 @@ public class EvaluationControler extends AbstractController {
 		form.setEvaluationId(evaluation.getId());
 		Question currentQuestion = evaluation.getTest().getQuestions().get(questionIndex - 1);		
 		form.setQuestionId(currentQuestion.getId());
+		form.setNextQuestionIndex(questionIndex + 1);
 		
 		for(Response response : evaluation.getResponses()) {
 			if (response.getQuestion().getId() == currentQuestion.getId()) {
