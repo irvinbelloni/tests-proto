@@ -129,7 +129,7 @@ public class EvaluationControler extends AbstractController {
 		}
 		
 		// Last question was answer, the test is now over
-		if (evaluation.getTest().getQuestionSize() == questionForm.getQuestionIndex()) {
+		if (evaluation.getTest().getQuestionSize() == questionForm.getQuestionIndex() && questionForm.getNextQuestionIndex() > evaluation.getTest().getQuestionSize()) {
 			// Checking if there are unanswered questions
 			if (evaluation.getNbUnansweredQuestions() > 0 && !questionForm.isWarnedCandidate()) {
 				// Redirecting to last question to warn the candidate

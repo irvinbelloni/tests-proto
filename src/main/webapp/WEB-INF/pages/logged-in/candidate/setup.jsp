@@ -10,7 +10,19 @@
 		Vous aller passer le test <b>${evaluation.test.intitule}</b> dans quelques instants, vous disposez de <b>${evaluation.test.duree} minutes</b>
 		pour effectuer ce test. Le chronomètre démarrera au moment où vous cliquerez sur le bouton <b>Démarrer le test</b>
 		ci-dessous.<br/><br/>
-		Mettre les autres consignes ici.
+		Pour chaque question, vous pouvez cocher plusieurs réponses.
+		<br/>
+		Vous pourrez revenir sur une question (que vous y ayez répondu ou non)  en utilisant la barre de navigation sous les choix de réponses.<br/>
+		Quand vous répondez à une question, le bouton correspondant à celle-ci dans la barre de navigation s'affiche en violet. Vous avez donc la possibilité
+		de repérer facilement les questions auxquelles vous n'avez pas encore répondues.
+		
+		<br/><br/>
+		Pour valider définitivement le test, il faut être sur la page de la dernière question et cliquez sur "Valider le test", une fois cette opération effectuée, vous ne
+		pourrez plus revenir en arrière.
+		
+		<c:if test="${evaluation.test.additionalInfo ne ''}">
+		<br/><br/>${evaluation.test.additionalInfo}
+		</c:if>
 		
 		<c:url value="/tests/question" var="testUrl">
 			<c:param name="test" value="${evaluation.id}"/>
