@@ -11,6 +11,8 @@
 	</h1>
 	
 	<div class="question">
+		<span>${question.sousDomaine} </span><br/>
+		<h2><q:format input="${question.intitule}" mode="display" /></h2>
 		<q:format input="${question.contenu}" mode="display" />
 	</div>
 	
