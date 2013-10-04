@@ -40,7 +40,7 @@ public class AjoutAllTestsEncoded {
         TestSheet testJava = new TestSheet() ;
         testJava.setDuree(90);
         testJava.setIntitule("Java test");
-        testJava.setAdditionalInfo("Each question can have several answers, don’t forget it." + "[NL]" +
+        testJava.setAdditionalInfo("Each question can have several answers, don’t forget it." + "\n" +
         		"Please considere that JDK 6 is used for each question.") ; 
         testJava.setType("JAVA");
         
@@ -75,8 +75,9 @@ public class AjoutAllTestsEncoded {
 		mapPropositions.put("volatile", Boolean.FALSE) ; 
 		mapQuestions.put(question, mapPropositions) ;
 		
-		question = new Question("Java Core", "Considering the method below[NL] Admit there is a subclass that inherits this method. Which methods is a good override of it? ", 
-				"protected  Object calc(){[NL][TAB]return new String(“toto”);[NL]}", Niveau.INTERMEDIAIRE) ; 
+		question = new Question("Java Core", 
+				"Admit there is a subclass that inherits this method. Which methods is a good override of it? ", 
+				"Considering the method [NL][code style=java]protected  Object calc(){[NL][TAB]return new String(“toto”);[NL]}[/code]", Niveau.INTERMEDIAIRE) ; 
 		question.setCorrectionHints("An overriden method can't reduce the visibility of the parent method. Also, E is correct because the return type [DB]String[DB] extends Object (return type of the parent method).") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("protected Object calc() { return this;}", Boolean.TRUE) ; 
@@ -107,6 +108,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		question = new Question("Java Core", "What will be printed?", 
+				"[code style=java]" +
 				"class Foo {" +
 				"[NL][TAB]private int x = 0;" +
 				"[NL][TAB]private int y = 2;" +
@@ -128,7 +130,8 @@ public class AjoutAllTestsEncoded {
 				"[NL][TAB][TAB][TAB]System.out.println(“Hello”);" +
 				"[NL][TAB][TAB]}" +
 				"[NL][TAB]}" +
-				"[NL]}", 
+				"[NL]}" +
+				"[/code]", 
 				Niveau.INTERMEDIAIRE) ; 
 		question.setCorrectionHints("Even there is the return keyword in the catch block, finally is executed.") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
@@ -149,6 +152,8 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		StringBuilder string = new StringBuilder() ; 
+		string.append("Given the code below [NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("class CardBoard {") ;
 		string.append("[NL][TAB]").append("Short story = 200;") ;
 		string.append("[NL][TAB]").append("CardBoard go(CardBoard cb) {") ;
@@ -162,7 +167,8 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("c1 = null;") ;
 		string.append("[NL][TAB][TAB]").append("// do Stuff") ;
 		string.append("[NL][TAB]").append("}").append("[NL]").append("}") ;
-		question = new Question("Java Core", "Given the code below , When // do Stuff is reached, how many objects are eligible for GC?", string.toString() , Niveau.INTERMEDIAIRE) ; 
+		string.append("[/code]") ;
+		question = new Question("Java Core", "When // do Stuff is reached, how many objects are eligible for GC?", string.toString() , Niveau.INTERMEDIAIRE) ; 
 		question.setCorrectionHints("c1 is garbaged and because it has got a Short element, this one is garbaged also. Thus, 2 objects are garbaged.") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("0", Boolean.FALSE) ; 
@@ -174,13 +180,16 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		string = new StringBuilder() ; 
+		string.append("Given the code below [NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("public class Electronic implements Device {") ;
 		string.append("public void doIt() { } }") ;
 		string.append("[NL][NL]").append("abstract class Phone1 extends Electronic { }") ;
 		string.append("[NL][NL]").append("abstract class Phone2 extends Electronic ").append("{ public void doIt(int x) { } }") ;
 		string.append("[NL][NL]").append("class Phone3 extends Electronic implements Device").append("{ public void doStuff() { } }") ;
 		string.append("[NL][NL]").append("interface Device { public void doIt(); }") ;
-		question = new Question("Java core", "Given, What is the result? ", string.toString(), Niveau.INTERMEDIAIRE) ; 
+		string.append("[/code]") ;
+		question = new Question("Java core", "What is the result? ", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		question.setCorrectionHints("An abstract method no need to implement methods of its potential interfaces.") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Compilation succeeds", Boolean.TRUE) ; 
@@ -192,6 +201,8 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		string = new StringBuilder() ; 
+		string.append("Given the following [NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("class X { void do1() { } }") ; 
 		string.append("[NL]").append("class Y extends X { void do2() { } }") ;
 		string.append("[NL]").append("class Chrome {") ;
@@ -201,7 +212,8 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("Y y1 = new Y();") ;
 		string.append("[NL][TAB][TAB]").append("// insert code here") ;
 		string.append("[NL][TAB]").append("}").append("[NL]").append("}") ;
-		question = new Question("Java core", "Given the following, Which inserted at line 9 will compile? ", string.toString() , Niveau.INTERMEDIAIRE) ; 
+		string.append("[/code]") ;
+		question = new Question("Java core", "Which inserted at line 9 will compile? ", string.toString() , Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("x2.do2();", Boolean.FALSE) ; 
 		mapPropositions.put("(Y)x2.do2();", Boolean.FALSE) ; 
@@ -210,7 +222,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		question = new Question("Java core", "Which statements are true about comparing two instances of the same class, " +
-			"given that the equals() and hashCode() methods have been properly overridden? (Choose all that apply.)", "", Niveau.INTERMEDIAIRE) ; 
+			"Given that the equals() and hashCode() methods have been properly overridden? (Choose all that apply.)", "", Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("If the equals() method returns true, the hashCode() comparison == might return false", Boolean.FALSE) ; 
 		mapPropositions.put("If the equals() method returns false, the hashCode() comparison == might return true", Boolean.TRUE) ; 
@@ -220,6 +232,8 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		string = new StringBuilder() ; 
+		string.append("Given the following [NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("class Fork {")
 			  .append("[NL][TAB]").append("public static void main(String[] args) {") ;
 		string.append("[NL][TAB][TAB]").append("if(args.length == 1 || args[192].equals([DB]test[DB])) {") ;
@@ -229,7 +243,8 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("}") ;
 		string.append("[NL][TAB]").append("}") ;
 		string.append("[NL]").append("}") ;
-		question = new Question("Java core", "With the command-line invocation : [NL][DB]java Fork live2[DB][NL]What is the result? ", string.toString(), Niveau.INTERMEDIAIRE) ; 
+		string.append("[/code]") ;
+		question = new Question("Java core", "What is the result? With the command-line invocation : java Fork live2", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		question.setCorrectionHints("192 is amazing but looks :  there is || as operator and no | instead. So if the left side is true, no need to evaluate the right side so no exception thrown. (PS : there is 1 argument : live2)") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("test case", Boolean.TRUE) ; 
@@ -250,6 +265,8 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		string = new StringBuilder() ; 
+		string.append("Given the following [NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("import java.util.*;").append("") ;
 		string.append("[NL]").append("class Business { }") ;
 		string.append("[NL]").append("class Hotel extends Business { }") ;
@@ -257,30 +274,33 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB]").append("ArrayList<Hotel> go() {") ;
 		string.append("[NL][TAB]").append("// insert code here") ;
 		string.append("[NL][TAB]").append("}").append("[NL]").append("}") ;
+		string.append("[/code]") ;
 		question = new Question("Java Core", "Which, inserted independently at line 9, will compile? ", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
-		mapPropositions.put("return new ArrayList<Inn>();", Boolean.FALSE) ; 
-		mapPropositions.put("return new ArrayList<Hotel>();", Boolean.TRUE) ; 
-		mapPropositions.put("return new ArrayList<Object>();", Boolean.FALSE) ; 
-		mapPropositions.put("return new ArrayList<Business>();", Boolean.FALSE) ;
+		mapPropositions.put("[code style=java]" + "return new ArrayList<Inn>();" + "[/code]", Boolean.FALSE) ; 
+		mapPropositions.put("[code style=java]" + "return new ArrayList<Hotel>();" + "[/code]", Boolean.TRUE) ; 
+		mapPropositions.put("[code style=java]" + "return new ArrayList<Object>();" + "[/code]", Boolean.FALSE) ; 
+		mapPropositions.put("[code style=java]" + "return new ArrayList<Business>();" + "[/code]", Boolean.FALSE) ;
 		mapQuestions.put(question, mapPropositions) ;
 
 		string = new StringBuilder() ; 
+		string.append("The following block of code creates a Thread using a Runnable target").append("[NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("Runnable target = new MyRunnable();").append("[NL]") ;
 		string.append("Thread myThread = new Thread(target);").append("[NL]") ;
-		question = new Question("Java Core", "The following block of code creates a Thread using a Runnable target" +
-				"[NL]" +
-				"Which of the following classes can be used to create the target, so that the preceding code compiles correctly?",
+		string.append("[/code]") ;
+		question = new Question("Java Core", "Which of the following classes can be used to create the target, so that the preceding code compiles correctly?",
 				string.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
-		mapPropositions.put("public class MyRunnable extends Runnable{public void run(){}}", Boolean.FALSE) ; 
-		mapPropositions.put("public class MyRunnable extends Object{public void run(){}}", Boolean.FALSE) ; 
-		mapPropositions.put("public class MyRunnable implements Runnable{public void run(){}}", Boolean.TRUE) ; 
-		mapPropositions.put("public class MyRunnable implements Runnable{void run(){}}", Boolean.FALSE) ;
-		mapPropositions.put("public class MyRunnable implements Runnable{public void start(){}}", Boolean.FALSE) ;
+		mapPropositions.put("[code style=java]" + "public class MyRunnable extends Runnable{public void run(){}}" + "[/code]", Boolean.FALSE) ; 
+		mapPropositions.put("[code style=java]" + "public class MyRunnable extends Object{public void run(){}}" + "[/code]", Boolean.FALSE) ; 
+		mapPropositions.put("[code style=java]" + "public class MyRunnable implements Runnable{public void run(){}}" + "[/code]", Boolean.TRUE) ; 
+		mapPropositions.put("[code style=java]" + "public class MyRunnable implements Runnable{void run(){}}" + "[/code]", Boolean.FALSE) ;
+		mapPropositions.put("[code style=java]" + "public class MyRunnable implements Runnable{public void start(){}}" + "[/code]", Boolean.FALSE) ;
 		mapQuestions.put(question, mapPropositions) ;
 
 		string = new StringBuilder() ; 
+		string.append("[code style=java]") ;
 		string.append("public class Navel {").append("") ;
 		string.append("[NL][TAB]").append("private int size = 7;") ;
 		string.append("[NL][TAB]").append("private static int length = 3;") ;
@@ -294,7 +314,8 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB]").append("class Gazer {") ;
 		string.append("[NL][TAB][TAB]").append("int adder() { return size * length; }") ;
 		string.append("[NL][TAB]").append("}").append("[NL]").append("}") ;
-		question = new Question("Java Core", "What is the result?", string.toString(), Niveau.INTERMEDIAIRE) ; 
+		string.append("[/code]") ;
+		question = new Question("Java Core", "What is the result ?", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		question.setCorrectionHints("192 is amazing but looks :  there is || as operator and no | instead. So if the left side is true, no need to evaluate the right side so no exception thrown. (PS : there is 1 argument : live2)") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("15", Boolean.FALSE) ; 
@@ -315,11 +336,13 @@ public class AjoutAllTestsEncoded {
 		
 
 		string = new StringBuilder() ; 
+		string.append("[code style=sql]") ; 
 		string.append("Name       Age        Address").append("") ;
 		string.append("[NL]").append("-----------------------------------") ;
 		string.append("[NL]").append("Mike       24         123 Four st.") ;
+		string.append("[/code]") ;
 		question = new Question("JDBC", "Assume a query returns the following row of information:" +
-				"[NL]With a ResultSet positioned to read from this row, which of the following methods could we use to read Mike's name? ", string.toString(), Niveau.INTERMEDIAIRE) ; 
+				"With a ResultSet positioned to read from this row, which of the following methods could we use to read Mike's name ?", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("getString(0)", Boolean.TRUE) ; 
 		mapPropositions.put("getString(1)", Boolean.FALSE) ; 
@@ -332,7 +355,7 @@ public class AjoutAllTestsEncoded {
 		string.append("Two messages are created and sent at the same time. ").append("[NL]") ;
 		string.append("Message A has a JMSPriority of 4, whilst Message B has a JMSPriority of 7.  ").append("[NL]") ;
 		string.append("[NL]").append("According to the JMS Specification, which of the following is true? ") ;
-		question = new Question("Messaging", string.toString(), "", Niveau.INTERMEDIAIRE) ; 
+		question = new Question("Messaging", "", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Message B is likely to be delivered before Message A", Boolean.TRUE) ; 
 		mapPropositions.put("Message B will certainly be delivered before Message A", Boolean.FALSE) ; 
@@ -352,7 +375,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		question = new Question("Spring", "What will happen if the following code is executed but no bean matching that name exists in the configuration?",
-				"Object bean1 = beanFactoryRef.getBean([DB]beanName[DB]);", Niveau.INTERMEDIAIRE) ; 
+				"[code style=java]" + "Object bean1 = beanFactoryRef.getBean([DB]beanName[DB]);" + "[/code]", Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("The code will not compile.", Boolean.FALSE) ; 
 		mapPropositions.put("Bean1 will be null", Boolean.FALSE) ; 
@@ -370,22 +393,20 @@ public class AjoutAllTestsEncoded {
 		
 		string = new StringBuilder() ; 
 		string.append("Consider the following bean class.") ;
+		string.append("[code style=java]").append("package somepackage;") ;
+		string.append("[NL][NL]").append("public class CoolBeanContainingAList {") ;
+		string.append("[NL][TAB]").append("private List list;") ;
+		string.append("[NL][TAB]").append("public void setList(List list) {") ;
+		string.append("[NL][TAB][TAB]").append("this.list = list;") ;
+		string.append("[NL][TAB]").append("}").append("[NL]").append("}") ; 
+		string.append("[/code]");
 		string.append("[NL]").append("We want to define this bean in an application context.") ;
-		string.append("[NL]").append("We want to inject a list of Integers into the bean containing the values 1, 2 and 3. ") ;
-		string.append("[NL]").append("In which way(s) can this be configured?") ;
-		
-		StringBuilder string0 = new StringBuilder() ; 
-		string0.append("").append("package somepackage;") ;
-		string0.append("[NL][NL]").append("public class CoolBeanContainingAList {") ;
-		string0.append("[NL][TAB]").append("private List list;") ;
-		string0.append("[NL][TAB]").append("public void setList(List list) {") ;
-		string0.append("[NL][TAB][TAB]").append("this.list = list;") ;
-		string0.append("[NL][TAB]").append("}").append("[NL]").append("}") ; 
-		
-		question = new Question("Spring", string.toString() , string0.toString() , Niveau.INTERMEDIAIRE) ; 
+		string.append("[NL]").append("We want to inject a list of Integers into the bean containing the values 1, 2 and 3. ").append("[NL]") ;
+		question = new Question("Spring", "In which way(s) can this be configured?" , string.toString() , Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<bean id=[DB]coolBean[DB] class=[DB]somepackage.CoolBeanContainingAList[DB]>") ;
 		string.append("[NL][TAB]").append("<property name=[DB]list[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<value>1</value>") ;
@@ -393,9 +414,11 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("<value>3</value>") ;
 		string.append("[NL][TAB]").append("</property>") ;
 		string.append("[NL]").append("</bean>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.FALSE) ; 
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<bean id=[DB]coolBean[DB] class=[DB]somepackage.CoolBeanContainingAList[DB]>") ;
 		string.append("[NL][TAB]").append("<property name=[DB]list[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<list>") ;
@@ -405,17 +428,21 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("</list>") ;
 		string.append("[NL][TAB]").append("</property>") ;
 		string.append("[NL]").append("</bean>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.FALSE) ; 
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<bean id=[DB]coolBean[DB] class=[DB]somepackage.CoolBeanContainingAList[DB]>") ;
 		string.append("[NL][TAB]").append("<property name=[DB]list[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<value>1,2,3</value>") ;
 		string.append("[NL][TAB]").append("</property>") ;
 		string.append("[NL]").append("</bean>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.FALSE) ; 
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<bean id=[DB]coolBean[DB] class=[DB]somepackage.CoolBeanContainingAList[DB]>") ;
 		string.append("[NL][TAB]").append("<property name=[DB]list[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<list>") ;
@@ -425,10 +452,13 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("</list>") ;
 		string.append("[NL][TAB]").append("</property>") ;
 		string.append("[NL]").append("</bean>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.TRUE) ;
 		mapQuestions.put(question, mapPropositions) ;
 		
 		string = new StringBuilder() ; 
+		string.append("Given the following two classes" + "[NL]") ; 
+		string.append("[code style=java]") ;
 		string.append("package ar.com.car.engine;") ;
 		string.append("[NL][NL]").append("public interface Engine {") ;
 		string.append("[NL][TAB]").append("int getHP();") ;
@@ -441,29 +471,35 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("this.engine= engine;") ;
 		string.append("[NL][TAB]").append("}") ;
 		string.append("[NL]").append("}") ;
-		question = new Question("Spring", "Given the following two classes" + "[NL]" +
+		string.append("[/code]");
+		question = new Question("Spring", 
 			"Select the correct way to inject a V8Engine into the car (V8Engine implements the Engine interface).", string.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<beans>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]v8Engine[DB] class=[DB]ar.com.carProject.engine.V8Engine[DB]/>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]car[DB] class=[DB]ar.com.car.Car[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<property name=[DB]engine[DB] ref=[DB]v8Engine[DB]/>") ;
 		string.append("[NL][TAB]").append("</bean>") ;
 		string.append("[NL]").append("</beans>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.TRUE) ;
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<beans>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]v8Engine[DB] class=[DB]ar.com.carProject.engine.V8Engine[DB]/>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]car[DB] class=[DB]ar.com.car.Car[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<property name=[DB]engine[DB] value=[DB]v8Engine[DB]/>") ;
 		string.append("[NL][TAB]").append("</bean>") ;
 		string.append("[NL]").append("</beans>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.FALSE) ;
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<beans>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]v8Engine[DB] class=[DB]ar.com.carProject.engine.V8Engine[DB]/>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]car[DB] class=[DB]ar.com.car.Car[DB]>") ;
@@ -472,9 +508,11 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("</property>") ;
 		string.append("[NL][TAB]").append("</bean>") ;
 		string.append("[NL]").append("</beans>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.FALSE) ;
 		
 		string = new StringBuilder() ; 
+		string.append("[code style=xml]") ;
 		string.append("<beans>") ;
 		string.append("[NL][TAB]").append("<bean id=[DB]car[DB] class=[DB]ar.com.car.Car[DB]>") ;
 		string.append("[NL][TAB][TAB]").append("<property name=[DB]engine[DB]>") ;
@@ -482,6 +520,7 @@ public class AjoutAllTestsEncoded {
 		string.append("[NL][TAB][TAB]").append("</property>") ;
 		string.append("[NL][TAB]").append("</bean>") ;
 		string.append("[NL]").append("</beans>") ;
+		string.append("[/code]");
 		mapPropositions.put(string.toString(), Boolean.TRUE) ;
 		mapQuestions.put(question, mapPropositions) ;
 		
@@ -588,15 +627,18 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		string = new StringBuilder() ; 
-		string.append("Consider the case given in the example: Event and Person are two entities and there is a many to many mapping between them. ") ;
-		string.append("[NL]").append("Which keyword must we use in the mapping file to avoid to insert twice in the join table PERSON_EVENTS? (suppose that we use a hibernate mapping file for the mapping)") ; 
-		string0 = new StringBuilder() ; 
-		string0.append("Event e=(Event)session.load(Event.class,eid);") ;
-		string0.append("[NL]").append("Person p=(Person)session.load(Person.class,pid);") ;
-		string0.append("[NL]").append("p.getEvents().add(e);") ; 
-		string0.append("[NL]").append("e.getPersons().add(p);") ;
-		string0.append("[NL]").append("return p;") ; 
-		question = new Question("Hibernate", string.toString(), string0.toString(), Niveau.INTERMEDIAIRE) ; 
+		string.append("Consider the case given in the example: Event and Person are two entities and there is a many to many mapping between them." + "[NL]") ;
+		string.append("Given the following :" + "[NL]") ; 
+		string.append("[code style=java]") ;
+		string.append("Event e=(Event)session.load(Event.class,eid);") ;
+		string.append("[NL]").append("Person p=(Person)session.load(Person.class,pid);") ;
+		string.append("[NL]").append("p.getEvents().add(e);") ; 
+		string.append("[NL]").append("e.getPersons().add(p);") ;
+		string.append("[NL]").append("return p;") ; 
+		string.append("[/code]") ;
+		question = new Question("Hibernate", 
+				"Which keyword must we use in the mapping file to avoid to insert twice in the join table PERSON_EVENTS? (suppose that we use a hibernate mapping file for the mapping)"
+				, string.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Discard=”true”", Boolean.FALSE) ; 
 		mapPropositions.put("singleInsert=”true”", Boolean.FALSE) ;
@@ -625,6 +667,8 @@ public class AjoutAllTestsEncoded {
 		Map <String , Boolean> mapPropositions = new LinkedHashMap <String , Boolean> () ; 
 		
 		StringBuilder content = new StringBuilder() ; 
+		content.append("Given the following :" + "[NL]") ; 
+		content.append("[code style=csharp]") ;
 		content.append("class A {") ;
 		content.append("[NL]").append("}") ;
 		content.append("[NL]").append("class B:A {") ;
@@ -640,32 +684,41 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB][TAB]").append("a.Print();//Compilation error") ;
 		content.append("[NL][TAB][TAB]").append("}") ;
 		content.append("[NL][TAB]").append("}").append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		Question question = new Question("Static and Dynamic Cast", "What should be modified in the following program to make it compile and run normally?", content.toString() , Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("if (a is B){") ;
 		content.append("[NL][TAB]").append("a.Print();") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		mapPropositions.put(content.toString(), Boolean.FALSE) ; 
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("if (a is B){") ;
 		content.append("[NL][TAB]").append("B b = (B)a;") ;
 		content.append("[NL][TAB]").append("b.Print();") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		mapPropositions.put(content.toString(), Boolean.TRUE) ; 
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("B b = a as B;") ;
 		content.append("[NL]").append("b.Print();") ;
+		content.append("[/code]") ;
 		mapPropositions.put(content.toString(), Boolean.FALSE) ; 
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("B b = a as B;") ;
 		content.append("[NL]").append("if (b != null)") ;
 		content.append("[NL][TAB]").append("b.Print();") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		mapPropositions.put(content.toString(), Boolean.TRUE) ; 
 		mapQuestions.put(question, mapPropositions) ;
 		
@@ -686,6 +739,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("class Person{") ; 
 		content.append("[NL][TAB]").append("private string Name;") ;
 		content.append("[NL][TAB]").append("public Person(string name) { Name = name; }") ;
@@ -706,6 +760,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB]").append("Console.WriteLine([DB]{0},{1},{2},{3}[DB], p, p2, p3, p4);") ;
 		content.append("[NL][TAB]").append("}") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Deep Copy & Shalow Copy", "What is the output of the following program:" , content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("a,ab,ac,ad", Boolean.FALSE) ; 
@@ -716,6 +771,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("public class A {") ; 
 		content.append("[NL][TAB]").append("private string Id = [DB]base[DB];") ;
 		content.append("[NL][TAB]").append("public A() { }") ;
@@ -744,6 +800,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB]").append("foreach(A a in list) { a.Display();}") ;
 		content.append("[NL][TAB]").append("}") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Inheritance and virtual methods", "What is the output of the following program:", content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("CbasebaseB", Boolean.FALSE) ; 
@@ -777,6 +834,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("class Identifiant {").append("") ;
 		content.append("[NL][TAB]").append("private string Id;") ;
 		content.append("[NL][TAB]").append("public Identifiant(string id) {") ;
@@ -796,6 +854,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB]").append("Console.WriteLine([DB]calcul[DB]);") ;
 		content.append("[NL][TAB]").append("}") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Inheritance", "What modifications are needed to make this program compile?", content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("to provide a parameterless constructor", Boolean.TRUE) ; 
@@ -806,6 +865,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("class Identifiant {").append("") ;
 		content.append("[NL][TAB]").append("private string Id;") ;
 		content.append("[NL][TAB]").append("public Identifiant(string id) {") ;
@@ -825,6 +885,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB]").append("Console.WriteLine([DB]calcul[DB]);") ;
 		content.append("[NL][TAB]").append("}") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Exception catching", "What is the output of the following program?", content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("error detected"+ "[NL]" + "end", Boolean.FALSE) ; 
@@ -867,6 +928,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("public class A {") ;
 		content.append("[NL][TAB]").append("private static A a;") ;
 		content.append("[NL][TAB]").append("private A() { }") ;
@@ -877,6 +939,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB]").append("return a;") ;
 		content.append("[NL][TAB]").append("}") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Singleton design Pattern", "Which design pattern is implemented below?", content.toString(), Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Adaptor", Boolean.FALSE) ; 
@@ -886,7 +949,7 @@ public class AjoutAllTestsEncoded {
 		mapPropositions.put("Bridge", Boolean.FALSE) ; 
 		mapQuestions.put(question, mapPropositions) ;
 		
-		question = new Question("Boxing conversion", "The following instruction:" , "3.ToString();" , Niveau.INTERMEDIAIRE) ; 
+		question = new Question("Boxing conversion", "The following instruction:" , "[code style=csharp]" + "3.ToString();" + "[/code]", Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("does not compile", Boolean.FALSE) ; 
 		mapPropositions.put("is a boxing conversion", Boolean.TRUE) ; 
@@ -922,6 +985,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=csharp]") ;
 		content.append("public interface Iinterf1 {").append("") ;
 		content.append("[NL][TAB]").append("void Operation1();") ;
 		content.append("[NL]").append("}") ;
@@ -949,6 +1013,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB][TAB]").append("comp.Operation2();") ;
 		content.append("[NL][TAB]").append("}") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ; 
 		question = new Question("Adaptor Pattern", "Which design pattern is implemented below?", "", Niveau.SENIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Adaptor", Boolean.TRUE) ; 
@@ -978,12 +1043,14 @@ public class AjoutAllTestsEncoded {
 		Map <String , Boolean> mapPropositions = new LinkedHashMap <String , Boolean> () ; 
 		
 		StringBuilder content = new StringBuilder() ; 
+		content.append("[code style=cpp]") ;
 		content.append("for(int i=1; i<=3 ; i++) {") ;
 		content.append("[NL][TAB]").append("if (i=1) ") ;
 		content.append("[NL][TAB][TAB]").append("std::cout << [DB] i=1[DB]; ") ;
 		content.append("[NL][TAB]").append("else ") ;
 		content.append("[NL][TAB][TAB]").append("std::cout << [DB] i=[DB] << i; ") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ; 
 		Question question = new Question("for if", "What will be the ouput of the following code?", content.toString() , Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("i=1 i=2", Boolean.FALSE) ; 
@@ -995,16 +1062,23 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append(	"Consider the following code :") ; 
+		content.append("[code style=cpp]"+ "[NL]") ;
+		content.append("double r = 6.28; " + "[NL]") ;
+		content.append("const double  PI = 3.14; " + "[NL]") ;
+		content.append("const double * pPI; ") ;
+		content.append("[/code]") ; 
+		content.append("[NL][NL]") ;
+		content.append("Which statement(s) is(are) illegal among the following ones?") ; 
+		content.append("[NL][NL]") ;
+		content.append("[code style=cpp]") ;
 		content.append("pPI = &PI;") ;
 		content.append("[NL]").append("pPI = &r;") ;
 		content.append("[NL]").append("*pPI = PI;") ;
 		content.append("[NL]").append("r = *pPI;") ;
+		content.append("[/code]") ; 
 		question = new Question("const-pointer-reference", 
-			"Consider the following code :" + "[NL]" +
-			"double r = 6.28; " + "[NL]" +
-			"const double  PI = 3.14; " + "[NL]" +
-			"const double * pPI; " + "[NL][NL]" +
-			"Which statement(s) is(are) illegal among the following ones?", content.toString(), Niveau.JUNIOR) ; 
+			"", content.toString(), Niveau.JUNIOR) ; 
 		question.setCorrectionHints("pPI is a pointer to a constant double. So *pPi is constant and could be affected.") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("pPI = &PI;", Boolean.FALSE) ; 
@@ -1032,8 +1106,8 @@ public class AjoutAllTestsEncoded {
 
 		content = new StringBuilder() ; 
 		content.append("Consider the following statement :") ; 
-		content.append("[NL]").append("How to destroy pX?") ;
-		question = new Question("Clean memory", content.toString(), "X *pX = new X[100]; ", Niveau.JUNIOR) ; 
+		content.append("[NL]").append("[code style=cpp]" + "X *pX = new X[100];" + "[/code]") ;
+		question = new Question("Clean memory", "How to destroy pX?", content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("delete pX;", Boolean.FALSE) ; 
 		mapPropositions.put("delete [ ] pX;", Boolean.TRUE) ; 
@@ -1051,6 +1125,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 
 		content = new StringBuilder() ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("#include <iostream>").append("") ;
 		content.append("[NL]").append("class X {") ;
 		content.append("[NL][TAB]").append("public:") ;
@@ -1066,6 +1141,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB]").append("Y y;") ;
 		content.append("[NL][TAB]").append("return 0;") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Construction/destruction order", "What is the output of the following code?" , content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("23", Boolean.FALSE) ; 
@@ -1086,6 +1162,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("#include <iostream>").append("") ;
 		content.append("[NL]").append("class A{ ") ;
 		content.append("[NL][TAB]").append("public:") ;
@@ -1106,6 +1183,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB]").append("d.f();") ;
 		content.append("[NL][TAB]").append("return 0;") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Polymorphism", "What is the output of the following code?", content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("A A A A", Boolean.FALSE) ; 
@@ -1117,6 +1195,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("#include <iostream>").append("") ;
 		content.append("[NL]").append("class A{ ") ;
 		content.append("[NL][TAB]").append("public:") ;
@@ -1137,6 +1216,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB]").append("d.f();") ;
 		content.append("[NL][TAB]").append("return 0;") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Polymorphism", "What is the output of the following program?", content.toString(), Niveau.JUNIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("A A A A", Boolean.FALSE) ; 
@@ -1173,9 +1253,12 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("Consider the code below").append("[NL]") ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("C                objC;") ;
 		content.append("[NL]").append("C& robjC  = objC;") ;
-		question = new Question("Affectation operator", "Consider the code below, which statement(s) call the affectation operator of the class C?", content.toString(), Niveau.INTERMEDIAIRE) ;
+		content.append("[/code]") ;
+		question = new Question("Affectation operator", "Which statement(s) call the affectation operator of the class C?", content.toString(), Niveau.INTERMEDIAIRE) ;
 		question.setCorrectionHints("C tmp = obj calls copy constructor because it's a initialization.") ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("C tmpC = objC;", Boolean.FALSE) ; 
@@ -1196,6 +1279,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("#include <iostream>").append("") ;
 		content.append("[NL]").append("class Exception_A {};") ;
 		content.append("[NL]").append("class Exception_B : virtual public Exception_A {};") ;
@@ -1209,6 +1293,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB]").append("catch(Exception_B){ std::cout<<[DB]AddStones[DB]<<std::endl; ") ;
 		content.append("[NL][TAB]").append("return 0;") ;
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Exception", "What is the output of the following code?" , content.toString() , Niveau.INTERMEDIAIRE) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Add", Boolean.FALSE) ; 
@@ -1260,6 +1345,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("#include <iostream>").append("") ;
 		content.append("[NL]").append("class IComponent{") ;
 		content.append("[NL][TAB]").append("public : ") ;
@@ -1282,6 +1368,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB]").append("c->Action();") ;
 		content.append("[NL][TAB]").append("return 0;") ; 
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("Adapter Pattern", "Which design pattern is implemented below?", content.toString(), Niveau.SENIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("Adaptor", Boolean.TRUE) ; 
@@ -1299,6 +1386,7 @@ public class AjoutAllTestsEncoded {
 		mapQuestions.put(question, mapPropositions) ;
 		
 		content = new StringBuilder() ; 
+		content.append("[code style=cpp]").append("[NL]") ; 
 		content.append("#include <iostream>").append("") ;
 		content.append("[NL]").append("#include <iterator>") ;
 		content.append("[NL]").append("#include <set>") ;
@@ -1312,6 +1400,7 @@ public class AjoutAllTestsEncoded {
 		content.append("[NL][TAB]").append("remove_copy( res.begin() , res.end(), Out( std::cout << std::hex , [DB] [DB] ) , 0 );") ; 
 		content.append("[NL][TAB]").append("return 0;") ; 
 		content.append("[NL]").append("}") ;
+		content.append("[/code]") ;
 		question = new Question("STL", "What's the output if we enter [DB]0 12 5 9 5[DB] for the following code?", content.toString(), Niveau.SENIOR) ; 
 		mapPropositions = new LinkedHashMap <String , Boolean> () ;
 		mapPropositions.put("12 9 5 0", Boolean.FALSE) ; 
@@ -1356,12 +1445,27 @@ public class AjoutAllTestsEncoded {
         admin.setEmail("admin@ossia-conseil.com"); // facultatif
         return admin ; 
     }
+	
+	private Profil fillCandidateProfil () {
+        // creation de profil
+        Profil admin = new Profil("profil" , "candidat") ;
+        admin.setLogin("pc") ; 
+        admin.setPass("pc") ; 
+        admin.setAdmin(Boolean.FALSE) ; 
+        admin.setActive(Boolean.TRUE) ; 
+        admin.setDateActivation(new Date()) ;
+        admin.setEmail("candidat@ossia-conseil.com"); // facultatif
+        return admin ; 
+    }
     
 	@Test
 	public void insertAllTests () {
 		Profil admin = fillAdminProfil() ;
 		admin = profilService.createProfil(admin, admin) ;
-		log.debug("identifiant du profil créé : "+admin.getId()) ; 
+		
+		Profil candidat = fillCandidateProfil() ;
+		candidat = profilService.createProfil(candidat, admin) ;
+		log.debug("identifiant du profil créé : "+candidat.getId()) ; 
 		
 		testSheetService.createTestSheet(createTestJava() , admin) ; 
 		testSheetService.createTestSheet(createTestCsharp() , admin) ; 

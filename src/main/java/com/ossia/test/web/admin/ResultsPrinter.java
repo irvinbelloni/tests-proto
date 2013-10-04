@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.lowagie.text.Chapter;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -36,6 +35,9 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfCell;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.Niveau;
@@ -171,7 +173,7 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		return chunk ; 
 	}
 
-	private void addPhraseAsTitle (Chapter chapter , String property , String param , String value) {
+	private void addPhraseAsTitle (Document document , String property , String param , String value) throws DocumentException {
 		Paragraph paragraph = new Paragraph("");
 		paragraph.setLeading(20f) ; 
 		paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
@@ -181,10 +183,10 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		phrase.add(createSimpleChunk(FONT_TITLE2, value)) ;
 		
 		paragraph.add(phrase) ; 
-		chapter.add(paragraph) ; 
+		document.add(paragraph) ; 
 	}
 	
-	private void addPhraseAsTitle (Chapter chapter , String property , String param) {
+	private void addPhraseAsTitle (Document document , String property , String param) throws DocumentException {
 		Paragraph paragraph = new Paragraph("");
 		paragraph.setLeading(20f) ; 
 		paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
@@ -194,10 +196,10 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		phrase.add(createSimpleChunk(FONT_TITLE2, param)) ;
 		
 		paragraph.add(phrase) ; 
-		chapter.add(paragraph) ; 
+		document.add(paragraph) ; 
 	}
 	
-	private void addPhraseAsNormal (Chapter chapter , String property , String param) {
+	private void addPhraseAsNormal (Document document , String property , String param) throws DocumentException {
 		Paragraph paragraph = new Paragraph("");
 		paragraph.setLeading(20f) ; 
 		paragraph.setAlignment(Element.ALIGN_LEFT);
@@ -207,10 +209,10 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		phrase.add(createSimpleChunk(FONT_NORMAL, param)) ;
 		
 		paragraph.add(phrase) ; 
-		chapter.add(paragraph) ;
+		document.add(paragraph) ;
 	}
 	
-	private void addPhraseAsCode (Chapter chapter , String param) {
+	private void addPhraseAsCode (Document document , String param) throws DocumentException {
 		Paragraph paragraph = new Paragraph("");
 		paragraph.setLeading(20f) ; 
 		paragraph.setAlignment(Element.ALIGN_LEFT);
@@ -219,7 +221,7 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		phrase.add(createSimpleChunk(FONT_CODE, param)) ;
 		
 		paragraph.add(phrase) ; 
-		chapter.add(paragraph) ;
+		document.add(paragraph) ;
 	}
 	
 	/*
@@ -229,71 +231,109 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 	 */
 	private Document logiqueMetier (Evaluation evalParamEntree , Document document) 
 		throws MalformedURLException, IOException, URISyntaxException, DocumentException {
-		Chapter chapter = new Chapter(contentProperties.getProperty(ITEXT_DOCUMENT_TITLE) , 1) ;
+//		Chapter chapter = new Chapter(contentProperties.getProperty(ITEXT_DOCUMENT_TITLE) , 1) ;
 		
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL url = classLoader.getResource(contentProperties.getProperty(ITEXT_DOCUMENT_CHAPTER_LOGO_PATH));
 		
 		Image image = Image.getInstance(url.toURI().toString());
-		chapter.add(image);
-		chapter.add(new Paragraph("\n")) ;
-		addPhraseAsTitle(chapter, ITEXT_DOCUMENT_CHAPTER_NOM , evalParamEntree.getProfil().getNom()) ; 
-		addPhraseAsTitle(chapter, ITEXT_DOCUMENT_CHAPTER_PRENOM , evalParamEntree.getProfil().getPrenom()) ; 
-		chapter.add(new Paragraph("\n")) ;
+		document.add(image);
+		document.add(new Paragraph("\n")) ;
+		addPhraseAsTitle(document, ITEXT_DOCUMENT_CHAPTER_NOM , evalParamEntree.getProfil().getNom()) ; 
+		addPhraseAsTitle(document, ITEXT_DOCUMENT_CHAPTER_PRENOM , evalParamEntree.getProfil().getPrenom()) ; 
+		document.add(new Paragraph("\n")) ;
 
 		/* Informations calculées */ 
-		addPhraseAsTitle(chapter, ITEXT_DOCUMENT_CHAPTER_TESTNAME , evalParamEntree.getTest().getIntitule()) ; 
+		addPhraseAsTitle(document, ITEXT_DOCUMENT_CHAPTER_TESTNAME , evalParamEntree.getTest().getIntitule()) ; 
 
 		// note globale
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_EMPLACEMENT , "" ) ; 
+		addPhraseAsTitle(document , ITEXT_DOCUMENT_CHAPTER_EMPLACEMENT , "" ) ; 
 		
 		String noteGlobale = evaluationService.determinerNoteGlobale (evalParamEntree) ;
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_NOTE_GLOBALE , noteGlobale ) ; 
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_DUREE_TEST , evalParamEntree.getTest().getDuree()+"mn" ) ; 
+		addPhraseAsTitle(document , ITEXT_DOCUMENT_CHAPTER_NOTE_GLOBALE , noteGlobale ) ; 
+		addPhraseAsTitle(document , ITEXT_DOCUMENT_CHAPTER_DUREE_TEST , evalParamEntree.getTest().getDuree()+"mn" ) ; 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YY HH:mm");
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , sdf.format(evalParamEntree.getStartTime())) ;  
-		addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_FIN_TEST , sdf.format(evalParamEntree.getEndTime())) ;
-		chapter.add(new Paragraph("\n")) ; 
+		addPhraseAsTitle(document , ITEXT_DOCUMENT_CHAPTER_DEBUT_TEST , sdf.format(evalParamEntree.getStartTime())) ;  
+		addPhraseAsTitle(document , ITEXT_DOCUMENT_CHAPTER_FIN_TEST , sdf.format(evalParamEntree.getEndTime())) ;
+		document.add(new Paragraph("\n")) ; 
 
 		for (Niveau object : Niveau.values()) {
 			String noteParNiveau = evaluationService.determinerNoteParNiveau (evalParamEntree , object) ; 
-			addPhraseAsTitle(chapter , ITEXT_DOCUMENT_CHAPTER_NOTE , object.getValue() , noteParNiveau) ; 
+			addPhraseAsTitle(document , ITEXT_DOCUMENT_CHAPTER_NOTE , object.getValue() , noteParNiveau) ; 
 		}
-		chapter.add(new Paragraph("\n")) ; 
+		document.add(new Paragraph("\n")) ; 
 		/* Affichage du tests détaillé plus correction */
 		
 		int i = 1;
 		int nbrQuestion = evalParamEntree.getResponses().size() ; 
 		
+		URL urlCorrect = classLoader.getResource("correct-icon.png");
+		URL urlUser = classLoader.getResource("user-icon.png");
+		URL urlWrong = classLoader.getResource("uncorrect-icon.png");
+		
 		for (Response response : evalParamEntree.getResponses()) {
 			Paragraph paragraph =  new Paragraph(contentProperties.getProperty(ITEXT_DOCUMENT_CHAPTER_QUESTION).concat(" "+i+"/"+nbrQuestion) , FONT_TITLE3 ) ; 
 			paragraph.setAlignment(Element.ALIGN_CENTER);
-			chapter.add(paragraph) ;
-			chapter.add(new Paragraph("\n")) ; 
+			document.add(paragraph) ;
+			document.add(new Paragraph("\n")) ; 
 			
-			addPhraseAsNormal( chapter , ITEXT_DOCUMENT_CHAPTER_TITRE , response.getQuestion().getIntitule() ) ;
-			addPhraseAsNormal( chapter , ITEXT_DOCUMENT_CHAPTER_NIVEAU , response.getQuestion().getNiveau().getValue() ) ;
+			addPhraseAsNormal( document , ITEXT_DOCUMENT_CHAPTER_TITRE , response.getQuestion().getIntitule() ) ;
+			addPhraseAsNormal( document , ITEXT_DOCUMENT_CHAPTER_NIVEAU , response.getQuestion().getNiveau().getValue() ) ;
 			
-			addPhraseAsCode  ( chapter ,  formatQuestionOrProposition(response.getQuestion().getContenu()) ) ; 
-			chapter.add(new Paragraph("\n")) ; 
+			addPhraseAsCode  ( document ,  formatQuestionOrProposition(response.getQuestion().getContenu()) ) ; 
+			document.add(new Paragraph("\n")) ; 
 			
-			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_STATEMENT , response.getQuestion().getPropositionsReponses()) ;
-			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_REPONSE , evaluationService.determinerPropositionsCorrectesByReponse(response) ) ;
-			addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_CANDIDAT , response.getReponsesChoisies()) ;
+//			addListLikeParagraphs (document, ITEXT_DOCUMENT_CHAPTER_STATEMENT , response.getQuestion().getPropositionsReponses()) ;
+//			addListLikeParagraphs (document, ITEXT_DOCUMENT_CHAPTER_REPONSE , evaluationService.determinerPropositionsCorrectesByReponse(response) ) ;
+//			addListLikeParagraphs (document, ITEXT_DOCUMENT_CHAPTER_CANDIDAT , response.getReponsesChoisies()) ;
+			
+			float[] colsWidth = {2f, 2f , 2f , 20f};
+			PdfPTable table = new PdfPTable(colsWidth) ; 
+			table.setHorizontalAlignment(Element.ALIGN_LEFT);
+			table.setLockedWidth(false);
+			int j = 1; 
+			for (PropositionReponse proposition : response.getQuestion().getPropositionsReponses()) {
+				PdfPCell cell = new PdfPCell(new Paragraph(""+j)) ; 
+				table.addCell(cell);
+				
+				if (response.getReponsesChoisies().contains(proposition)) {
+					cell = new PdfPCell(Image.getInstance(urlUser.toURI().toString())) ;
+				} else {
+					cell = new PdfPCell(new Paragraph("")) ;
+				}
+				cell.setPaddingLeft(0.3f) ; 
+				table.addCell(cell);
+				
+				if (proposition.isPropositionCorrecte()) {
+					cell = new PdfPCell(Image.getInstance(urlCorrect.toURI().toString()));
+				} else {
+					cell = new PdfPCell(Image.getInstance(urlWrong.toURI().toString()));
+				}
+				cell.setPaddingLeft(0.3f) ; 
+				table.addCell(cell);
+				
+				cell = new PdfPCell(new Paragraph(formatQuestionOrProposition(proposition.getValeur()))) ; 
+				table.addCell(cell);
+				
+				j++ ; 
+			}
+			
+			document.add(table) ; 
+			
 			if (response.getQuestion().getCorrectionHints() != null) {
-				addListLikeParagraphs (chapter, ITEXT_DOCUMENT_CHAPTER_CORRECTION , response.getQuestion().getCorrectionHints()) ;
+				addListLikeParagraphs (document, ITEXT_DOCUMENT_CHAPTER_CORRECTION , response.getQuestion().getCorrectionHints()) ;
 			}
 			
 			i++ ; 
 		}
-		chapter.add(new Paragraph("\n")) ;
-		document.add(chapter) ; 
+		document.add(new Paragraph("\n")) ;
+//		document.add(chapter) ; 
 		return document ; 
 	}
 	
-	public void addListLikeParagraphs (Chapter chapter, String param , Collection<PropositionReponse> collection) {
-		chapter.add( new Paragraph(contentProperties.getProperty(param) , FONT_TITLE4 )) ;
-		chapter.add(new Paragraph("\n")) ; 
+	public void addListLikeParagraphs (Document document, String param , Collection<PropositionReponse> collection) throws DocumentException {
+		document.add( new Paragraph(contentProperties.getProperty(param) , FONT_TITLE4 )) ;
+		document.add(new Paragraph("\n")) ; 
 		
 		List liste = new List(true, collection.size());
 		liste.setNumbered(true) ; 
@@ -302,17 +342,16 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 		for (PropositionReponse propositionReponse : collection) {
 			liste.add(new ListItem (new Phrase (formatQuestionOrProposition(propositionReponse.getValeur())))) ;
 		}
-		chapter.add(liste) ; 
-		chapter.add(new Paragraph("\n")) ;
+		document.add(liste) ; 
+		document.add(new Paragraph("\n")) ;
 	}
 	
-	public void addListLikeParagraphs (Chapter chapter, String param , String correction) {
-		chapter.add( new Paragraph(contentProperties.getProperty(param) , FONT_TITLE4 )) ;
-		chapter.add(new Paragraph("\n")) ; 
+	public void addListLikeParagraphs (Document document, String param , String correction) throws DocumentException {
+		document.add( new Paragraph(contentProperties.getProperty(param) , FONT_TITLE4 )) ;
+		document.add(new Paragraph("\n")) ; 
 		
-		
-		chapter.add(new Chunk(correction)) ; 
-		chapter.add(new Paragraph("\n")) ;
+		document.add(new Chunk(correction)) ; 
+		document.add(new Paragraph("\n")) ;
 	}
 
 	private void closeDocument(Document document) {
