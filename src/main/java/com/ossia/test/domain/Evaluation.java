@@ -2,6 +2,7 @@ package com.ossia.test.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -138,6 +139,9 @@ public class Evaluation implements Serializable {
 	}
 
 	public Set<Response> getResponses() {
+		if (responses == null) {
+			responses = new HashSet<Response>();
+		}
 		return responses;
 	}
 
