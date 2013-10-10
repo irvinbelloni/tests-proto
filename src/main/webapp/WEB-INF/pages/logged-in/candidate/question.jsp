@@ -11,7 +11,6 @@
 	</h1>
 	
 	<div class="question">
-		<span>${question.sousDomaine} </span><br/>
 		<h2><q:format input="${question.intitule}" mode="display" /></h2>
 		<q:format input="${question.contenu}" mode="display" />
 	</div>
@@ -84,7 +83,7 @@
 						<c:param name="test" value="${evaluation.id}"/>
 						<c:param name="question" value="${i}"/>
 					</c:url>
-					<a href="#" class="navigation-question ${buttonClass}">${i}</a>
+					<a href="#" class="navigation-question ${buttonClass}" style="margin-bottom: 5px;">${i}</a>
 					<c:set var="i" value="${i + 1}"/>
 				</c:forEach>
 			</div>

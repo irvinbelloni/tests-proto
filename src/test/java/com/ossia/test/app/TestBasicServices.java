@@ -94,7 +94,7 @@ public class TestBasicServices {
     }
     
     private Question fillDumbQuestion0 (TestSheet testJava) {
-    	Question question = new Question("Qu'est-ce qu'un constructeur ? " , Niveau.INTERMEDIAIRE , null) ;
+    	Question question = new Question("Dumb question", "Qu'est-ce qu'un constructeur ? " , Niveau.INTERMEDIAIRE) ;
         question.setTest(testJava) ; 
     	PropositionReponse pr0 = new PropositionReponse(question, "Une classe de base dont héritent toutes les classes de l'application.", Boolean.FALSE) ; 
     	PropositionReponse pr1 = new PropositionReponse(question, "Une fonction permettant de créer dynamiquement des instances.", Boolean.FALSE) ;
@@ -107,7 +107,7 @@ public class TestBasicServices {
     }
     
     private Question fillDumbQuestion1 (TestSheet testJava) {
-    	Question question = new Question("Dans une relation d'héritage, certains membres de la classe mère sont inaccessibles à la classe fille. Ce sont :" , Niveau.INTERMEDIAIRE , null) ;
+    	Question question = new Question("Héritage", "Dans une relation d'héritage, certains membres de la classe mère sont inaccessibles à la classe fille. Ce sont :" , Niveau.INTERMEDIAIRE) ;
     	question.setTest(testJava) ; 
     	PropositionReponse pr0 = new PropositionReponse(question, "Les membres protected", Boolean.FALSE) ; 
     	PropositionReponse pr1 = new PropositionReponse(question, "Les membres private", Boolean.FALSE) ;

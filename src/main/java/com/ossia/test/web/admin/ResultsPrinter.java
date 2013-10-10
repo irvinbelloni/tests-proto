@@ -35,7 +35,6 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -319,11 +318,7 @@ public class ResultsPrinter implements ResultsPrinterInterface {
 			}
 			
 			document.add(table) ; 
-			
-			if (response.getQuestion().getCorrectionHints() != null) {
-				addListLikeParagraphs (document, ITEXT_DOCUMENT_CHAPTER_CORRECTION , response.getQuestion().getCorrectionHints()) ;
-			}
-			
+						
 			i++ ; 
 		}
 		document.add(new Paragraph("\n")) ;

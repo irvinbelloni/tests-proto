@@ -148,7 +148,14 @@ public class EvaluationServiceImpl implements EvaluationService {
 				evaluation.setStatus(EvaluationStatus.ALREADY_ASSIGNED.getCode());
 				return evaluation;
 			}
-		}		
+		}	
+		
+		for (Question question : testSheet.getQuestions()) {
+			Response response = new Response();
+			response.setEvaluation(evaluation);
+			response.setQuestion(question);
+			evaluation.getResponses().add(response);
+		}
 		
 		evaluation.setStatus(EvaluationStatus.ASSIGNED.getCode());
 		testSheet.getEvaluations().add(evaluation);				

@@ -40,10 +40,6 @@ public class Question implements Serializable {
 	
 	@Length(max=100000)
 	private String contenu;
-	
-	private String sousDomaine ; 
-	
-	private String correctionHints ; 
     
 	@ManyToOne @JoinColumn(name = "test_id")
     private TestSheet test;
@@ -55,19 +51,11 @@ public class Question implements Serializable {
     public Question() {
     	this.id = 0 ; 
 	}
-
-	public Question(String intitule, Niveau niveau, String contenu) {
-		super();
-		this.intitule = intitule;
-		this.niveau = niveau;
-		this.contenu = contenu;
-	}
 	
-	public Question(String sousDomaine , String intitule, String contenu, Niveau niveau) {
+	public Question(String intitule, String contenu, Niveau niveau) {
 		super();
 		this.intitule = intitule;
 		this.contenu = contenu;
-		this.sousDomaine = sousDomaine ; 
 		this.niveau = niveau;
 	}
 
@@ -142,21 +130,5 @@ public class Question implements Serializable {
 
 	public void setPropositionsReponses(Set<PropositionReponse> propositionsReponses) {
 		this.propositionsReponses = propositionsReponses;
-	}
-
-	public String getSousDomaine() {
-		return sousDomaine;
-	}
-
-	public void setSousDomaine(String sousDomaine) {
-		this.sousDomaine = sousDomaine;
-	}
-
-	public String getCorrectionHints() {
-		return correctionHints;
-	}
-
-	public void setCorrectionHints(String correctionHints) {
-		this.correctionHints = correctionHints;
 	}
 }
