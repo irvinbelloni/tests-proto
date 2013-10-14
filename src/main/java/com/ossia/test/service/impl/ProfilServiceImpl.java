@@ -3,6 +3,7 @@ package com.ossia.test.service.impl;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.model.NotFoundException;
@@ -22,6 +23,9 @@ import com.ossia.test.web.sort.SortingInfo;
 
 @Service("profilService") @Transactional
 public class ProfilServiceImpl implements ProfilService, UserDetailsService {
+	
+	@SuppressWarnings("unused")
+	private final static Logger LOGGER = Logger.getLogger(ProfilServiceImpl.class);
 	
 	@Autowired
 	private ProfilRepository profilRepository;

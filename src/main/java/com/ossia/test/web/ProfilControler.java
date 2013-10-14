@@ -2,6 +2,7 @@ package com.ossia.test.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,9 @@ import com.ossia.test.service.ProfilService;
 
 @Controller
 public class ProfilControler extends AbstractController {
+	
+	@SuppressWarnings("unused")
+	private final static Logger LOGGER = Logger.getLogger(ProfilControler.class);
 	
 	@Autowired
 	public ProfilService profilService;
@@ -49,8 +53,7 @@ public class ProfilControler extends AbstractController {
 		if (error != null) {
 			model.put("error",  true);
 		}
+		
 		return "login"; 
-	}
-	
-	
+	}	
 }
