@@ -1417,16 +1417,28 @@ public class AjoutAllTestsEncoded {
 
 	private Profil fillAdminProfil () {
         // creation de profil
-        Profil admin = new Profil("DA SILVEIRA" , "Tata") ;
+        Profil admin = new Profil("Administrateur" , "Admin") ;
         admin.setLogin("admin") ; 
         admin.setPass("admin") ; 
         admin.setAdmin(Boolean.TRUE) ; 
         admin.setActive(Boolean.TRUE) ; 
         admin.setDateActivation(new Date()) ;
-        admin.setEmail("admin@ossia-conseil.com"); // facultatif
+        admin.setEmail("admin-tests@ossia-conseil.com"); // facultatif
         return admin ; 
     }
-	
+
+	private Profil fillAdminProfil2 () {
+        // creation de profil
+        Profil admin = new Profil("MABIGUE" , "Fabien") ;
+        admin.setLogin("fmabigue") ; 
+        admin.setPass("fmabigue") ; 
+        admin.setAdmin(Boolean.TRUE) ; 
+        admin.setActive(Boolean.TRUE) ; 
+        admin.setDateActivation(new Date()) ;
+        admin.setEmail("fmabigue@ossia-conseil.com"); // facultatif
+        return admin ; 
+    }
+		
 	private Profil fillCandidateProfil () {
         // creation de profil
         Profil admin = new Profil("profil" , "candidat") ;
@@ -1444,9 +1456,9 @@ public class AjoutAllTestsEncoded {
 		Profil admin = fillAdminProfil() ;
 		admin = profilService.createProfil(admin, admin) ;
 		
-		Profil candidat = fillCandidateProfil() ;
-		candidat = profilService.createProfil(candidat, admin) ;
-		log.debug("identifiant du profil créé : "+candidat.getId()) ; 
+		Profil admin2 = fillAdminProfil2() ;
+		admin2 = profilService.createProfil(admin2, admin) ;
+		log.debug("identifiant du profil créé : "+admin2.getId()) ; 
 		
 		testSheetService.createTestSheet(createTestJava() , admin) ; 
 		testSheetService.createTestSheet(createTestCsharp() , admin) ; 

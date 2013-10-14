@@ -336,7 +336,7 @@
     </dependencies>
 
     <build>
-    	<finalName>Tests-Proto</finalName>
+    	<finalName>tests-proto</finalName>
         <plugins>
         	<plugin>
 	            <groupId>org.apache.tomcat.maven</groupId>
