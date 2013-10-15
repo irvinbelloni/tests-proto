@@ -93,7 +93,9 @@ public interface EvaluationService {
 
 	List<PropositionReponse> determinerPropositionsCorrectesByReponse(Response response);
 	
-	
-	
+	/**
+	 * Validate and close unfinished tests
+	 */
+	void autoCompleteUnfinishedTests();
 	
 }

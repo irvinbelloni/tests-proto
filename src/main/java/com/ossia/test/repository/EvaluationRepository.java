@@ -14,6 +14,8 @@ public interface EvaluationRepository extends AbstractRepository<Evaluation, Int
 	
 	Collection <Evaluation> getEvaluationByTestSheet (TestSheet testSheetPasse) ;
 	
+	List<Evaluation> getRunningEvaluations();
+	
 	/**
 	 * Gets a list of finished evaluations sorted and filtered with the given parameters
 	 * @param orderingField Field we must order the list by

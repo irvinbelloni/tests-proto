@@ -16,6 +16,15 @@ import com.ossia.test.repository.EvaluationRepository;
 public class EvaluationRepositoryImpl extends AbstractRepositoryImpl<Evaluation, Integer> implements EvaluationRepository {
 	
 	@SuppressWarnings("unchecked")
+	public List<Evaluation> getRunningEvaluations() {
+		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.status=:status");
+		query.setInteger("status", 2);
+		
+		List<Evaluation> retrieved = (List<Evaluation>) query.list() ; 
+		return retrieved ;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public Collection<Evaluation> getEvaluationByProfil(Profil profilCandidat) {
 		Query query = getHibernateCurrentSession().createQuery("from Evaluation eval where eval.profil_id=:id")
 				.setInteger("id", profilCandidat.getId());

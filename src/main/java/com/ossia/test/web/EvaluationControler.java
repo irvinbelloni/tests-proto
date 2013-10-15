@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -141,6 +142,11 @@ public class EvaluationControler extends AbstractController {
 		
 		// On to the next question ...
 		return "redirect:/tests/question?test=" + questionForm.getEvaluationId() + "&question=" + questionForm.getNextQuestionIndex();
+	}
+	
+	@Scheduled(fixedDelay=30000)
+	public void autoCompleteUnfinishedTests() {
+		evaluationService.autoCompleteUnfinishedTests();
 	}
 	
 	private QuestionForm buildQuestionForm(Evaluation evaluation, int questionIndex) {

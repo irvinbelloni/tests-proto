@@ -82,6 +82,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 	public List<Evaluation> getAllActiveResultats() {
 		return evaluationRepository.getAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public List<Evaluation> getRunningEvaluations() {
+		return evaluationRepository.getRunningEvaluations();
+	}
 
 	public void deleteEvaluation(Evaluation toDelete) {
 		evaluationRepository.delete(toDelete) ; 
@@ -339,4 +344,18 @@ public class EvaluationServiceImpl implements EvaluationService {
 		
 		evaluationRepository.update(evaluation);		
 	}	
+	
+	@Override
+	public void autoCompleteUnfinishedTests() {
+		List<Evaluation> runningEvaluations = getRunningEvaluations();
+		logger.info("[Cron job] Start method");
+		for (Evaluation evaluation : runningEvaluations) {
+			Date testLimit = new Date(evaluation.getStartTime().getTime() + evaluation.getTest().getDuree() * 60000);
+			logger.info("[Cron job] checking evalution " + evaluation.getId());
+			if (testLimit.before(new Date())) {
+				logger.info("[Cron job] closing evaluation " + evaluation.getId());
+				closeTest(evaluation.getId());
+			}
+		}
+	}
 }

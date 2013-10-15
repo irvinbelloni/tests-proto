@@ -111,6 +111,9 @@ public class Evaluation implements Serializable {
 	@Transient
 	public int getDuration() {
 		int duration = (int) (this.endTime.getTime() - this.startTime.getTime());
+		if (duration > (test.getDuree() * 60 * 1000)) {
+			duration = test.getDuree() * 60 * 1000;
+		}
 		return duration / 1000;
 	}
 
