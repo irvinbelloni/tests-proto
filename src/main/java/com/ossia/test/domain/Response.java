@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -33,7 +34,7 @@ public class Response implements Serializable {
 	@OneToOne @JoinColumn(name = "question_id")  @NotNull
 	private Question question;
     
-	@OneToMany
+	@ManyToMany
     @JoinTable(
             name="t_responses_t_propositions_responses",
             joinColumns = @JoinColumn( name="response_id"),
