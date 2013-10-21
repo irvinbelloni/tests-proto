@@ -24,6 +24,7 @@ import com.ossia.test.domain.Evaluation;
 import com.ossia.test.domain.EvaluationStatus;
 import com.ossia.test.domain.Profil;
 import com.ossia.test.domain.TestSheet;
+import com.ossia.test.domain.TestStatus;
 import com.ossia.test.service.EvaluationService;
 import com.ossia.test.service.ProfilService;
 import com.ossia.test.service.TestSheetService;
@@ -360,6 +361,9 @@ public class ProfilAdminController extends AbstractAdminController {
 		boolean assignable = true;
 		for(TestSheet test : allTests) {
 			assignable = true;
+			if (!test.getStatus().equals(TestStatus.VALIDATED)) {
+				continue;
+			}
 			for (Evaluation evaluation : candidate.getEvaluations()) {
 				if (evaluation.getTest().getId() == test.getId() && !evaluation.isTestTaken()) {
 					assignable = false;
